@@ -198,6 +198,50 @@ class CobraFramework(CobraConfiguration):
             self.cobra_print("[ERROR] Cobra: Can't find network in cobra.yaml", "error", bold=True)
             sys.exit()
 
+    def CobraUnitTest(self):
+        suite = TestSuite()
+        test_case_classes = []
+
+        ethereum_tester = EthereumTester()
+        web3 = Web3(EthereumTesterProvider(ethereum_tester))
+
+        def zero_gas_price_strategy(web3, transaction_params=None):
+            return 0
+
+        web3.eth.setGasPriceStrategy(zero_gas_price_strategy)
+        cobraInterfaces = CobraInterfaces(web3, "./cobra.yaml")
+
+        class CollectionInterfaces:
+            _web3 = web3
+            _ethereum_tester = ethereum_tester
+            compiled_interfaces = cobraInterfaces.get_interfaces()
+
+        try:
+            read_yaml = self.file_reader("./cobra.yaml")
+            load_yaml = self.yaml_loader(read_yaml)
+            test_yaml = load_yaml['test']
+            try:
+                test_paths = test_yaml['test_paths']
+                for test_path in test_paths:
+                    test_loader = unittest.defaultTestLoader.discover(
+                        Path(test_path).resolve(), pattern='*_test.py', top_level_dir=Path(test_path).resolve())
+                    for all_test_suite in test_loader:
+                        for test_suites in all_test_suite:
+                            for test_suite in test_suites:
+                                test_case_classes.append(test_suite.__class__)
+
+                for test_case_class in list(set(test_case_classes)):
+                    suite.addTest(CobraTest.cobra(test_case_class, collectionInterfaces=CollectionInterfaces()))
+                # Rub Unittest
+                unittest.TextTestRunner(verbosity=2).run(suite)
+
+            except KeyError:
+                self.cobra_print("[ERROR] Cobra: Can't find test_paths in test", "error", bold=True)
+                sys.exit()
+
+        except KeyError:
+            self.cobra_print("[ERROR] Cobra: Can't find test in cobra.yaml", "error", bold=True)
+            sys.exit()
 
 
 
