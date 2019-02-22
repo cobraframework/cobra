@@ -94,3 +94,20 @@ class CobraCompile:
             return False
         return False
 
+    def to_compile(self, file_path_sol, allow_paths=None, import_remappings=None):
+        if allow_paths is None:
+            allow_paths = str(os.getcwd())
+        if import_remappings is None:
+            import_remappings = []
+        solidity_contract = self.file_reader(file_path_sol)
+        compiled_sol = compile_source(solidity_contract, allow_paths=allow_paths, import_remappings=import_remappings)
+        contract_interface = compiled_sol['<stdin>:' + basename(file_path_sol)[:-4]]
+        contract_interface['bin'] = self.bytecode_link_to_md5(contract_interface['bin'], contract_interface)
+        contract_interface['bin-runtime'] = self.bytecode_link_to_md5(
+            contract_interface['bin-runtime'], contract_interface)
+        contractName = """{\n "contractName": "%s",}""" % basename(file_path_sol)[:-4]
+        artifact = web3.Web3().toText(dumps(contract_interface, indent=1).encode())
+        artifact_contract_interface = "{%s}" % (self.strip(contractName) +
+                                                self.strip(artifact)[:-1] +
+                                                self.strip(self.network))
+        return artifact_contract_interface
