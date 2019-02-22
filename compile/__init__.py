@@ -46,6 +46,23 @@ class CobraCompile:
             write_file.close()
             return
 
+    def bytecode_link_to_md5(self, bytecode, contract_interface):
+        count = 0
+        contract_bytecode = []
+        split_bytecode = re.split('__+', bytecode)
+        files = self.bytecode_link_from_file(contract_interface)
+        for index, contract in enumerate(split_bytecode):
+            if len(contract) < 40 and (index % 2) != 0:
+                underscore = "_"
+                link_bytecode = 40
+                file = "__" + str(files[count])
+                length_of_file = len(file)
+                contract_name = file + ((link_bytecode - length_of_file) * underscore)
+                contract_bytecode.append(contract_name)
+                count = count + 1
+            else:
+                contract_bytecode.append(contract)
+        return "".join(contract_bytecode)
 
 
 
