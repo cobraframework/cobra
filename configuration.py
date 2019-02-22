@@ -374,7 +374,25 @@ class CobraConfiguration:
         try:
             if network_yaml['development']:
                 try:
-                    if network_yaml['development']['host']:
+                    if network_yaml['development']['host'] or network_yaml['development']['url']:
+
+
+                        try:
+                            if network_yaml['development']['host']:
+                                try:
+                                    if network_yaml['development']['port']:
+                                        return dict(
+                                            host=network_yaml['development']['host'],
+                                            port=network_yaml['development']['port']
+                                        )
+                                except KeyError:
+                                    self.cobra_print("[ERROR] Cobra: There is no port in development.", "error",
+                                                     bold=True)
+                                    sys.exit()
+                        except KeyError:
+                            pass
+
+
                         try:
                             if network_yaml['development']['port']:
                                 return dict(
@@ -382,10 +400,51 @@ class CobraConfiguration:
                                     port=network_yaml['development']['port']
                                 )
                         except KeyError:
-                            self.cobra_print("[ERROR] Cobra: There is no port in development.", "error", bold=True)
-                            sys.exit()
+                            pass
+
+
+                        try:
+                            if network_yaml['development']['protocol']:
+                                return dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                        except KeyError:
+                            pass
+
+
+                        try:
+                            if network_yaml['development']['hdwallet']:
+                                return dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                        except KeyError:
+                            pass
+
+
+                        try:
+                            if network_yaml['development']['account']:
+                                return dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                        except KeyError:
+                            pass
+
+
+                        try:
+                            if network_yaml['development']['gas']:
+                                return dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                        except KeyError:
+                            pass
+
+
                 except KeyError:
-                    self.cobra_print("[ERROR] Cobra: There is no host in development.", "error", bold=True)
+                    self.cobra_print("[ERROR] Cobra: There is no host/url in development.", "error", bold=True)
                     sys.exit()
         except KeyError:
             self.cobra_print("[ERROR] Cobra: Can't find development in network [cobra.yaml]", "error", bold=True)
