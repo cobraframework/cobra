@@ -381,6 +381,7 @@ class CobraConfiguration:
                             if network_yaml['development']['host']:
                                 try:
                                     if network_yaml['development']['port']:
+                                        self.hdwallet(network_yaml['development']['hdwallet'])
                                         return dict(
                                             host=network_yaml['development']['host'],
                                             port=network_yaml['development']['port']
@@ -485,3 +486,43 @@ class CobraConfiguration:
                              bold=True)
             sys.exit()
         return tests
+
+    def hdwallet(self, hdwallet_yaml):
+        if 'mnemonic' in hdwallet_yaml or \
+                'seed' in hdwallet_yaml or \
+                'private' in hdwallet_yaml:
+            # returns Mnemonic and Password
+            if 'mnemonic' in hdwallet_yaml and 'password' in hdwallet_yaml:
+                self.cobra_print('mnemonic and password')
+                return dict(
+                    mnemonic=hdwallet_yaml['mnemonic'],
+                    password=hdwallet_yaml['password']
+                )
+            # returns Mnemonic
+            elif 'mnemonic' in hdwallet_yaml:
+                self.cobra_print('mnemonic')
+                return dict(
+                    mnemonic=hdwallet_yaml['mnemonic']
+                )
+            # returns Mnemonic (Seed is alias Mnemonic) and Password
+            if 'seed' in hdwallet_yaml and 'password' in hdwallet_yaml:
+                self.cobra_print('seed and password')
+                return dict(
+                    mnemonic=hdwallet_yaml['seed'],
+                    password=hdwallet_yaml['password']
+                )
+            # returns Mnemonic (Seed is alias Mnemonic)
+            elif 'seed' in hdwallet_yaml:
+                self.cobra_print('seed')
+                return dict(
+                    mnemonic=hdwallet_yaml['seed']
+                )
+            # returns Private Key
+            if 'private' in hdwallet_yaml:
+                self.cobra_print('private')
+                return dict(
+                    private=hdwallet_yaml['private']
+                )
+        else:
+            self.cobra_print("[ERROR] Cobra: There is no mnemonic(seed)/private in hdwallet.", "error", bold=True)
+            sys.exit()
