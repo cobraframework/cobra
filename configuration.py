@@ -335,7 +335,40 @@ class CobraConfiguration:
             sys.exit()
         return compiles
 
-
+    def deploy(self, deploy_yaml):
+        deploys = []
+        try:
+            if deploy_yaml['artifact_path_dir'] and deploy_yaml['contracts']:
+                for contract in deploy_yaml['contracts']:
+                    try:
+                        if contract['contract']['artifact']:
+                            try:
+                                if contract['contract']['links']:
+                                    deploys.append(dict(
+                                        artifact_path_dir=deploy_yaml['artifact_path_dir'],
+                                        artifact=contract['contract']['artifact'],
+                                        links=contract['contract']['links']
+                                    ))
+                                elif not contract['contract']['links']:
+                                    deploys.append(dict(
+                                        artifact_path_dir=deploy_yaml['artifact_path_dir'],
+                                        artifact=contract['contract']['artifact'],
+                                        links=None
+                                    ))
+                                    continue
+                            except KeyError:
+                                deploys.append(dict(
+                                    artifact_path_dir=deploy_yaml['artifact_path_dir'],
+                                    artifact=contract['contract']['artifact'],
+                                    links=None
+                                ))
+                    except KeyError:
+                        self.cobra_print("[ERROR] Cobra: There is no artifact in contract.", "error", bold=True)
+                        sys.exit()
+        except KeyError:
+            self.cobra_print("[ERROR] Cobra: Can't find artifact_path_dir or contracts in deploy [cobra.yaml]", "error", bold=True)
+            sys.exit()
+        return deploys
 
 
 
