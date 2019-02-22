@@ -370,6 +370,25 @@ class CobraConfiguration:
             sys.exit()
         return deploys
 
-
+    def network(self, network_yaml):
+        try:
+            if network_yaml['development']:
+                try:
+                    if network_yaml['development']['host']:
+                        try:
+                            if network_yaml['development']['port']:
+                                return dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                        except KeyError:
+                            self.cobra_print("[ERROR] Cobra: There is no port in development.", "error", bold=True)
+                            sys.exit()
+                except KeyError:
+                    self.cobra_print("[ERROR] Cobra: There is no host in development.", "error", bold=True)
+                    sys.exit()
+        except KeyError:
+            self.cobra_print("[ERROR] Cobra: Can't find development in network [cobra.yaml]", "error", bold=True)
+            sys.exit()
 
 
