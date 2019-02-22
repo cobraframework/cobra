@@ -75,5 +75,22 @@ class CobraCompile:
                 continue
         return files
 
-
+    def is_compiled(self, file_path, contract_interface):
+        try:
+            with open(file_path, 'r') as read_file:
+                return_file = read_file.read()
+                try:
+                    contract_interface_file = loads(return_file)['bin']
+                except json.decoder.JSONDecodeError:
+                    return False
+                contract_interface_compiled = loads(contract_interface)['bin']
+                if contract_interface_compiled == contract_interface_file:
+                    read_file.close()
+                    return True
+                read_file.close()
+        except KeyError:
+            return False
+        except FileNotFoundError:
+            return False
+        return False
 
