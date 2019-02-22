@@ -77,3 +77,17 @@ class CobraTester:
     def mine_blocks(self, number=1):
         self.ethereum_tester.mine_blocks(number)
 
+
+class CobraFailureHandler:
+    def __init__(self, eth_tester):
+        self.eth_tester = eth_tester
+
+    def __enter__(self):
+        self.snapshot_id = self.eth_tester.take_snapshot()
+        return self.snapshot_id
+
+    def __exit__(self, *args):
+        assert len(args) > 0 and \
+               args[0] is TransactionFailed, "Didn't revert transaction."
+        self.eth_tester.revert_to_snapshot(self.snapshot_id)
+        return True
