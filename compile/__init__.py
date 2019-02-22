@@ -64,7 +64,16 @@ class CobraCompile:
                 contract_bytecode.append(contract)
         return "".join(contract_bytecode)
 
-
+    def bytecode_link_from_file(self, contract_interface):
+        files = []
+        children = contract_interface['ast']['children']
+        for attributes in children:
+            try:
+                file = attributes['attributes']['file']
+                files.append(basename(file)[:-4])
+            except KeyError:
+                continue
+        return files
 
 
 
