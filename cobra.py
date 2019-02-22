@@ -155,7 +155,37 @@ class CobraFramework(CobraConfiguration):
             self.cobra_print("[ERROR] Cobra: Can't find compile in cobra.yaml", "error", bold=True)
             sys.exit()
 
-
+    def CobraDeploy(self):
+        try:
+            read_yaml = self.file_reader("./cobra.yaml")
+            load_yaml = self.yaml_loader(read_yaml)
+            deploy_yaml = load_yaml['deploy']
+            configurations_yaml = self.deploy(deploy_yaml)
+            for configuration_yaml in configurations_yaml:
+                if configuration_yaml['links'] is None:
+                    artifact_path_json = join(configuration_yaml['artifact_path_dir'], configuration_yaml['artifact'])
+                    artifact_json = self.cobraDeploy.deploy_with_out_link(
+                        configuration_yaml['artifact_path_dir'],
+                        configuration_yaml['artifact'])
+                    if artifact_json is not None:
+                        self.cobraDeploy.file_writer(artifact_path_json, str(artifact_json))
+                        self.cobra_print("[SUCCESS] Cobra: Deploying %s" %
+                                         str(configuration_yaml['artifact'])[:-5], "success", bold=True)
+                    continue
+                else:
+                    artifact_path_json = join(configuration_yaml['artifact_path_dir'], configuration_yaml['artifact'])
+                    artifact_json = self.cobraDeploy.deploy_with_link(
+                        configuration_yaml['artifact_path_dir'],
+                        configuration_yaml['artifact'],
+                        configuration_yaml['links'])
+                    if artifact_json is not None:
+                        self.cobraDeploy.file_writer(artifact_path_json, str(artifact_json))
+                        self.cobra_print("[SUCCESS] Cobra: Deploying %s" %
+                                         str(configuration_yaml['artifact'])[:-5], "success", bold=True)
+                    continue
+        except KeyError:
+            self.cobra_print("[ERROR] Cobra: Can't find deploy in cobra.yaml", "error", bold=True)
+            sys.exit()
 
 
 
