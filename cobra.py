@@ -286,3 +286,6 @@ class CobraFramework(CobraConfiguration):
             sys.exit()
 
 
+if __name__ == "__main__":
+    cobraFramework = CobraFramework()
+    cobraFramework.CobraArgumentParser(sys.argv[1:])
