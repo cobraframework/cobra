@@ -1,0 +1,66 @@
+compile:
+  solidity_path_dir: "./examples"
+  artifact_path_dir: "./build/contracts"
+  contracts: [
+      contract: {
+          solidity: "ConvertLib.sol",
+          solidity_path_dir: "/home/meheret/"
+      },
+      contract: {
+          solidity: "Mercy.sol"
+      },
+      contract: {
+          solidity: "MetaCoin.sol",
+          remappings: [],
+          links_path_dir: ["/home/meheret"]
+      }
+    ]
+
+deploy:
+  artifact_path_dir: "./build/contracts/"
+  contracts: [
+    contract: {
+        artifact: "ConvertLib.json"
+    },
+    contract: {
+        artifact: "Mercy.json"
+    },
+    contract: {
+        artifact: "MetaCoin.json",
+        links: ["Mercy.json", "ConvertLib.json"]
+    }
+  ]
+
+test:
+  artifact_path_dir: "./build/contracts/"
+  test_paths: ["./", "./examples"]
+  contracts: [
+    contract: {
+        artifact: "ConvertLib.json"
+    },
+    contract: {
+        artifact: "Mercy.json"
+    },
+    contract: {
+        artifact: "MetaCoin.json",
+        links: ["ConvertLib.json", "Mercy.json"]
+    }
+  ]
+
+network:
+  development: {
+      url: "localhost_url",
+#      host: "localhost_host",
+#      port: 8545,
+#      hdwallet: {
+#          mnemonic: "meheret tesfaye batu bayu",
+#          seed: "meheret tesfaye batu bayu",
+#          password: "meherett",
+#          private: "e6n78612nasdh78askrnl9"
+#      },
+      protocol: "HTTP",
+#      account: {
+#        address: "0xm35435nm",
+#        gas: "3000000"
+#      }
+  }
