@@ -391,4 +391,38 @@ class CobraConfiguration:
             self.cobra_print("[ERROR] Cobra: Can't find development in network [cobra.yaml]", "error", bold=True)
             sys.exit()
 
-
+    def test(self, test_yaml):
+        tests = []
+        try:
+            if test_yaml['artifact_path_dir'] and test_yaml['contracts']:
+                for contract in test_yaml['contracts']:
+                    try:
+                        if contract['contract']['artifact']:
+                            try:
+                                if contract['contract']['links']:
+                                    tests.append(dict(
+                                        artifact_path_dir=test_yaml['artifact_path_dir'],
+                                        artifact=contract['contract']['artifact'],
+                                        links=contract['contract']['links']
+                                    ))
+                                elif not contract['contract']['links']:
+                                    tests.append(dict(
+                                        artifact_path_dir=test_yaml['artifact_path_dir'],
+                                        artifact=contract['contract']['artifact'],
+                                        links=None
+                                    ))
+                                    continue
+                            except KeyError:
+                                tests.append(dict(
+                                    artifact_path_dir=test_yaml['artifact_path_dir'],
+                                    artifact=contract['contract']['artifact'],
+                                    links=None
+                                ))
+                    except KeyError:
+                        self.cobra_print("[ERROR] Cobra: There is no artifact in contract.", "error", bold=True)
+                        sys.exit()
+        except KeyError:
+            self.cobra_print("[ERROR] Cobra: Can't find artifact_path_dir or contracts in test [cobra.yaml]", "error",
+                             bold=True)
+            sys.exit()
+        return tests
