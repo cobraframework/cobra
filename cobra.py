@@ -105,3 +105,55 @@ class CobraFramework(CobraConfiguration):
         else:
             return color_print(text, bold=bold, highlighter=background, underline=underline)
 
+    def CobraCompile(self):
+        try:
+            read_yaml = self.file_reader("./cobra.yaml")
+            load_yaml = self.yaml_loader(read_yaml)
+            compile_yaml = load_yaml['compile']
+            configurations_yaml = self.compile(compile_yaml)
+            for configuration_yaml in configurations_yaml:
+                remappings = configuration_yaml['remappings']
+                file_path_sol = join(configuration_yaml['solidity_path_dir'], configuration_yaml['solidity'])
+                if configuration_yaml['links_path_dir'] is None:
+                    cobra_compiled = self.cobraCompile.to_compile(file_path_sol, None, remappings)
+
+                    if not isdir(configuration_yaml['artifact_path_dir']):
+                        makedirs(configuration_yaml['artifact_path_dir'])
+                    artifact_path_json = join(configuration_yaml['artifact_path_dir'],
+                                              str(configuration_yaml['solidity'])[:-4] + ".json")
+
+                    if self.cobraCompile.is_compiled(artifact_path_json, cobra_compiled):
+                        self.cobra_print("[WARNING] Cobra: Already compiled in %s" %
+                                         artifact_path_json, "warning", bold=True)
+                        continue
+                    self.cobraCompile.file_writer(artifact_path_json, str(cobra_compiled))
+                    self.cobra_print("[SUCCESS] Cobra: Compiled %s" %
+                                     artifact_path_json, "success", bold=True)
+                else:
+                    links_path_dir = str(os.getcwd())
+                    for allow_path in configuration_yaml['links_path_dir']:
+                        if str(allow_path) == "":
+                            links_path_dir = str(os.getcwd())
+                        else:
+                            links_path_dir = links_path_dir + "," + str(allow_path)
+
+                    cobra_compiled = self.cobraCompile.to_compile(file_path_sol, links_path_dir, remappings)
+
+                    if not isdir(configuration_yaml['artifact_path_dir']):
+                        makedirs(configuration_yaml['artifact_path_dir'])
+                    artifact_path_json = join(configuration_yaml['artifact_path_dir'],
+                                              str(configuration_yaml['solidity'])[:-4] + ".json")
+
+                    if self.cobraCompile.is_compiled(artifact_path_json, cobra_compiled):
+                        self.cobra_print("[WARNING] Cobra: Already compiled in %s" %
+                                         artifact_path_json, "warning", bold=True)
+                        continue
+                    self.cobraCompile.file_writer(artifact_path_json, str(cobra_compiled))
+                    self.cobra_print("[SUCCESS] Cobra: Compiling %s" %
+                                     artifact_path_json, "success", bold=True)
+        except KeyError:
+            self.cobra_print("[ERROR] Cobra: Can't find compile in cobra.yaml", "error", bold=True)
+            sys.exit()
+
+
+
