@@ -243,5 +243,46 @@ class CobraFramework(CobraConfiguration):
             self.cobra_print("[ERROR] Cobra: Can't find test in cobra.yaml", "error", bold=True)
             sys.exit()
 
+    def CobraPyTest(self):
+        pytest = False
+        pytest_cobra = False
+        installed_packages = pkg_resources.working_set
+        package_keys = sorted(['%s' % installed_package.key
+                               for installed_package in installed_packages])
+        for package_key in package_keys:
+            if package_key == 'pytest':
+                pytest = True
+            elif package_key == 'pytest-cobra':
+                pytest_cobra = True
+            else:
+                pass
+
+        if not pytest:
+            self.cobra_print('Please install pytest framework "pip install pytest"',
+                             "error", bold=True)
+            sys.exit()
+        elif not pytest_cobra:
+            self.cobra_print('Please install pytest plugin "pip install pytest-cobra"',
+                             "error", bold=True)
+            sys.exit()
+        try:
+            read_yaml = self.file_reader("./cobra.yaml")
+            load_yaml = self.yaml_loader(read_yaml)
+            test_yaml = load_yaml['test']
+            try:
+                _test = ['--cobra', 'cobra.yaml']
+                test_paths = test_yaml['test_paths']
+                for test_path in test_paths:
+                    tests = glob(join(Path(test_path).resolve(), "*_test.py"))
+                    for test in tests:
+                        _test.append(test)
+                __import__("pytest").main(_test)
+            except KeyError:
+                self.cobra_print("[ERROR] Cobra: Can't find test_paths in test", "error", bold=True)
+                sys.exit()
+
+        except KeyError:
+            self.cobra_print("[ERROR] Cobra: Can't find test in cobra.yaml", "error", bold=True)
+            sys.exit()
 
 
