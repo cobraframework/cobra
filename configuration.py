@@ -370,87 +370,6 @@ class CobraConfiguration:
             sys.exit()
         return deploys
 
-    def network(self, network_yaml):
-        try:
-            if network_yaml['development']:
-                try:
-                    if network_yaml['development']['host'] or network_yaml['development']['url']:
-
-
-                        try:
-                            if network_yaml['development']['host']:
-                                try:
-                                    if network_yaml['development']['port']:
-                                        self.hdwallet(network_yaml['development']['hdwallet'])
-                                        return dict(
-                                            host=network_yaml['development']['host'],
-                                            port=network_yaml['development']['port']
-                                        )
-                                except KeyError:
-                                    self.cobra_print("[ERROR] Cobra: There is no port in development.", "error",
-                                                     bold=True)
-                                    sys.exit()
-                        except KeyError:
-                            pass
-
-
-                        try:
-                            if network_yaml['development']['port']:
-                                return dict(
-                                    host=network_yaml['development']['host'],
-                                    port=network_yaml['development']['port']
-                                )
-                        except KeyError:
-                            pass
-
-
-                        try:
-                            if network_yaml['development']['protocol']:
-                                return dict(
-                                    host=network_yaml['development']['host'],
-                                    port=network_yaml['development']['port']
-                                )
-                        except KeyError:
-                            pass
-
-
-                        try:
-                            if network_yaml['development']['hdwallet']:
-                                return dict(
-                                    host=network_yaml['development']['host'],
-                                    port=network_yaml['development']['port']
-                                )
-                        except KeyError:
-                            pass
-
-
-                        try:
-                            if network_yaml['development']['account']:
-                                return dict(
-                                    host=network_yaml['development']['host'],
-                                    port=network_yaml['development']['port']
-                                )
-                        except KeyError:
-                            pass
-
-
-                        try:
-                            if network_yaml['development']['gas']:
-                                return dict(
-                                    host=network_yaml['development']['host'],
-                                    port=network_yaml['development']['port']
-                                )
-                        except KeyError:
-                            pass
-
-
-                except KeyError:
-                    self.cobra_print("[ERROR] Cobra: There is no host/url in development.", "error", bold=True)
-                    sys.exit()
-        except KeyError:
-            self.cobra_print("[ERROR] Cobra: Can't find development in network [cobra.yaml]", "error", bold=True)
-            sys.exit()
-
     def test(self, test_yaml):
         tests = []
         try:
@@ -487,42 +406,211 @@ class CobraConfiguration:
             sys.exit()
         return tests
 
+    def account(self, account_yaml):
+        if 'address' in account_yaml:
+            if 'gas' in account_yaml:
+                return dict(
+                    address=account_yaml['address'],
+                    gas=account_yaml['gas']
+                )
+            else:
+                return dict(
+                    address=account_yaml['address']
+                )
+        elif 'gas' in account_yaml:
+            return dict(
+                gas=account_yaml['gas']
+            )
+        else:
+            self.cobra_print("[ERROR] Cobra: There is no address/gas in account.", "error", bold=True)
+            sys.exit()
+
     def hdwallet(self, hdwallet_yaml):
         if 'mnemonic' in hdwallet_yaml or \
                 'seed' in hdwallet_yaml or \
                 'private' in hdwallet_yaml:
             # returns Mnemonic and Password
             if 'mnemonic' in hdwallet_yaml and 'password' in hdwallet_yaml:
-                self.cobra_print('mnemonic and password')
                 return dict(
                     mnemonic=hdwallet_yaml['mnemonic'],
                     password=hdwallet_yaml['password']
                 )
             # returns Mnemonic
             elif 'mnemonic' in hdwallet_yaml:
-                self.cobra_print('mnemonic')
                 return dict(
                     mnemonic=hdwallet_yaml['mnemonic']
                 )
             # returns Mnemonic (Seed is alias Mnemonic) and Password
             if 'seed' in hdwallet_yaml and 'password' in hdwallet_yaml:
-                self.cobra_print('seed and password')
                 return dict(
                     mnemonic=hdwallet_yaml['seed'],
                     password=hdwallet_yaml['password']
                 )
             # returns Mnemonic (Seed is alias Mnemonic)
             elif 'seed' in hdwallet_yaml:
-                self.cobra_print('seed')
                 return dict(
                     mnemonic=hdwallet_yaml['seed']
                 )
             # returns Private Key
             if 'private' in hdwallet_yaml:
-                self.cobra_print('private')
                 return dict(
                     private=hdwallet_yaml['private']
                 )
         else:
             self.cobra_print("[ERROR] Cobra: There is no mnemonic(seed)/private in hdwallet.", "error", bold=True)
+            sys.exit()
+
+    def network(self, network_yaml):
+        if 'development' in network_yaml:
+            if 'host' in network_yaml['development'] or \
+                    'url' in network_yaml['development']:
+                if 'host' in network_yaml['development']:
+                    if 'port' in network_yaml['development']:
+                        # Protocol
+                        if 'protocol' in network_yaml['development']:
+
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                        # No Protocol
+                        else:
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                    else:
+                        self.cobra_print("[ERROR] Cobra: There is no port in %s when you are using host."
+                                         % 'development', "error", bold=True)
+                        sys.exit()
+                elif 'url' in network_yaml['development']:
+                    # Port
+                    if 'port' in network_yaml['development']:
+                        # Protocol
+                        if 'protocol' in network_yaml['development']:
+
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                        # No Protocol
+                        else:
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port']
+                                )
+                    # No Port
+                    else:
+                        # Protocol
+                        if 'protocol' in network_yaml['development']:
+
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    url=network_yaml['development']['url'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                        # No Protocol
+                        else:
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    url=network_yaml['development']['url']
+                                )
+            else:
+                self.cobra_print("[ERROR] Cobra: There is no host/url in %s." % 'development',
+                                 "error", bold=True)
+                sys.exit()
+        else:
+            self.cobra_print("[ERROR] Cobra: There is no development in network.", "error", bold=True)
             sys.exit()
