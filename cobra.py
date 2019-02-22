@@ -187,6 +187,17 @@ class CobraFramework(CobraConfiguration):
             self.cobra_print("[ERROR] Cobra: Can't find deploy in cobra.yaml", "error", bold=True)
             sys.exit()
 
+    def CobraNetwork(self):
+        try:
+            read_yaml = self.file_reader("./cobra.yaml")
+            load_yaml = self.yaml_loader(read_yaml)
+            network_yaml = load_yaml['network']
+            configuration_yaml = self.network(network_yaml)
+            return configuration_yaml
+        except KeyError:
+            self.cobra_print("[ERROR] Cobra: Can't find network in cobra.yaml", "error", bold=True)
+            sys.exit()
+
 
 
 
