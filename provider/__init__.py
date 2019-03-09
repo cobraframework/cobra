@@ -1,9 +1,13 @@
 from lazyme.string import color_print
+from web3 import Web3, HTTPProvider
 import pkg_resources
 import sys
 
 
 class CobraNetwork:
+
+    def __init__(self):
+        self.protocol = 'HTTP'
 
     def __int__(self, cobraNetwork):
         self.cobraNetwork = cobraNetwork
@@ -20,29 +24,6 @@ class CobraNetwork:
             return color_print(text, bold=bold, highlighter=background, underline=underline)
 
     def main(self):
-        # Host/Url
-        if 'host' in self.cobraNetwork and \
-                'port' in self.cobraNetwork:
-            pass
-        elif 'url' in self.cobraNetwork:
-            pass
-
-        # Protocol HTTP, WS or ICP
-        if 'protocol' in self.cobraNetwork:
-            if 'HTTP' == self.cobraNetwork['protocol'] or \
-                    'http' == self.cobraNetwork['protocol']:
-                pass
-            elif 'HTTPS' == self.cobraNetwork['protocol'] or \
-                    'https' == self.cobraNetwork['protocol']:
-                    pass
-            elif 'WS' == self.cobraNetwork['protocol'] or \
-                    'ws' == self.cobraNetwork['protocol']:
-                    pass
-            elif 'ICP' == self.cobraNetwork['protocol'] or \
-                    'icp' == self.cobraNetwork['protocol']:
-                    pass
-        else:
-            pass
 
         # Account
         if 'account' in self.cobraNetwork:
@@ -78,3 +59,38 @@ class CobraNetwork:
                 self.cobra_print(error_message,
                                  "error", bold=True)
             sys.exit()
+
+    def getProtocol(self):
+        # Protocol HTTP, WS or ICP
+        if 'protocol' in self.cobraNetwork:
+            if 'HTTP' == self.cobraNetwork['protocol'] or \
+                    'http' == self.cobraNetwork['protocol']:
+                self.protocol = 'HTTP'
+            elif 'HTTPS' == self.cobraNetwork['protocol'] or \
+                    'https' == self.cobraNetwork['protocol']:
+                self.protocol = 'HTTPS'
+            elif 'WS' == self.cobraNetwork['protocol'] or \
+                    'ws' == self.cobraNetwork['protocol']:
+                self.protocol = 'WS'
+            elif 'ICP' == self.cobraNetwork['protocol'] or \
+                    'icp' == self.cobraNetwork['protocol']:
+                self.protocol = 'ICP'
+            else:
+                self.protocol = 'HTTP'
+        else:
+            pass
+
+    # Host/Url
+    def network(self):
+        self.getProtocol()
+        if 'host' in self.cobraNetwork and \
+                'port' in self.cobraNetwork:
+            if not self.host.startswith("http://") or not self.host.startswith("https://"):
+                self.host = "http://" + str(self.host)
+            httpProvider = HTTPProvider(self.host + ":" + str(self.port))
+            Web3Instance = Web3(httpProvider)
+        elif 'url' in self.cobraNetwork:
+            if 'port' in self.cobraNetwork:
+                pass
+            else:
+                pass
