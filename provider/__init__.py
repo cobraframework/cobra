@@ -1,5 +1,5 @@
 from lazyme.string import color_print
-from web3 import Web3, HTTPProvider
+from web3 import Web3, HTTPProvider, WebsocketProvider, IPCProvider
 import pkg_resources
 import sys
 
@@ -39,23 +39,31 @@ class CobraProvider:
                                  "error", bold=True)
             sys.exit()
 
-    # Protocol HTTP, WS or ICP
-    def get_protocol(self):
+    # Provider HTTP, WS or ICP
+    def get_provider(self):
         if 'protocol' in self.cobraNetwork:
             if 'HTTP' == self.cobraNetwork['protocol'] or \
                     'http' == self.cobraNetwork['protocol']:
-                return 'HTTP'
+                if not self.get_url_host_port().startswith("http://"):
+                    return HTTPProvider(str("http://") + self.get_url_host_port())
+                return HTTPProvider(self.get_url_host_port())
             elif 'HTTPS' == self.cobraNetwork['protocol'] or \
                     'https' == self.cobraNetwork['protocol']:
-                return 'HTTPS'
+                if not self.get_url_host_port().startswith("https://"):
+                    return HTTPProvider(str("https://") + self.get_url_host_port())
+                return HTTPProvider(self.get_url_host_port())
             elif 'WS' == self.cobraNetwork['protocol'] or \
                     'ws' == self.cobraNetwork['protocol']:
-                return 'WS'
+                if not self.get_url_host_port().startswith("ws://"):
+                    return WebsocketProvider(str("ws://") + self.get_url_host_port())
+                return WebsocketProvider(self.get_url_host_port())
             elif 'ICP' == self.cobraNetwork['protocol'] or \
                     'icp' == self.cobraNetwork['protocol']:
-                return 'ICP'
+                return IPCProvider(self.get_url_host_port())
             else:
-                return 'HTTP'
+                if not self.get_url_host_port().startswith("http://"):
+                    return HTTPProvider(str("http://") + self.get_url_host_port())
+                return HTTPProvider(self.get_url_host_port())
 
     # Protocol HTTP, WS or ICP
     def get_url_host_port(self):
