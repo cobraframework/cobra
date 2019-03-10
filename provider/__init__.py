@@ -57,6 +57,16 @@ class CobraProvider:
             else:
                 return 'HTTP'
 
+    # Protocol HTTP, WS or ICP
+    def get_url_host_port(self):
+        if self.cobraNetwork['host'] and self.cobraNetwork['port']:
+            return str(self.cobraNetwork['host']) + ':' + str(self.cobraNetwork['port'])
+        if self.cobraNetwork['url']:
+            if self.cobraNetwork['port']:
+                return str(self.cobraNetwork['url']) + ':' + str(self.cobraNetwork['port'])
+            else:
+                return str(self.cobraNetwork['url'])
+            
     # Account
     def get_account(self):
         if 'account' in self.cobraNetwork:
@@ -109,6 +119,10 @@ class CobraProvider:
 
     # Host/Url
     def network(self):
+
+        if self.get_protocol():
+
+
         if 'host' in self.cobraNetwork and \
                 'port' in self.cobraNetwork:
             if not self.host.startswith("http://") or not self.host.startswith("https://"):
