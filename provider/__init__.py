@@ -21,18 +21,7 @@ class CobraProvider:
             return color_print(text, bold=bold, highlighter=background, underline=underline)
 
     def main(self):
-
-        # HDWallet
-        if 'hdwallet' in self.cobraNetwork:
-            self.package_checker('cobra_hdwallet',
-                                 'Please install Cobra HDWallet "pip install cobra-hdwallet"')
-            if 'mnemonic' in self.cobraNetwork['hdwallet']:
-                if 'password' in self.cobraNetwork['hdwallet']:
-                    pass
-                else:
-                    pass
-            elif 'private' in self.cobraNetwork['hdwallet']:
-                pass
+        pass
 
     # Package Checker
     def package_checker(self, package_name: str, error_message: str):
@@ -73,15 +62,53 @@ class CobraProvider:
         if 'account' in self.cobraNetwork:
             if 'address' in self.cobraNetwork['account']:
                 if 'gas' in self.cobraNetwork['account']:
-                    pass
+                    return dict(
+                        address=self.cobraNetwork['account']['address'],
+                        gas=self.cobraNetwork['account']['gas']
+                    )
                 else:
-                    pass
+                    return dict(
+                        address=self.cobraNetwork['account']['address']
+                    )
             elif 'gas' in self.cobraNetwork['account']:
-                pass
+                return dict(
+                    gas=self.cobraNetwork['account']['gas']
+                )
+
+    # HDWallet
+    def get_hdwallet(self):
+        if 'hdwallet' in self.cobraNetwork:
+            self.package_checker('cobra_hdwallet',
+                                 'Please install Cobra HDWallet "pip install cobra-hdwallet"')
+            if 'mnemonic' in self.cobraNetwork['hdwallet'] or \
+                    'seed' in self.cobraNetwork['hdwallet']:
+                if 'password' in self.cobraNetwork['hdwallet']:
+                    if 'mnemonic' in self.cobraNetwork['hdwallet']:
+                        return dict(
+                            mnemonic=self.cobraNetwork['hdwallet']['mnemonic'],
+                            password=self.cobraNetwork['hdwallet']['password']
+                        )
+                    elif 'seed' in self.cobraNetwork['hdwallet']:
+                        return dict(
+                            mnemonic=self.cobraNetwork['hdwallet']['seed'],
+                            password=self.cobraNetwork['hdwallet']['password']
+                        )
+                else:
+                    if 'mnemonic' in self.cobraNetwork['hdwallet']:
+                        return dict(
+                            mnemonic=self.cobraNetwork['hdwallet']['mnemonic']
+                        )
+                    elif 'seed' in self.cobraNetwork['hdwallet']:
+                        return dict(
+                            mnemonic=self.cobraNetwork['hdwallet']['seed']
+                        )
+            elif 'private' in self.cobraNetwork['hdwallet']:
+                return dict(
+                    private=self.cobraNetwork['hdwallet']['private']
+                )
 
     # Host/Url
     def network(self):
-        self.getProtocol()
         if 'host' in self.cobraNetwork and \
                 'port' in self.cobraNetwork:
             if not self.host.startswith("http://") or not self.host.startswith("https://"):
