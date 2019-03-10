@@ -8,7 +8,9 @@ class CobraProvider:
 
     def __int__(self, cobraNetwork):
         self.cobraNetwork = cobraNetwork
-        self.main()
+        self.web3 = self.get_web3()
+        self.account = self.get_account()
+        self.hdwallet = self.get_hdwallet()
 
     def cobra_print(self, text, color=None, bold=False, background=None, underline=False):
         if color == 'success':
@@ -20,8 +22,9 @@ class CobraProvider:
         else:
             return color_print(text, bold=bold, highlighter=background, underline=underline)
 
-    def main(self):
-        pass
+    # Get Web3 Instance
+    def get_web3(self):
+        return Web3(self.get_provider())
 
     # Package Checker
     def package_checker(self, package_name: str, error_message: str):
@@ -124,21 +127,3 @@ class CobraProvider:
                 return dict(
                     private=self.cobraNetwork['hdwallet']['private']
                 )
-
-    # Host/Url
-    def network(self):
-
-        if self.get_protocol():
-
-
-        if 'host' in self.cobraNetwork and \
-                'port' in self.cobraNetwork:
-            if not self.host.startswith("http://") or not self.host.startswith("https://"):
-                self.host = "http://" + str(self.host)
-            httpProvider = HTTPProvider(self.host + ":" + str(self.port))
-            Web3Instance = Web3(httpProvider)
-        elif 'url' in self.cobraNetwork:
-            if 'port' in self.cobraNetwork:
-                pass
-            else:
-                pass
