@@ -95,6 +95,8 @@ class CobraProvider:
                 return dict(
                     gas=self.cobraNetwork['account']['gas']
                 )
+        else:
+            return None
 
     # HDWallet
     def get_hdwallet(self):
@@ -127,3 +129,5 @@ class CobraProvider:
                 return dict(
                     private=self.cobraNetwork['hdwallet']['private']
                 )
+        else:
+            return None
