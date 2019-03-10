@@ -4,10 +4,7 @@ import pkg_resources
 import sys
 
 
-class CobraNetwork:
-
-    def __init__(self):
-        self.protocol = 'HTTP'
+class CobraProvider:
 
     def __int__(self, cobraNetwork):
         self.cobraNetwork = cobraNetwork
@@ -24,13 +21,6 @@ class CobraNetwork:
             return color_print(text, bold=bold, highlighter=background, underline=underline)
 
     def main(self):
-
-        # Account
-        if 'account' in self.cobraNetwork:
-            if 'address' in self.cobraNetwork['account']:
-                pass
-            elif 'gas' in self.cobraNetwork['account']:
-                pass
 
         # HDWallet
         if 'hdwallet' in self.cobraNetwork:
@@ -60,25 +50,34 @@ class CobraNetwork:
                                  "error", bold=True)
             sys.exit()
 
-    def getProtocol(self):
-        # Protocol HTTP, WS or ICP
+    # Protocol HTTP, WS or ICP
+    def get_protocol(self):
         if 'protocol' in self.cobraNetwork:
             if 'HTTP' == self.cobraNetwork['protocol'] or \
                     'http' == self.cobraNetwork['protocol']:
-                self.protocol = 'HTTP'
+                return 'HTTP'
             elif 'HTTPS' == self.cobraNetwork['protocol'] or \
                     'https' == self.cobraNetwork['protocol']:
-                self.protocol = 'HTTPS'
+                return 'HTTPS'
             elif 'WS' == self.cobraNetwork['protocol'] or \
                     'ws' == self.cobraNetwork['protocol']:
-                self.protocol = 'WS'
+                return 'WS'
             elif 'ICP' == self.cobraNetwork['protocol'] or \
                     'icp' == self.cobraNetwork['protocol']:
-                self.protocol = 'ICP'
+                return 'ICP'
             else:
-                self.protocol = 'HTTP'
-        else:
-            pass
+                return 'HTTP'
+
+    # Account
+    def get_account(self):
+        if 'account' in self.cobraNetwork:
+            if 'address' in self.cobraNetwork['account']:
+                if 'gas' in self.cobraNetwork['account']:
+                    pass
+                else:
+                    pass
+            elif 'gas' in self.cobraNetwork['account']:
+                pass
 
     # Host/Url
     def network(self):
