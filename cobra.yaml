@@ -49,18 +49,19 @@ test:
 
 network:
   development: {
-      url: "ws://localhost:8545",
-#      host: "localhost",
-#      port: 8545,
-#      hdwallet: {
+#      url: "localhost:8545",
+      host: "localhost",
+      port: 8545,
+      hdwallet: {
 #          mnemonic: "meheret tesfaye batu bayu",
 #          seed: "meheret tesfaye batu bayu",
 #          password: "meherett",
-#          private: "e6n78612nasdh78askrnl9"
-#      },
+          private: "603223a655005aed5294d0db4a7bc5095378e43e09cb4a1417c2650e949a4695",
+#          gas: 3000000
+      },
       protocol: "HTTP",
-      account: {
-        address: "0xm35435nm",
-        gas: "3000000"
-      }
+#      account: {
+#        address: "0x32c1965d6745c7bc6c97a02bd67e1963f93703fc",
+#        gas: 3000000
+#      }
   }
