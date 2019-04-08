@@ -11,12 +11,12 @@ from test import CobraTest
 from pathlib import Path
 from os import makedirs
 from glob import glob
-from web3 import Web3
-import pkg_resources
-import argparse
-import unittest
 import textwrap
+import pkg_resources
+from web3 import Web3
+import unittest
 import sys
+import argparse
 import os
 
 

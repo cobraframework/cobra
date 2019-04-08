@@ -49,7 +49,7 @@ test:
 
 network:
   development: {
-      url: "localhost:8545",
+      url: "ws://localhost:8545",
 #      host: "localhost",
 #      port: 8545,
 #      hdwallet: {
