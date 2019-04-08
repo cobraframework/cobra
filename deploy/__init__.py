@@ -115,6 +115,49 @@ class CobraDeploy(CobraProvider):
                 return
         return contract_name_and_address
 
+    def deploy_contract(self, contract):
+        if self.account is not None:
+            self.web3.personal.importRawKey(
+                self.account['private_key'], 'cobraframework')
+            if 'gas' in self.account:
+                transaction = {
+                    'from': self.web3.toChecksumAddress(self.account['address']),
+                    'gas': self.account['gas']
+                }
+                tx_hash = contract.deploy(transaction=transaction)
+                return tx_hash
+            else:
+                transaction = {
+                    'from': self.web3.toChecksumAddress(self.account['address']),
+                    'gas': 3000000
+                }
+                tx_hash = contract.deploy(transaction=transaction)
+                return tx_hash
+        elif self.hdwallet is not None:
+            self.web3.personal.importRawKey(
+                self.hdwallet['private_key'], 'cobraframework')
+            if 'gas' in self.hdwallet:
+                transaction = {
+                    'from': self.web3.toChecksumAddress(self.hdwallet['address']),
+                    'gas': self.hdwallet['gas']
+                }
+                tx_hash = contract.deploy(transaction=transaction)
+                return tx_hash
+            else:
+                transaction = {
+                    'from': self.web3.toChecksumAddress(self.hdwallet['address']),
+                    'gas': 3000000
+                }
+                tx_hash = contract.deploy(transaction=transaction)
+                return tx_hash
+        else:
+            transaction = {
+                'from': self.web3.eth.accounts[0],
+                'gas': 3000000
+            }
+            tx_hash = contract.deploy(transaction=transaction)
+            return tx_hash
+
     def deploy_with_link(self, dir_path, contract, links, account=None, gas=None):
         file_path = join(dir_path, contract)
         artifact_not_loads = self.file_reader(file_path)
@@ -132,10 +175,9 @@ class CobraDeploy(CobraProvider):
             linked_bytecode = link_code(unlinked_bytecode, get_link_address)
             try:
                 contract = self.web3.eth.contract(abi=abi, bytecode=linked_bytecode)
-                if account is None and gas is None:
-                    tx_hash = contract.deploy(transaction={'from': self.web3.eth.accounts[0], 'gas': 3000000})
-                else:
-                    tx_hash = contract.deploy(transaction={'from': self.web3.toChecksumAddress(account), 'gas': gas})
+
+                # Deploying contract and received transaction hash
+                tx_hash = self.deploy_contract(contract)
 
                 address = self.web3.eth.getTransactionReceipt(tx_hash)['contractAddress']
                 deployed = {
@@ -159,45 +201,6 @@ class CobraDeploy(CobraProvider):
         else:
             self.cobra_print("[WARNING] Conflict: Already Deployed." + contract[:-5], "warning", bold=True)
             return None
-
-    def deploy_contract(self, contract):
-        if self.account is not None:
-            if 'gas' in self.account:
-                transaction = {
-                    'from': self.web3.toChecksumAddress(self.account['address']),
-                    'gas': self.account['gas']
-                }
-                tx_hash = contract.deploy(transaction=transaction)
-                return tx_hash
-            else:
-                transaction = {
-                    'from': self.web3.toChecksumAddress(self.account['address']),
-                    'gas': 3000000
-                }
-                tx_hash = contract.deploy(transaction=transaction)
-                return tx_hash
-        elif self.hdwallet is not None:
-            if 'gas' in self.hdwallet:
-                transaction = {
-                    'from': self.web3.toChecksumAddress(self.hdwallet['address']),
-                    'gas': self.hdwallet['gas']
-                }
-                tx_hash = contract.deploy(transaction=transaction)
-                return tx_hash
-            else:
-                transaction = {
-                    'from': self.web3.toChecksumAddress(self.hdwallet['address']),
-                    'gas': 3000000
-                }
-                tx_hash = contract.deploy(transaction=transaction)
-                return tx_hash
-        else:
-            transaction = {
-                'from': self.web3.eth.accounts[0],
-                'gas': 3000000
-            }
-            tx_hash = contract.deploy(transaction=transaction)
-            return tx_hash
 
     def deploy_with_out_link(self, dir_path, contract):
         file_path = join(dir_path, contract)
