@@ -258,11 +258,11 @@ class CobraFramework(CobraConfiguration):
                 pass
 
         if not pytest:
-            self.cobra_print('Please install pytest framework "pip install pytest"',
+            self.cobra_print("[ERROR] PyTestNotFound: install pytest framework 'pip install pytest'!",
                              "error", bold=True)
             sys.exit()
         elif not pytest_cobra:
-            self.cobra_print('Please install pytest plugin "pip install pytest-cobra"',
+            self.cobra_print("[ERROR] PyTestCobraNotFound: install pytest-cobra 'pip install pytest-cobra'!",
                              "error", bold=True)
             sys.exit()
         try:
@@ -278,11 +278,11 @@ class CobraFramework(CobraConfiguration):
                         _test.append(test)
                 __import__("pytest").main(_test)
             except KeyError:
-                self.cobra_print("[ERROR] Cobra: Can't find test_paths in test", "error", bold=True)
+                self.cobra_print("[ERROR] CobraNotFound: Can't find test_paths in test", "error", bold=True)
                 sys.exit()
 
         except KeyError:
-            self.cobra_print("[ERROR] Cobra: Can't find test in cobra.yaml", "error", bold=True)
+            self.cobra_print("[ERROR] CobraNotFound: Can't find test in cobra.yaml", "error", bold=True)
             sys.exit()
 
 
