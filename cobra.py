@@ -1,23 +1,23 @@
-from web3.providers.eth_tester import EthereumTesterProvider
-from configuration import CobraConfiguration
 from test.interfaces import CobraInterfaces
-from lazyme.string import color_print
+from configuration import CobraConfiguration
 from eth_tester import EthereumTester
-from compile import CobraCompile
-from os.path import join, isdir
 from unittest import TestSuite
-from deploy import CobraDeploy
+from web3.providers.eth_tester import EthereumTesterProvider
 from test import CobraTest
+from deploy import CobraDeploy
+from lazyme.string import color_print
+from os.path import join, isdir
+import sys
 from pathlib import Path
 from os import makedirs
+from compile import CobraCompile
 from glob import glob
 import textwrap
 import pkg_resources
+import os
 from web3 import Web3
 import unittest
-import sys
 import argparse
-import os
 
 
 class CobraFramework(CobraConfiguration):
