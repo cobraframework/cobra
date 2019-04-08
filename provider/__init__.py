@@ -7,9 +7,6 @@ import sys
 
 class CobraProvider:
 
-    # def __init__(self):
-    #     pass
-
     def __int__(self, cobraNetwork):
         self.cobraNetwork = cobraNetwork
         self.web3 = self.get_web3()
@@ -101,7 +98,7 @@ class CobraProvider:
         else:
             return None
 
-    # HDWallet
+    # Get HDWallet
     def get_hdwallet(self):
         if 'hdwallet' in self.cobraNetwork:
             self.package_checker("cobra-hdwallet",
@@ -114,25 +111,90 @@ class CobraProvider:
                     if 'mnemonic' in self.cobraNetwork['hdwallet']:
                         created_hdwallet = hdWallet.create_hdwallet(
                             mnemonic=self.cobraNetwork['hdwallet']['mnemonic'],
-                            password=self.cobraNetwork['hdwallet']['password'])
-                        return created_hdwallet
+                            passphrase=self.cobraNetwork['hdwallet']['password'])
+                        if 'gas' in self.cobraNetwork['hdwallet']:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                                gas=self.cobraNetwork['hdwallet']['gas'],
+                            )
+                        else:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                            )
                     elif 'seed' in self.cobraNetwork['hdwallet']:
                         created_hdwallet = hdWallet.create_hdwallet(
                             mnemonic=self.cobraNetwork['hdwallet']['seed'],
-                            password=self.cobraNetwork['hdwallet']['password'])
-                        return created_hdwallet
+                            passphrase=self.cobraNetwork['hdwallet']['password'])
+                        if 'gas' in self.cobraNetwork['hdwallet']:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                                gas=self.cobraNetwork['hdwallet']['gas'],
+                            )
+                        else:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                            )
                 else:
                     if 'mnemonic' in self.cobraNetwork['hdwallet']:
                         created_hdwallet = hdWallet.create_hdwallet(
                             mnemonic=self.cobraNetwork['hdwallet']['mnemonic'])
-                        return created_hdwallet
+                        if 'gas' in self.cobraNetwork['hdwallet']:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                                gas=self.cobraNetwork['hdwallet']['gas'],
+                            )
+                        else:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                            )
                     elif 'seed' in self.cobraNetwork['hdwallet']:
                         created_hdwallet = hdWallet.create_hdwallet(
                             mnemonic=self.cobraNetwork['hdwallet']['seed'])
-                        return created_hdwallet
+                        if 'gas' in self.cobraNetwork['hdwallet']:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                                gas=self.cobraNetwork['hdwallet']['gas'],
+                            )
+                        else:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                            )
             elif 'private' in self.cobraNetwork['hdwallet']:
-                created_hdwallet = hdWallet.hdwallet_from_private(
-                    mnemonic=self.cobraNetwork['hdwallet']['private'])
-                return created_hdwallet
+                try:
+                    created_hdwallet = hdWallet.hdwallet_from_private(
+                        private=self.cobraNetwork['hdwallet']['private'])
+                    if 'gas' in self.cobraNetwork['hdwallet']:
+                        return dict(
+                            address=created_hdwallet['address'],
+                            public_key=created_hdwallet['public_key'],
+                            private_key=created_hdwallet['private_key'],
+                            gas=self.cobraNetwork['hdwallet']['gas'],
+                        )
+                    else:
+                        return dict(
+                            address=created_hdwallet['address'],
+                            public_key=created_hdwallet['public_key'],
+                            private_key=created_hdwallet['private_key'],
+                        )
+                except ValueError:
+                    self.cobra_print("[ERROR] CobraValueError: Bad private key, if length must be 64!",
+                                     "error", bold=True)
+                    sys.exit()
         else:
             return None
