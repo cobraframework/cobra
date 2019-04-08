@@ -7,6 +7,7 @@ import requests
 import random
 from os.path import join
 import sys
+import websockets
 from datetime import datetime
 
 
@@ -72,7 +73,17 @@ class CobraDeploy(CobraProvider):
                     continue
                 except requests.exceptions.ConnectionError:
                     self.cobra_print(
-                        "[ERROR] Cobra-HTTPConnectionPool '%s'" % (self.get_url_host_port()),
+                        "[ERROR] HTTP connection pool failed '%s'!" % (self.get_url_host_port()),
+                        "error", bold=True)
+                    sys.exit()
+                except websockets.exceptions.InvalidMessage:
+                    self.cobra_print(
+                        "[ERROR] WebSockets connection pool failed '%s'!" % (self.get_url_host_port()),
+                        "error", bold=True)
+                    sys.exit()
+                except FileNotFoundError:
+                    self.cobra_print(
+                        "[ERROR] ICP connection pool failed '%s'!" % (self.get_url_host_port()),
                         "error", bold=True)
                     sys.exit()
         except KeyError:
