@@ -1,10 +1,14 @@
 from lazyme.string import color_print
-from web3 import Web3, HTTPProvider, WebsocketProvider, IPCProvider
+from web3 import Web3, HTTPProvider, \
+    WebsocketProvider, IPCProvider
 import pkg_resources
 import sys
 
 
 class CobraProvider:
+
+    # def __init__(self):
+    #     pass
 
     def __int__(self, cobraNetwork):
         self.cobraNetwork = cobraNetwork
@@ -70,10 +74,10 @@ class CobraProvider:
 
     # Protocol HTTP, WS or ICP
     def get_url_host_port(self):
-        if self.cobraNetwork['host'] and self.cobraNetwork['port']:
+        if 'host' in self.cobraNetwork and 'port' in self.cobraNetwork:
             return str(self.cobraNetwork['host']) + ':' + str(self.cobraNetwork['port'])
-        if self.cobraNetwork['url']:
-            if self.cobraNetwork['port']:
+        if 'url' in self.cobraNetwork:
+            if 'port' in self.cobraNetwork:
                 return str(self.cobraNetwork['url']) + ':' + str(self.cobraNetwork['port'])
             else:
                 return str(self.cobraNetwork['url'])
