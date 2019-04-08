@@ -72,7 +72,7 @@ class CobraDeploy(CobraProvider):
                     continue
                 except requests.exceptions.ConnectionError:
                     self.cobra_print(
-                        "[ERROR] HTTPConnectionPool:'%s' failed!" % (self.get_url_host_port()),
+                        "[ERROR] HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
                         "error", bold=True)
                     sys.exit()
                 except websockets.exceptions.InvalidMessage:
@@ -157,10 +157,49 @@ class CobraDeploy(CobraProvider):
             except KeyError:
                 return None
         else:
-            self.cobra_print("[WARNING] Cobra: Already Deployed." + contract[:-5], "warning", bold=True)
+            self.cobra_print("[WARNING] Conflict: Already Deployed." + contract[:-5], "warning", bold=True)
             return None
 
-    def deploy_with_out_link(self, dir_path, contract, account=None, gas=None):
+    def deploy_contract(self, contract):
+        if self.account is not None:
+            if 'gas' in self.account:
+                transaction = {
+                    'from': self.web3.toChecksumAddress(self.account['address']),
+                    'gas': self.account['gas']
+                }
+                tx_hash = contract.deploy(transaction=transaction)
+                return tx_hash
+            else:
+                transaction = {
+                    'from': self.web3.toChecksumAddress(self.account['address']),
+                    'gas': 3000000
+                }
+                tx_hash = contract.deploy(transaction=transaction)
+                return tx_hash
+        elif self.hdwallet is not None:
+            if 'gas' in self.hdwallet:
+                transaction = {
+                    'from': self.web3.toChecksumAddress(self.hdwallet['address']),
+                    'gas': self.hdwallet['gas']
+                }
+                tx_hash = contract.deploy(transaction=transaction)
+                return tx_hash
+            else:
+                transaction = {
+                    'from': self.web3.toChecksumAddress(self.hdwallet['address']),
+                    'gas': 3000000
+                }
+                tx_hash = contract.deploy(transaction=transaction)
+                return tx_hash
+        else:
+            transaction = {
+                'from': self.web3.eth.accounts[0],
+                'gas': 3000000
+            }
+            tx_hash = contract.deploy(transaction=transaction)
+            return tx_hash
+
+    def deploy_with_out_link(self, dir_path, contract):
         file_path = join(dir_path, contract)
         contract_name = str(contract[:-5])
         artifact_not_loads = self.file_reader(file_path)
@@ -176,21 +215,10 @@ class CobraDeploy(CobraProvider):
             bytecode = artifact['bin']
             contract = self.web3.eth.contract(abi=abi, bytecode=bytecode)
 
-            # Deploying contract
-            if account is None and gas is None:
-                transaction = {
-                    'from': self.web3.eth.accounts[0],
-                    'gas': 3000000
-                }
-                tx_hash = contract.deploy(transaction=transaction)
-            else:
-                transaction = {
-                    'from': self.web3.toChecksumAddress(account),
-                    'gas': gas
-                }
-                tx_hash = contract.deploy(transaction=transaction)
+            # Deploying contract and received transaction hash
+            tx_hash = self.deploy_contract(contract)
 
-            address = self.web3.eth.getTransactionReceipt(tx_hash)['contractAddress']
+            address = self.web3.eth.waitForTransactionReceipt(tx_hash)['contractAddress']
             deployed = {
                 "links": dict(),
                 "contractAddress": address,
@@ -205,5 +233,5 @@ class CobraDeploy(CobraProvider):
             artifact = self.web3.toText(dumps(artifact, indent=1).encode())
             return artifact
         else:
-            self.cobra_print("[WARNING] Cobra: Already Deployed." + contract[:-5], "warning", bold=True)
+            self.cobra_print("[WARNING] Conflict: Already Deployed." + contract[:-5], "warning", bold=True)
             return None
