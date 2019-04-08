@@ -42,8 +42,7 @@ class CobraProvider:
 
         if not package:
             if error_message:
-                self.cobra_print(error_message,
-                                 "error", bold=True)
+                self.cobra_print(error_message, "error", bold=True)
             sys.exit()
 
     # Provider HTTP, WS or ICP
@@ -105,33 +104,35 @@ class CobraProvider:
     # HDWallet
     def get_hdwallet(self):
         if 'hdwallet' in self.cobraNetwork:
-            self.package_checker('cobra_hdwallet',
-                                 'Please install Cobra HDWallet "pip install cobra-hdwallet"')
+            self.package_checker("cobra-hdwallet",
+                                 "[ERROR] CobraHDWalletNotFound: install 'pip install cobra-hdwallet'!")
+            cobra_hdwallet = __import__("cobra_hdwallet")
+            hdWallet = cobra_hdwallet.HDWallet()
             if 'mnemonic' in self.cobraNetwork['hdwallet'] or \
                     'seed' in self.cobraNetwork['hdwallet']:
                 if 'password' in self.cobraNetwork['hdwallet']:
                     if 'mnemonic' in self.cobraNetwork['hdwallet']:
-                        return dict(
+                        created_hdwallet = hdWallet.create_hdwallet(
                             mnemonic=self.cobraNetwork['hdwallet']['mnemonic'],
-                            password=self.cobraNetwork['hdwallet']['password']
-                        )
+                            password=self.cobraNetwork['hdwallet']['password'])
+                        return created_hdwallet
                     elif 'seed' in self.cobraNetwork['hdwallet']:
-                        return dict(
+                        created_hdwallet = hdWallet.create_hdwallet(
                             mnemonic=self.cobraNetwork['hdwallet']['seed'],
-                            password=self.cobraNetwork['hdwallet']['password']
-                        )
+                            password=self.cobraNetwork['hdwallet']['password'])
+                        return created_hdwallet
                 else:
                     if 'mnemonic' in self.cobraNetwork['hdwallet']:
-                        return dict(
-                            mnemonic=self.cobraNetwork['hdwallet']['mnemonic']
-                        )
+                        created_hdwallet = hdWallet.create_hdwallet(
+                            mnemonic=self.cobraNetwork['hdwallet']['mnemonic'])
+                        return created_hdwallet
                     elif 'seed' in self.cobraNetwork['hdwallet']:
-                        return dict(
-                            mnemonic=self.cobraNetwork['hdwallet']['seed']
-                        )
+                        created_hdwallet = hdWallet.create_hdwallet(
+                            mnemonic=self.cobraNetwork['hdwallet']['seed'])
+                        return created_hdwallet
             elif 'private' in self.cobraNetwork['hdwallet']:
-                return dict(
-                    private=self.cobraNetwork['hdwallet']['private']
-                )
+                created_hdwallet = hdWallet.hdwallet_from_private(
+                    mnemonic=self.cobraNetwork['hdwallet']['private'])
+                return created_hdwallet
         else:
             return None
