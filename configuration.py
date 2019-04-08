@@ -328,7 +328,7 @@ class CobraConfiguration:
                                         ))
                                         continue
                     except KeyError:
-                        self.cobra_print("[ERROR] Cobra: There is no solidity in contract.", "error", bold=True)
+                        self.cobra_print("[ERROR] Cobra: Can't find solidity in contract.", "error", bold=True)
                         sys.exit()
         except KeyError:
             self.cobra_print("[ERROR] Cobra: Can't find solidity_path_dir or contracts in compile [cobra.yaml]", "error", bold=True)
@@ -363,7 +363,7 @@ class CobraConfiguration:
                                     links=None
                                 ))
                     except KeyError:
-                        self.cobra_print("[ERROR] Cobra: There is no artifact in contract.", "error", bold=True)
+                        self.cobra_print("[ERROR] Cobra: Can't find artifact in contract.", "error", bold=True)
                         sys.exit()
         except KeyError:
             self.cobra_print("[ERROR] Cobra: Can't find artifact_path_dir or contracts in deploy [cobra.yaml]", "error", bold=True)
@@ -398,7 +398,7 @@ class CobraConfiguration:
                                     links=None
                                 ))
                     except KeyError:
-                        self.cobra_print("[ERROR] Cobra: There is no artifact in contract.", "error", bold=True)
+                        self.cobra_print("[ERROR] Cobra: Can't find artifact in contract.", "error", bold=True)
                         sys.exit()
         except KeyError:
             self.cobra_print("[ERROR] Cobra: Can't find artifact_path_dir or contracts in test [cobra.yaml]", "error",
@@ -422,7 +422,7 @@ class CobraConfiguration:
                 gas=account_yaml['gas']
             ))
         else:
-            self.cobra_print("[ERROR] Cobra: There is no address/gas in account.", "error", bold=True)
+            self.cobra_print("[ERROR] CobraNotFound: Can address/gas in account.", "error", bold=True)
             sys.exit()
 
     def hdwallet(self, hdwallet_yaml):
@@ -431,33 +431,65 @@ class CobraConfiguration:
                 'private' in hdwallet_yaml:
             # returns Mnemonic and Password
             if 'mnemonic' in hdwallet_yaml and 'password' in hdwallet_yaml:
-                return dict(hdwallet=dict(
-                    mnemonic=hdwallet_yaml['mnemonic'],
-                    password=hdwallet_yaml['password']
-                ))
+                if 'gas' in hdwallet_yaml:
+                    return dict(hdwallet=dict(
+                        mnemonic=hdwallet_yaml['mnemonic'],
+                        password=hdwallet_yaml['password'],
+                        gas=hdwallet_yaml['gas']
+                    ))
+                else:
+                    return dict(hdwallet=dict(
+                        mnemonic=hdwallet_yaml['mnemonic'],
+                        password=hdwallet_yaml['password']
+                    ))
             # returns Mnemonic
             elif 'mnemonic' in hdwallet_yaml:
-                return dict(hdwallet=dict(
-                    mnemonic=hdwallet_yaml['mnemonic']
-                ))
+                if 'gas' in hdwallet_yaml:
+                    return dict(hdwallet=dict(
+                        mnemonic=hdwallet_yaml['mnemonic'],
+                        gas=hdwallet_yaml['gas']
+                    ))
+                else:
+                    return dict(hdwallet=dict(
+                        mnemonic=hdwallet_yaml['mnemonic']
+                    ))
             # returns Mnemonic (Seed is alias Mnemonic) and Password
             if 'seed' in hdwallet_yaml and 'password' in hdwallet_yaml:
-                return dict(hdwallet=dict(
-                    mnemonic=hdwallet_yaml['seed'],
-                    password=hdwallet_yaml['password']
-                ))
+                if 'gas' in hdwallet_yaml:
+                    return dict(hdwallet=dict(
+                        mnemonic=hdwallet_yaml['seed'],
+                        password=hdwallet_yaml['password'],
+                        gas=hdwallet_yaml['gas']
+                    ))
+                else:
+                    return dict(hdwallet=dict(
+                        mnemonic=hdwallet_yaml['seed'],
+                        password=hdwallet_yaml['password']
+                    ))
             # returns Mnemonic (Seed is alias Mnemonic)
             elif 'seed' in hdwallet_yaml:
-                return dict(hdwallet=dict(
-                    mnemonic=hdwallet_yaml['seed']
-                ))
+                if 'gas' in hdwallet_yaml:
+                    return dict(hdwallet=dict(
+                        mnemonic=hdwallet_yaml['seed'],
+                        gas=hdwallet_yaml['gas']
+                    ))
+                else:
+                    return dict(hdwallet=dict(
+                        mnemonic=hdwallet_yaml['seed'],
+                    ))
             # returns Private Key
             if 'private' in hdwallet_yaml:
-                return dict(hdwallet=dict(
-                    private=hdwallet_yaml['private']
-                ))
+                if 'gas' in hdwallet_yaml:
+                    return dict(hdwallet=dict(
+                        private=hdwallet_yaml['private'],
+                        gas=hdwallet_yaml['gas']
+                    ))
+                else:
+                    return dict(hdwallet=dict(
+                        private=hdwallet_yaml['private']
+                    ))
         else:
-            self.cobra_print("[ERROR] Cobra: There is no mnemonic(seed)/private in hdwallet.", "error", bold=True)
+            self.cobra_print("[ERROR] CobraNotFound: Can't find mnemonic(seed)/private in hdwallet.", "error", bold=True)
             sys.exit()
 
     def network(self, network_yaml):
@@ -513,7 +545,7 @@ class CobraConfiguration:
                                     port=network_yaml['development']['port']
                                 )
                     else:
-                        self.cobra_print("[ERROR] Cobra: There is no port in %s when you are using host."
+                        self.cobra_print("[ERROR] CobraNotFound: Can't find port in %s when you are using host."
                                          % 'development', "error", bold=True)
                         sys.exit()
                 elif 'url' in network_yaml['development']:
@@ -608,9 +640,9 @@ class CobraConfiguration:
                                     url=network_yaml['development']['url']
                                 )
             else:
-                self.cobra_print("[ERROR] Cobra: There is no host/url in %s." % 'development',
+                self.cobra_print("[ERROR] CobraNotFound: Can't find host/url in %s." % 'development',
                                  "error", bold=True)
                 sys.exit()
         else:
-            self.cobra_print("[ERROR] Cobra: There is no development in network.", "error", bold=True)
+            self.cobra_print("[ERROR] CobraNotFound: Can't find development in network.", "error", bold=True)
             sys.exit()
