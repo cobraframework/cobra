@@ -12,7 +12,6 @@ from datetime import datetime
 
 
 class CobraDeploy(CobraProvider):
-
     network = """{,
      "network": {},
      "updatedAt": "%s"
@@ -41,7 +40,7 @@ class CobraDeploy(CobraProvider):
                 read_file.close()
                 return return_file
         except FileNotFoundError:
-            self.cobra_print("Cobra-FileNotFound: %s" % file_path, "error", bold=True)
+            self.cobra_print("FileNotFound: %s" % file_path, "error", bold=True)
             sys.exit()
 
     def file_writer(self, file_path, docs):
@@ -73,17 +72,17 @@ class CobraDeploy(CobraProvider):
                     continue
                 except requests.exceptions.ConnectionError:
                     self.cobra_print(
-                        "[ERROR] HTTP connection pool failed '%s'!" % (self.get_url_host_port()),
+                        "[ERROR] HTTPConnectionPool:'%s' failed!" % (self.get_url_host_port()),
                         "error", bold=True)
                     sys.exit()
                 except websockets.exceptions.InvalidMessage:
                     self.cobra_print(
-                        "[ERROR] WebSockets connection pool failed '%s'!" % (self.get_url_host_port()),
+                        "[ERROR] WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
                         "error", bold=True)
                     sys.exit()
                 except FileNotFoundError:
                     self.cobra_print(
-                        "[ERROR] ICP connection pool failed '%s'!" % (self.get_url_host_port()),
+                        "[ERROR] ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
                         "error", bold=True)
                     sys.exit()
         except KeyError:
@@ -109,15 +108,10 @@ class CobraDeploy(CobraProvider):
                                 continue
                         except TypeError:
                             continue
-                        except requests.exceptions.ConnectionError:
-                            self.cobra_print(
-                                "[ERROR] Cobra-HTTPConnectionPool(host='%s', port=%d)" % (self.get_url_host_port()),
-                                "error", bold=True)
-                            sys.exit()
                 except KeyError:
                     return
             except json.decoder.JSONDecodeError:
-                self.cobra_print("Cobra-ArtifactDecodeError: %s" % link_file_path, "error", bold=True)
+                self.cobra_print("ArtifactDecodeError: %s" % link_file_path, "error", bold=True)
                 return
         return contract_name_and_address
 
@@ -127,7 +121,7 @@ class CobraDeploy(CobraProvider):
         try:
             artifact = loads(artifact_not_loads)
         except json.decoder.JSONDecodeError:
-            self.cobra_print("Cobra-ArtifactDecodeError: %s" % file_path, "error", bold=True)
+            self.cobra_print("ArtifactDecodeError: %s" % file_path, "error", bold=True)
             return
 
         if not self.isDeployed(artifact):
@@ -138,15 +132,10 @@ class CobraDeploy(CobraProvider):
             linked_bytecode = link_code(unlinked_bytecode, get_link_address)
             try:
                 contract = self.web3.eth.contract(abi=abi, bytecode=linked_bytecode)
-                try:
-                    if account is None and gas is None:
-                        tx_hash = contract.deploy(transaction={'from': self.web3.eth.accounts[0], 'gas': 3000000})
-                    else:
-                        tx_hash = contract.deploy(transaction={'from': self.web3.toChecksumAddress(account), 'gas': gas})
-                except requests.exceptions.ConnectionError:
-                    self.cobra_print("[ERROR] Cobra-HTTPConnectionPool(host='%s', port=%d)" % (self.get_url_host_port()),
-                                     "error", bold=True)
-                    sys.exit()
+                if account is None and gas is None:
+                    tx_hash = contract.deploy(transaction={'from': self.web3.eth.accounts[0], 'gas': 3000000})
+                else:
+                    tx_hash = contract.deploy(transaction={'from': self.web3.toChecksumAddress(account), 'gas': gas})
 
                 address = self.web3.eth.getTransactionReceipt(tx_hash)['contractAddress']
                 deployed = {
@@ -178,7 +167,7 @@ class CobraDeploy(CobraProvider):
         try:
             artifact = loads(artifact_not_loads)
         except json.decoder.JSONDecodeError:
-            self.cobra_print("Cobra-ArtifactDecodeError: %s" % file_path, "error", bold=True)
+            self.cobra_print("ArtifactDecodeError: %s" % file_path, "error", bold=True)
             sys.exit()
 
         if not self.isDeployed(artifact):
@@ -187,19 +176,23 @@ class CobraDeploy(CobraProvider):
             bytecode = artifact['bin']
             contract = self.web3.eth.contract(abi=abi, bytecode=bytecode)
 
-            try:
-                if account is None and gas is None:
-                    tx_hash = contract.deploy(transaction={'from': self.web3.eth.accounts[0], 'gas': 3000000})
-                else:
-                    tx_hash = contract.deploy(transaction={'from': self.web3.toChecksumAddress(account), 'gas': gas})
-            except requests.exceptions.ConnectionError:
-                self.cobra_print("[ERROR] Cobra-HTTPConnectionPool(host='%s', port=%d)" % (self.get_url_host_port()),
-                                 "error", bold=True)
-                sys.exit()
+            # Deploying contract
+            if account is None and gas is None:
+                transaction = {
+                    'from': self.web3.eth.accounts[0],
+                    'gas': 3000000
+                }
+                tx_hash = contract.deploy(transaction=transaction)
+            else:
+                transaction = {
+                    'from': self.web3.toChecksumAddress(account),
+                    'gas': gas
+                }
+                tx_hash = contract.deploy(transaction=transaction)
 
             address = self.web3.eth.getTransactionReceipt(tx_hash)['contractAddress']
             deployed = {
-                "links": {},
+                "links": dict(),
                 "contractAddress": address,
                 "transactionHash": self.web3.toHex(tx_hash)
             }
