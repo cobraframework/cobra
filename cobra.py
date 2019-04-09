@@ -161,6 +161,7 @@ class CobraFramework(CobraConfiguration):
             load_yaml = self.yaml_loader(read_yaml)
             deploy_yaml = load_yaml['deploy']
             configurations_yaml = self.deploy(deploy_yaml)
+            self.cobraDeploy.display_account()
             for configuration_yaml in configurations_yaml:
                 if configuration_yaml['links'] is None:
                     artifact_path_json = join(configuration_yaml['artifact_path_dir'], configuration_yaml['artifact'])
