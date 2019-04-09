@@ -184,7 +184,7 @@ class CobraFramework(CobraConfiguration):
                                          str(configuration_yaml['artifact'])[:-5], "success", bold=True)
                     continue
         except KeyError:
-            self.cobra_print("[ERROR] Cobra: Can't find deploy in cobra.yaml", "error", bold=True)
+            self.cobra_print("[ERROR] CobraNotFound: Can't find deploy in cobra.yaml", "error", bold=True)
             sys.exit()
 
     def CobraNetwork(self):
@@ -195,7 +195,7 @@ class CobraFramework(CobraConfiguration):
             configuration_yaml = self.network(network_yaml)
             return configuration_yaml
         except KeyError:
-            self.cobra_print("[ERROR] Cobra: Can't find network in cobra.yaml", "error", bold=True)
+            self.cobra_print("[ERROR] CobraNotFound: Can't find network in cobra.yaml", "error", bold=True)
             sys.exit()
 
     def CobraUnitTest(self):
@@ -236,11 +236,11 @@ class CobraFramework(CobraConfiguration):
                 unittest.TextTestRunner(verbosity=2).run(suite)
 
             except KeyError:
-                self.cobra_print("[ERROR] Cobra: Can't find test_paths in test", "error", bold=True)
+                self.cobra_print("[ERROR] CobraNotFound: Can't find test_paths in test", "error", bold=True)
                 sys.exit()
 
         except KeyError:
-            self.cobra_print("[ERROR] Cobra: Can't find test in cobra.yaml", "error", bold=True)
+            self.cobra_print("[ERROR] CobraNotFound: Can't find test in cobra.yaml", "error", bold=True)
             sys.exit()
 
     def CobraPyTest(self):
