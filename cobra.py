@@ -90,6 +90,8 @@ class CobraFramework(CobraConfiguration):
                                  help='Run Python tests vie [PyTest] but, First install pytest and plugin pytest-cobra '
                                       'using pip [pip install pytest-cobra] '
                                       'or https://github.com/cobraframework/pytest-cobra')
+        parser_test.add_argument('-m', '--more', action='store_true',
+                                 help='View more errors [test]')
         # Cobra Agreements
         cobra_args = parser.parse_args()
 
@@ -104,9 +106,17 @@ class CobraFramework(CobraConfiguration):
         elif cobra_args.test and not \
                 cobra_args.unittest and not cobra_args.pytest:
             self.CobraUnitTest()
-        elif cobra_args.unittest:
+        elif cobra_args.unittest and not \
+                cobra_args.more:
             self.CobraUnitTest()
-        elif cobra_args.pytest:
+        elif cobra_args.unittest and \
+                cobra_args.more:
+            self.CobraUnitTest(more=True)
+        elif cobra_args.pytest and not \
+                cobra_args.more:
+            self.CobraPyTest()
+        elif cobra_args.pytest and \
+                cobra_args.more:
             self.CobraPyTest()
 
     def cobra_print(self, text, color=None, bold=False, background=None, underline=False):
@@ -213,23 +223,41 @@ class CobraFramework(CobraConfiguration):
             self.cobra_print("[ERROR] CobraNotFound: Can't find network in cobra.yaml", "error", bold=True)
             sys.exit()
 
-    def CobraUnitTest(self):
-        suite = TestSuite()
-        test_case_classes = []
+    def CobraUnitTest(self, more=None):
+        """
+        Start testing Cobra using Unittest to test Smart Contract (Solidity file)
 
-        ethereum_tester = EthereumTester()
-        web3 = Web3(EthereumTesterProvider(ethereum_tester))
+        The unittest unit testing framework was originally inspired by JUnit and has
+        a similar flavor as major unit testing frameworks in other languages. It supports
+        test automation, sharing of setup and shutdown code for tests, aggregation of
+        tests into collections, and independence of the tests from the reporting framework.
+        :return:
+        """
+
+        # Collection of test cases
+        testSuite = TestSuite()
+        testCaseClasses = []
+
+        # Initializing ethereum tester
+        _ethereumTester = EthereumTester()
+        # Initializing ethereum tester provider
+        _ethereumTesterProvider = EthereumTesterProvider(_ethereumTester)
+        # Initializing web3 added ethereum tester provider
+        _web3 = Web3(_ethereumTesterProvider)
 
         def zero_gas_price_strategy(web3, transaction_params=None):
+            # zero gas price makes testing simpler.
             return 0
 
-        web3.eth.setGasPriceStrategy(zero_gas_price_strategy)
-        cobraInterfaces = CobraInterfaces(web3, "./cobra.yaml")
+        # Set gas price strategy
+        _web3.eth.setGasPriceStrategy(zero_gas_price_strategy)
+        # Initializing cobra interfaces
+        cobraInterfaces = CobraInterfaces(_web3, "./cobra.yaml", more)
 
         class CollectionInterfaces:
-            _web3 = web3
-            _ethereum_tester = ethereum_tester
-            compiled_interfaces = cobraInterfaces.get_interfaces()
+            web3 = _web3
+            ethereumTester = _ethereumTester
+            compiledInterfaces = cobraInterfaces.getInterfaces()
 
         try:
             read_yaml = self.file_reader("./cobra.yaml")
@@ -243,12 +271,14 @@ class CobraFramework(CobraConfiguration):
                     for all_test_suite in test_loader:
                         for test_suites in all_test_suite:
                             for test_suite in test_suites:
-                                test_case_classes.append(test_suite.__class__)
+                                testCaseClasses.append(test_suite.__class__)
 
-                for test_case_class in list(set(test_case_classes)):
-                    suite.addTest(CobraTest.cobra(test_case_class, collectionInterfaces=CollectionInterfaces()))
-                # Rub Unittest
-                unittest.TextTestRunner(verbosity=2).run(suite)
+                # Added test case class on test suite array
+                for testCaseClass in list(set(testCaseClasses)):
+                    testSuite.addTest(CobraTest.cobra(testCaseClass,
+                                                      collectionInterfaces=CollectionInterfaces()))
+                # Run Unittest
+                unittest.TextTestRunner(verbosity=2).run(testSuite)
 
             except KeyError:
                 self.cobra_print("[ERROR] CobraNotFound: Can't find test_paths in test", "error", bold=True)
