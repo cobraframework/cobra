@@ -372,38 +372,46 @@ class CobraConfiguration:
 
     def test(self, test_yaml):
         tests = []
-        try:
-            if test_yaml['artifact_path_dir'] and test_yaml['contracts']:
+
+        if 'artifact_path_dir' in test_yaml:
+            if 'contracts' in test_yaml:
                 for contract in test_yaml['contracts']:
-                    try:
-                        if contract['contract']['artifact']:
-                            try:
-                                if contract['contract']['links']:
-                                    tests.append(dict(
-                                        artifact_path_dir=test_yaml['artifact_path_dir'],
-                                        artifact=contract['contract']['artifact'],
-                                        links=contract['contract']['links']
-                                    ))
-                                elif not contract['contract']['links']:
-                                    tests.append(dict(
-                                        artifact_path_dir=test_yaml['artifact_path_dir'],
-                                        artifact=contract['contract']['artifact'],
-                                        links=None
-                                    ))
-                                    continue
-                            except KeyError:
+
+                    if 'artifact' in contract['contract']:
+                        if 'links' in contract['contract']:
+                            if contract['contract']['links']:
+                                tests.append(dict(
+                                    artifact_path_dir=test_yaml['artifact_path_dir'],
+                                    artifact=contract['contract']['artifact'],
+                                    links=contract['contract']['links']
+                                ))
+                                continue
+                            elif not contract['contract']['links']:
                                 tests.append(dict(
                                     artifact_path_dir=test_yaml['artifact_path_dir'],
                                     artifact=contract['contract']['artifact'],
                                     links=None
                                 ))
-                    except KeyError:
-                        self.cobra_print("[ERROR] Cobra: Can't find artifact in contract.", "error", bold=True)
+                                continue
+                        else:
+                            tests.append(dict(
+                                artifact_path_dir=test_yaml['artifact_path_dir'],
+                                artifact=contract['contract']['artifact'],
+                                links=None
+                            ))
+                            continue
+                    else:
+                        self.cobra_print("[ERROR] CobraNotFound: Can't find artifact in contract.", "error", bold=True)
                         sys.exit()
-        except KeyError:
-            self.cobra_print("[ERROR] Cobra: Can't find artifact_path_dir or contracts in test [cobra.yaml]", "error",
-                             bold=True)
+            else:
+                self.cobra_print(
+                    "[ERROR] CobraNotFound: Can't find contracts in test", "error", bold=True)
+                sys.exit()
+        else:
+            self.cobra_print(
+                "[ERROR] CobraNotFound: Can't find artifact_path_dir in test", "error", bold=True)
             sys.exit()
+
         return tests
 
     def account(self, account_yaml):
