@@ -1,10 +1,26 @@
 from eth_tester.exceptions import TransactionFailed
 from test.contract import CobraFactory
-from test.account import CobraAccount
 from eth_tester import EthereumTester
 from json import loads
 from web3 import Web3
 import unittest
+
+
+class CobraAccount(str):
+
+    def __new__(cls, web3: Web3, address):
+        obj = super().__new__(cls, address)
+        obj._web3 = web3
+        obj._address = address
+        return obj
+
+    # Send Ether
+    def transfer(self, address, amount):
+        self._web3.eth.sendTransaction({'to': address, 'from': self._address, 'value': amount})
+
+    @property
+    def balance(self):
+        return self._web3.eth.getBalance(self._address)
 
 
 class CobraTest(unittest.TestCase):
@@ -60,7 +76,8 @@ class CobraTester:
 
     @property
     def accounts(self):
-        return [CobraAccount(self.web3, a) for a in self.ethereumTester.get_accounts()]
+        return [CobraAccount(self.web3, address)
+                for address in self.ethereumTester.get_accounts()]
 
     @property
     def eth(self):
