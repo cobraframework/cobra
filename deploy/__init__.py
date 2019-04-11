@@ -25,6 +25,7 @@ class CobraDeploy(CobraProvider):
     }""" % str(datetime.now())
 
     def __init__(self, cobraNetwork):
+        self.more = None
         self.cobraNetwork = cobraNetwork
         self.web3 = self.get_web3()
         self.account = self.get_account()
@@ -178,14 +179,30 @@ class CobraDeploy(CobraProvider):
                 return tx_hash
         except ValueError as valueError:
             valueError = valueError.args.__getitem__(0)
-            if 'message' in valueError:
+            if 'message' in valueError and not self.more:
                 message = str(valueError['message'])
                 split_message = message.split('\n')
                 self.cobra_print("[ERROR] Cobra%s" % split_message[0],
                                  "error", bold=True)
+            elif 'message' in valueError and self.more:
+                message = str(valueError['message'])
+                self.cobra_print("[ERROR] Cobra%s" % message,
+                                 "error", bold=True)
+            elif not self.more:
+                message = str(valueError)
+                self.cobra_print("[ERROR] %s..." % message[:75],
+                                 "error", bold=True)
+            elif self.more:
+                message = str(valueError)
+                self.cobra_print("[ERROR] %s..." % message,
+                                 "error", bold=True)
             sys.exit()
 
-    def deploy_with_link(self, dir_path, contract, links):
+    def deploy_with_link(self, dir_path, contract, links, more=None):
+        if more is not None:
+            self.more = True
+        else:
+            self.more = False
         file_path = join(dir_path, contract)
         artifact_not_loads = self.file_reader(file_path)
         try:
@@ -229,7 +246,11 @@ class CobraDeploy(CobraProvider):
             self.cobra_print("[WARNING] Conflict: Already Deployed." + contract[:-5], "warning", bold=True)
             return None
 
-    def deploy_with_out_link(self, dir_path, contract):
+    def deploy_with_out_link(self, dir_path, contract, more=None):
+        if more is not None:
+            self.more = True
+        else:
+            self.more = False
         file_path = join(dir_path, contract)
         contract_name = str(contract[:-5])
         artifact_not_loads = self.file_reader(file_path)
