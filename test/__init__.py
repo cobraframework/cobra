@@ -15,9 +15,9 @@ class CobraTest(unittest.TestCase):
             collectionInterfaces = dict()
         try:
             self.cobra = CobraTester(
-                collectionInterfaces._web3,
-                collectionInterfaces._ethereum_tester,
-                collectionInterfaces.compiled_interfaces)
+                collectionInterfaces.web3,
+                collectionInterfaces.ethereumTester,
+                collectionInterfaces.compiledInterfaces)
         except AttributeError:
             self.cobra = None
 
@@ -34,20 +34,21 @@ class CobraTest(unittest.TestCase):
 
 class CobraTester:
 
-    def __init__(self, _web3: Web3, _ethereum_tester: EthereumTester,
-                 compiled_interfaces=None):
-        if compiled_interfaces is None:
-            compiled_interfaces = dict()
-        self.ethereum_tester = _ethereum_tester
-        self.web3 = _web3
+    def __init__(self, web3: Web3,
+                 ethereumTester: EthereumTester,
+                 compiledInterfaces=None):
+        if compiledInterfaces is None:
+            compiledInterfaces = dict()
+        self.ethereumTester = ethereumTester
+        self.web3 = web3
 
-        self.compiled_interfaces = compiled_interfaces
+        self.compiledInterfaces = compiledInterfaces
 
     def contract(self, name):
-        for compiled_interface in self.compiled_interfaces.keys():
-            contract_name = compiled_interface.split(":")
-            if contract_name[0] == name:
-                interface = self.compiled_interfaces.get(compiled_interface)
+        for compiledInterface in self.compiledInterfaces.keys():
+            contractName = compiledInterface.split(":")
+            if contractName[0] == name:
+                interface = self.compiledInterfaces.get(compiledInterface)
                 return self.new(interface)
             else:
                 continue
@@ -59,7 +60,7 @@ class CobraTester:
 
     @property
     def accounts(self):
-        return [CobraAccount(self.web3, a) for a in self.ethereum_tester.get_accounts()]
+        return [CobraAccount(self.web3, a) for a in self.ethereumTester.get_accounts()]
 
     @property
     def eth(self):
@@ -68,26 +69,27 @@ class CobraTester:
 
     @property
     def tx_fails(self):
-        return CobraFailureHandler(self.ethereum_tester)
+        return CobraFailureHandler(self.ethereumTester)
 
     def now(self):
         #  Get this from the Ethereum block timestamp
         return self.web3.eth.getBlock('pending')['timestamp']
 
     def mine_blocks(self, number=1):
-        self.ethereum_tester.mine_blocks(number)
+        self.ethereumTester.mine_blocks(number)
 
 
 class CobraFailureHandler:
-    def __init__(self, eth_tester):
-        self.eth_tester = eth_tester
+
+    def __init__(self, ethTester):
+        self.ethTester = ethTester
 
     def __enter__(self):
-        self.snapshot_id = self.eth_tester.take_snapshot()
-        return self.snapshot_id
+        self.snapshotId = self.ethTester.take_snapshot()
+        return self.snapshotId
 
     def __exit__(self, *args):
         assert len(args) > 0 and \
                args[0] is TransactionFailed, "Didn't revert transaction."
-        self.eth_tester.revert_to_snapshot(self.snapshot_id)
+        self.ethTester.revert_to_snapshot(self.snapshotId)
         return True
