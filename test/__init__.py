@@ -250,7 +250,8 @@ class CobraInterfaces(CobraConfiguration):
 
     def testWithOutLink(self, artifact):
         try:
-            contractFactory = self.web3.eth.contract(abi=artifact['abi'], bytecode=artifact['bin'])
+            contractFactory = self.web3.eth.contract(abi=artifact['abi'],
+                                                     bytecode=artifact['bin'])
         except ValueError as valueError:
             valueError = str(valueError.args.__getitem__(0))
             if "'" in valueError and not self.more:
