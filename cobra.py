@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Cobra is a fast and simple development environment framework for ethereum virtual
+machine and it have testing framework for testing smart contract(Solidity file).
+all in a single file and with no dependencies other than the
+Python Standard Library.
+
+Homepage and documentation: http://cobraframework.github.io
+
+Copyright (c) 2019, Meheret Tesfaye.
+License: MIT (see LICENSE for details)
+"""
+
 from test.interfaces import CobraInterfaces
 from configuration import CobraConfiguration
 from eth_tester import EthereumTester
