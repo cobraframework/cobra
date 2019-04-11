@@ -12,7 +12,7 @@ Copyright (c) 2019, Meheret Tesfaye.
 License: MIT (see LICENSE for details)
 """
 
-from test.interfaces import CobraInterfaces
+from test import CobraInterfaces
 from configuration import CobraConfiguration
 from eth_tester import EthereumTester
 from unittest import TestSuite
@@ -79,6 +79,8 @@ class CobraFramework(CobraConfiguration):
         parser_deploy = cobra_parser.add_parser('deploy')
         parser_deploy.add_argument("deploy", action='store_true',
                                    help='Run deploy to deploy compiled contracts')
+        parser_deploy.add_argument('-m', '--more', action='store_true',
+                                 help='View more errors [deploy]')
         parser_test = cobra_parser.add_parser('test')
         parser_test.add_argument("test", action='store_true',
                                  help="Run Python test by default [Unittest]. There are two types of testing framework "
@@ -99,10 +101,20 @@ class CobraFramework(CobraConfiguration):
             parser.print_help()
         elif cobra_args.compile:
             self.CobraCompile()
-        elif cobra_args.migrate:
+
+        elif cobra_args.migrate and not \
+                cobra_args.more:
             self.CobraDeploy()
-        elif cobra_args.deploy:
+        elif cobra_args.migrate and \
+                cobra_args.more:
+            self.CobraDeploy(more=True)
+        elif cobra_args.deploy and not \
+                cobra_args.more:
             self.CobraDeploy()
+        elif cobra_args.deploy and \
+                cobra_args.more:
+            self.CobraDeploy(more=True)
+
         elif cobra_args.test and not \
                 cobra_args.unittest and not cobra_args.pytest:
             self.CobraUnitTest()
@@ -179,19 +191,19 @@ class CobraFramework(CobraConfiguration):
             self.cobra_print("[ERROR] Cobra: Can't find compile in cobra.yaml", "error", bold=True)
             sys.exit()
 
-    def CobraDeploy(self):
+    def CobraDeploy(self, more=None):
         try:
             read_yaml = self.file_reader("./cobra.yaml")
             load_yaml = self.yaml_loader(read_yaml)
             deploy_yaml = load_yaml['deploy']
             configurations_yaml = self.deploy(deploy_yaml)
-            self.cobraDeploy.display_account()
+            # self.cobraDeploy.display_account()
             for configuration_yaml in configurations_yaml:
                 if configuration_yaml['links'] is None:
                     artifact_path_json = join(configuration_yaml['artifact_path_dir'], configuration_yaml['artifact'])
                     artifact_json = self.cobraDeploy.deploy_with_out_link(
                         configuration_yaml['artifact_path_dir'],
-                        configuration_yaml['artifact'])
+                        configuration_yaml['artifact'], more=more)
                     if artifact_json is not None:
                         self.cobraDeploy.file_writer(artifact_path_json, str(artifact_json))
                         self.cobra_print("[SUCCESS] Cobra: Deploying %s" %
@@ -202,7 +214,7 @@ class CobraFramework(CobraConfiguration):
                     artifact_json = self.cobraDeploy.deploy_with_link(
                         configuration_yaml['artifact_path_dir'],
                         configuration_yaml['artifact'],
-                        configuration_yaml['links'])
+                        configuration_yaml['links'], more=more)
                     if artifact_json is not None:
                         self.cobraDeploy.file_writer(artifact_path_json, str(artifact_json))
                         self.cobra_print("[SUCCESS] Cobra: Deploying %s" %
