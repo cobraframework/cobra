@@ -45,6 +45,42 @@ class CobraConfiguration:
             self.cobra_print("[Cobra] JSONDecodeError: %s" % jsonDecodeError, "error", bold=True)
         sys.exit()
 
+    def hasRemapping(self, contract):
+        # Finding remappings and checking not None
+        if 'remappings' in contract and \
+                contract['remappings']:
+            return True
+        # Finding remappings and checking None
+        elif 'remappings' in contract and \
+                not contract['remappings']:
+            return False
+        else:
+            return False
+
+    def hasSolidityPathDir(self, contract):
+        # Finding solidity path dir and checking not None
+        if 'solidity_path_dir' in contract and \
+                contract['solidity_path_dir']:
+            return True
+        # Finding solidity path dir and checking None
+        elif 'solidity_path_dir' in contract and \
+                not contract['solidity_path_dir']:
+            return False
+        else:
+            return False
+
+    def hasLinksPathDir(self, contract):
+        # Finding links path dir on contract checking not None
+        if 'links_path_dir' in contract and \
+                contract['links_path_dir']:
+            return True
+        # Finding links path dir on contract checking None
+        elif 'links_path_dir' in contract and \
+                not contract['links_path_dir']:
+            return False
+        else:
+            return False
+
     def compile(self, compile_yaml):
         compiles = []
 
@@ -63,16 +99,84 @@ class CobraConfiguration:
                 for contract in compile_yaml['contracts']:
                     # Finding solidity on contract
                     if 'solidity' in contract['contract']:
-                        # Finding links path dir on contract checking links path dir is not None
-                        if 'links_path_dir' in contract['contract'] and \
-                                contract['contract']['links_path_dir']:
-                            print('found links_path_dir')
-                        # Finding links path dir on contract checking links path dir is None
-                        elif 'links_path_dir' in contract['contract'] and \
-                                not contract['contract']['links_path_dir']:
-                            print('not found links_path_dir')
+                        if self.hasLinksPathDir(contract['contract']):
+                            if self.hasSolidityPathDir(contract['contract']):
+                                if self.hasRemapping(contract['contract']):
+                                    compiles.append(dict(
+                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=contract['contract']['links_path_dir'],
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=contract['contract']['remappings']
+                                    ))
+                                    continue
+                                else:
+                                    compiles.append(dict(
+                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=contract['contract']['links_path_dir'],
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=None
+                                    ))
+                                    continue
+                            else:
+                                if self.hasRemapping(contract['contract']):
+                                    compiles.append(dict(
+                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=contract['contract']['links_path_dir'],
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=contract['contract']['remappings']
+                                    ))
+                                    continue
+                                else:
+                                    compiles.append(dict(
+                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=contract['contract']['links_path_dir'],
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=None
+                                    ))
+                                    continue
                         else:
-                            print('there is no links_path_dir')
+                            if self.hasSolidityPathDir(contract['contract']):
+                                if self.hasRemapping(contract['contract']):
+                                    compiles.append(dict(
+                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=None,
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=contract['contract']['remappings']
+                                    ))
+                                    continue
+                                else:
+                                    compiles.append(dict(
+                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=None,
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=None
+                                    ))
+                                    continue
+                            else:
+                                if self.hasRemapping(contract['contract']):
+                                    compiles.append(dict(
+                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=None,
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=contract['contract']['remappings']
+                                    ))
+                                    continue
+                                else:
+                                    compiles.append(dict(
+                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=None,
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=None
+                                    ))
+                                    continue
                     else:
                         self.cobra_print("[ERROR] CobraNotFound: Can't find solidity in contract.",
                                          "error", bold=True)
@@ -86,293 +190,6 @@ class CobraConfiguration:
                              "error", bold=True)
             sys.exit()
 
-        try:
-            if compile_yaml['solidity_path_dir'] and compile_yaml['contracts']:
-                artifact_path_dir = None
-                try:
-                    if compile_yaml['artifact_path_dir']:
-                        artifact_path_dir = compile_yaml['artifact_path_dir']
-                except KeyError:
-                    self.cobra_print("[WARNING] Cobra: Can't find artifact_path_dir. "
-                                     "By default ./build/contracts", "warning", bold=True)
-                for contract in compile_yaml['contracts']:
-                    try:
-                        if contract['contract']['solidity']:
-                            try:
-                                if contract['contract']['links_path_dir']:
-                                    try:
-                                        if contract['contract']['solidity_path_dir']:
-                                            try:
-                                                if contract['contract']['remappings']:
-                                                    compiles.append(dict(
-                                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                                        solidity=contract['contract']['solidity'],
-                                                        links_path_dir=contract['contract']['links_path_dir'],
-                                                        artifact_path_dir=artifact_path_dir,
-                                                        remappings=contract['contract']['remappings']
-                                                    ))
-                                                    continue
-                                                elif not contract['contract']['remappings']:
-                                                    compiles.append(dict(
-                                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                                        solidity=contract['contract']['solidity'],
-                                                        links_path_dir=contract['contract']['links_path_dir'],
-                                                        artifact_path_dir=artifact_path_dir,
-                                                        remappings=None
-                                                    ))
-                                                    continue
-                                            except KeyError:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=contract['contract']['links_path_dir'],
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=None
-                                                ))
-                                                continue
-                                        elif not contract['contract']['solidity_path_dir']:
-                                            try:
-                                                if contract['contract']['remappings']:
-                                                    compiles.append(dict(
-                                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                        solidity=contract['contract']['solidity'],
-                                                        links_path_dir=contract['contract']['links_path_dir'],
-                                                        artifact_path_dir=artifact_path_dir,
-                                                        remappings=contract['contract']['remappings']
-                                                    ))
-                                                    continue
-                                                elif not contract['contract']['remappings']:
-                                                    compiles.append(dict(
-                                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                        solidity=contract['contract']['solidity'],
-                                                        links_path_dir=contract['contract']['links_path_dir'],
-                                                        artifact_path_dir=artifact_path_dir,
-                                                        remappings=None
-                                                    ))
-                                                    continue
-                                            except KeyError:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=contract['contract']['links_path_dir'],
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=None
-                                                ))
-                                                continue
-                                    except KeyError:
-                                        try:
-                                            if contract['contract']['remappings']:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=contract['contract']['links_path_dir'],
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=contract['contract']['remappings']
-                                                ))
-                                                continue
-                                            elif not contract['contract']['remappings']:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=contract['contract']['links_path_dir'],
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=None
-                                                ))
-                                                continue
-                                        except KeyError:
-                                            compiles.append(dict(
-                                                solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                solidity=contract['contract']['solidity'],
-                                                links_path_dir=contract['contract']['links_path_dir'],
-                                                artifact_path_dir=artifact_path_dir,
-                                                remappings=None
-                                            ))
-                                            continue
-                                elif not contract['contract']['links_path_dir']:
-                                    try:
-                                        if contract['contract']['solidity_path_dir']:
-                                            try:
-                                                if contract['contract']['remappings']:
-                                                    compiles.append(dict(
-                                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                                        solidity=contract['contract']['solidity'],
-                                                        links_path_dir=None,
-                                                        artifact_path_dir=artifact_path_dir,
-                                                        remappings=contract['contract']['remappings']
-                                                    ))
-                                                    continue
-                                                elif not contract['contract']['remappings']:
-                                                    compiles.append(dict(
-                                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                                        solidity=contract['contract']['solidity'],
-                                                        links_path_dir=None,
-                                                        artifact_path_dir=artifact_path_dir,
-                                                        remappings=None
-                                                    ))
-                                                    continue
-                                            except KeyError:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=None,
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=None
-                                                ))
-                                                continue
-                                        elif not contract['contract']['solidity_path_dir']:
-                                            try:
-                                                if contract['contract']['remappings']:
-                                                    compiles.append(dict(
-                                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                        solidity=contract['contract']['solidity'],
-                                                        links_path_dir=None,
-                                                        artifact_path_dir=artifact_path_dir,
-                                                        remappings=contract['contract']['remappings']
-                                                    ))
-                                                    continue
-                                                elif not contract['contract']['remappings']:
-                                                    compiles.append(dict(
-                                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                        solidity=contract['contract']['solidity'],
-                                                        links_path_dir=None,
-                                                        artifact_path_dir=artifact_path_dir,
-                                                        remappings=None
-                                                    ))
-                                                    continue
-                                            except KeyError:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=None,
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=None
-                                                ))
-                                                continue
-                                    except KeyError:
-                                        try:
-                                            if contract['contract']['remappings']:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=None,
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=contract['contract']['remappings']
-                                                ))
-                                                continue
-                                            elif not contract['contract']['remappings']:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=None,
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=None
-                                                ))
-                                                continue
-                                        except KeyError:
-                                            compiles.append(dict(
-                                                solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                solidity=contract['contract']['solidity'],
-                                                links_path_dir=None,
-                                                artifact_path_dir=artifact_path_dir,
-                                                remappings=None
-                                            ))
-                                            continue
-                            except KeyError:
-                                try:
-                                    if contract['contract']['solidity_path_dir']:
-                                        try:
-                                            if contract['contract']['remappings']:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=None,
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=contract['contract']['remappings']
-                                                ))
-                                                continue
-                                            elif not contract['contract']['remappings']:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=None,
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=None
-                                                ))
-                                                continue
-                                        except KeyError:
-                                            compiles.append(dict(
-                                                solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                                solidity=contract['contract']['solidity'],
-                                                links_path_dir=None,
-                                                artifact_path_dir=artifact_path_dir,
-                                                remappings=None
-                                            ))
-                                            continue
-                                    elif not contract['contract']['solidity_path_dir']:
-                                        try:
-                                            if contract['contract']['remappings']:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=None,
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=contract['contract']['remappings']
-                                                ))
-                                                continue
-                                            elif not contract['contract']['remappings']:
-                                                compiles.append(dict(
-                                                    solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                    solidity=contract['contract']['solidity'],
-                                                    links_path_dir=None,
-                                                    artifact_path_dir=artifact_path_dir,
-                                                    remappings=None
-                                                ))
-                                                continue
-                                        except KeyError:
-                                            compiles.append(dict(
-                                                solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                solidity=contract['contract']['solidity'],
-                                                links_path_dir=None,
-                                                artifact_path_dir=artifact_path_dir,
-                                                remappings=None
-                                            ))
-                                            continue
-                                except KeyError:
-                                    try:
-                                        if contract['contract']['remappings']:
-                                            compiles.append(dict(
-                                                solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                solidity=contract['contract']['solidity'],
-                                                links_path_dir=None,
-                                                artifact_path_dir=artifact_path_dir,
-                                                remappings=contract['contract']['remappings']
-                                            ))
-                                            continue
-                                        elif not contract['contract']['remappings']:
-                                            compiles.append(dict(
-                                                solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                                solidity=contract['contract']['solidity'],
-                                                links_path_dir=None,
-                                                artifact_path_dir=artifact_path_dir,
-                                                remappings=None
-                                            ))
-                                            continue
-                                    except KeyError:
-                                        compiles.append(dict(
-                                            solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                            solidity=contract['contract']['solidity'],
-                                            links_path_dir=None,
-                                            artifact_path_dir=artifact_path_dir,
-                                            remappings=None
-                                        ))
-                                        continue
-                    except KeyError:
-                        self.cobra_print("[ERROR] Cobra: Can't find solidity in contract.", "error", bold=True)
-                        sys.exit()
-        except KeyError:
-            self.cobra_print("[ERROR] Cobra: Can't find solidity_path_dir or contracts in compile [cobra.yaml]",
-                             "error", bold=True)
-            sys.exit()
         return compiles
 
     def deploy(self, deploy_yaml):
