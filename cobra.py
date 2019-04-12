@@ -143,8 +143,8 @@ class CobraFramework(CobraConfiguration):
 
     def CobraCompile(self):
         try:
-            read_yaml = self.file_reader("./cobra.yaml")
-            load_yaml = self.yaml_loader(read_yaml)
+            read_yaml = self.fileReader("./cobra.yaml")
+            load_yaml = self.yamlLoader(read_yaml)
             compile_yaml = load_yaml['compile']
             configurations_yaml = self.compile(compile_yaml)
             for configuration_yaml in configurations_yaml:
@@ -193,8 +193,8 @@ class CobraFramework(CobraConfiguration):
 
     def CobraDeploy(self, more=None):
         try:
-            read_yaml = self.file_reader("./cobra.yaml")
-            load_yaml = self.yaml_loader(read_yaml)
+            read_yaml = self.fileReader("./cobra.yaml")
+            load_yaml = self.yamlLoader(read_yaml)
             deploy_yaml = load_yaml['deploy']
             configurations_yaml = self.deploy(deploy_yaml)
             # self.cobraDeploy.display_account()
@@ -226,8 +226,8 @@ class CobraFramework(CobraConfiguration):
 
     def CobraNetwork(self):
         try:
-            read_yaml = self.file_reader("./cobra.yaml")
-            load_yaml = self.yaml_loader(read_yaml)
+            read_yaml = self.fileReader("./cobra.yaml")
+            load_yaml = self.yamlLoader(read_yaml)
             network_yaml = load_yaml['network']
             configuration_yaml = self.network(network_yaml)
             return configuration_yaml
@@ -272,8 +272,8 @@ class CobraFramework(CobraConfiguration):
             compiledInterfaces = cobraInterfaces.getInterfaces()
 
         try:
-            read_yaml = self.file_reader("./cobra.yaml")
-            load_yaml = self.yaml_loader(read_yaml)
+            read_yaml = self.fileReader("./cobra.yaml")
+            load_yaml = self.yamlLoader(read_yaml)
             test_yaml = load_yaml['test']
             try:
                 test_paths = test_yaml['test_paths']
@@ -323,8 +323,8 @@ class CobraFramework(CobraConfiguration):
                              "error", bold=True)
             sys.exit()
         try:
-            read_yaml = self.file_reader("./cobra.yaml")
-            load_yaml = self.yaml_loader(read_yaml)
+            read_yaml = self.fileReader("./cobra.yaml")
+            load_yaml = self.yamlLoader(read_yaml)
             test_yaml = load_yaml['test']
             try:
                 _test = ['--cobra', 'cobra.yaml']
