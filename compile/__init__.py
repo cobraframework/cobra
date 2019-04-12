@@ -3,6 +3,7 @@ from solc import compile_source
 from datetime import datetime
 from json import loads, dumps
 from os.path import basename
+import solc
 import json
 import web3
 import sys
@@ -37,7 +38,7 @@ class CobraCompile:
                 read_file.close()
                 return return_file
         except FileNotFoundError:
-            self.cobra_print("[ERROR] Cobra-FileNotFound: %s" % file_path, "error", bold=True)
+            self.cobra_print("[ERROR] CobraFileNotFound: %s" % file_path, "error", bold=True)
             sys.exit()
 
     def file_writer(self, file_path, docs):
@@ -100,7 +101,12 @@ class CobraCompile:
         if import_remappings is None:
             import_remappings = []
         solidity_contract = self.file_reader(file_path_sol)
-        compiled_sol = compile_source(solidity_contract, allow_paths=allow_paths, import_remappings=import_remappings)
+        try:
+            compiled_sol = compile_source(solidity_contract, allow_paths=allow_paths, import_remappings=import_remappings)
+        except solc.exceptions.SolcError as solcError:
+            solcError = str(solcError).split('\n')
+            self.cobra_print("[ERROR] CobraCompileError: %s" % solcError[0], "error", bold=True)
+            sys.exit()
         contract_interface = compiled_sol['<stdin>:' + basename(file_path_sol)[:-4]]
         contract_interface['bin'] = self.bytecode_link_to_md5(contract_interface['bin'], contract_interface)
         contract_interface['bin-runtime'] = self.bytecode_link_to_md5(
