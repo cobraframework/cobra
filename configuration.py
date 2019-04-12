@@ -47,6 +47,45 @@ class CobraConfiguration:
 
     def compile(self, compile_yaml):
         compiles = []
+
+        # Finding solidity path directory
+        if 'solidity_path_dir' in compile_yaml:
+            # Finding contracts array
+            if 'contracts' in compile_yaml:
+                artifact_path_dir = None
+                # Checking artifact path directory
+                if 'artifact_path_dir' in compile_yaml:
+                    artifact_path_dir = compile_yaml['artifact_path_dir']
+                else:
+                    self.cobra_print("[WARNING] CobraNotFound: Can't find artifact_path_dir. "
+                                     "By default ./build/contracts", "warning", bold=True)
+                # Looping contracts
+                for contract in compile_yaml['contracts']:
+                    # Finding solidity on contract
+                    if 'solidity' in contract['contract']:
+                        # Finding links path dir on contract checking links path dir is not None
+                        if 'links_path_dir' in contract['contract'] and \
+                                contract['contract']['links_path_dir']:
+                            print('found links_path_dir')
+                        # Finding links path dir on contract checking links path dir is None
+                        elif 'links_path_dir' in contract['contract'] and \
+                                not contract['contract']['links_path_dir']:
+                            print('not found links_path_dir')
+                        else:
+                            print('there is no links_path_dir')
+                    else:
+                        self.cobra_print("[ERROR] CobraNotFound: Can't find solidity in contract.",
+                                         "error", bold=True)
+                        sys.exit()
+            else:
+                self.cobra_print("[ERROR] CobraNotFound: Can't find contracts in compile [cobra.yaml]",
+                                 "error", bold=True)
+                sys.exit()
+        else:
+            self.cobra_print("[ERROR] Cobra: Can't find solidity_path_dir in compile [cobra.yaml]",
+                             "error", bold=True)
+            sys.exit()
+
         try:
             if compile_yaml['solidity_path_dir'] and compile_yaml['contracts']:
                 artifact_path_dir = None
@@ -331,7 +370,8 @@ class CobraConfiguration:
                         self.cobra_print("[ERROR] Cobra: Can't find solidity in contract.", "error", bold=True)
                         sys.exit()
         except KeyError:
-            self.cobra_print("[ERROR] Cobra: Can't find solidity_path_dir or contracts in compile [cobra.yaml]", "error", bold=True)
+            self.cobra_print("[ERROR] Cobra: Can't find solidity_path_dir or contracts in compile [cobra.yaml]",
+                             "error", bold=True)
             sys.exit()
         return compiles
 
@@ -506,7 +546,8 @@ class CobraConfiguration:
                         private=hdwallet_yaml['private']
                     ))
         else:
-            self.cobra_print("[ERROR] CobraNotFound: Can't find mnemonic(seed)/private in hdwallet.", "error", bold=True)
+            self.cobra_print("[ERROR] CobraNotFound: Can't find mnemonic(seed)/private in hdwallet.", "error",
+                             bold=True)
             sys.exit()
 
     def network(self, network_yaml):
