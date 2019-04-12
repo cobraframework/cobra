@@ -19,7 +19,7 @@ class CobraConfiguration:
         else:
             return color_print(text, bold=bold, highlighter=background, underline=underline)
 
-    def file_reader(self, file):
+    def fileReader(self, file):
         try:
             with open(file, 'r') as read_file:
                 return_file = read_file.read()
@@ -29,7 +29,7 @@ class CobraConfiguration:
             self.cobra_print("[Cobra] FileNotFound: %s" % file, "error", bold=True)
         sys.exit()
 
-    def yaml_loader(self, yaml_file):
+    def yamlLoader(self, yaml_file):
         try:
             load_compile = yaml.load(yaml_file)
             return load_compile
@@ -37,7 +37,7 @@ class CobraConfiguration:
             self.cobra_print("[Cobra] YAMLScannerError: %s" % scannerError, "error", bold=True)
         sys.exit()
 
-    def json_loader(self, json_file):
+    def jsonLoader(self, json_file):
         try:
             loaded_json = json.loads(json_file)
             return loaded_json
