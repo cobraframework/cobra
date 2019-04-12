@@ -45,7 +45,8 @@ class CobraFramework(CobraConfiguration):
     def CobraArgumentParser(self, argv):
         parser = argparse.ArgumentParser(
             prog="cobra",
-            usage="[-h] [help] [compile] [deploy] [migrate] [test {--unittest} or {--pytest}]",
+            usage="[-h] [help] [compile {--more}] [deploy {--more}] [migrate {--more}] "
+                  "[test {--unittest} or {--pytest}, {--more}]",
             formatter_class=argparse.RawDescriptionHelpFormatter,
             epilog=textwrap.dedent('''\
                         --------------------
@@ -70,17 +71,25 @@ class CobraFramework(CobraConfiguration):
         parser_help = cobra_parser.add_parser('help')
         parser_help.add_argument("help", action='store_true',
                                  help=' Show this help message and exit')
+
         parser_compile = cobra_parser.add_parser('compile')
         parser_compile.add_argument("compile", action='store_true',
                                     help='compile contract source files')
+        parser_compile.add_argument('-m', '--more', action='store_true',
+                                    help='View more errors [compile]')
+
         parser_migrate = cobra_parser.add_parser('migrate')
         parser_migrate.add_argument(dest="migrate", action='store_true',
                                     help='Alias for deploy')
+        parser_migrate.add_argument('-m', '--more', action='store_true',
+                                    help='View more errors [migrate]')
+
         parser_deploy = cobra_parser.add_parser('deploy')
         parser_deploy.add_argument("deploy", action='store_true',
                                    help='Run deploy to deploy compiled contracts')
         parser_deploy.add_argument('-m', '--more', action='store_true',
-                                 help='View more errors [deploy]')
+                                   help='View more errors [deploy]')
+
         parser_test = cobra_parser.add_parser('test')
         parser_test.add_argument("test", action='store_true',
                                  help="Run Python test by default [Unittest]. There are two types of testing framework "
@@ -108,6 +117,7 @@ class CobraFramework(CobraConfiguration):
         elif cobra_args.migrate and \
                 cobra_args.more:
             self.CobraDeploy(more=True)
+
         elif cobra_args.deploy and not \
                 cobra_args.more:
             self.CobraDeploy()
@@ -118,12 +128,14 @@ class CobraFramework(CobraConfiguration):
         elif cobra_args.test and not \
                 cobra_args.unittest and not cobra_args.pytest:
             self.CobraUnitTest()
+
         elif cobra_args.unittest and not \
                 cobra_args.more:
             self.CobraUnitTest()
         elif cobra_args.unittest and \
                 cobra_args.more:
             self.CobraUnitTest(more=True)
+
         elif cobra_args.pytest and not \
                 cobra_args.more:
             self.CobraPyTest()
@@ -159,7 +171,7 @@ class CobraFramework(CobraConfiguration):
                                               str(configuration_yaml['solidity'])[:-4] + ".json")
 
                     if self.cobraCompile.is_compiled(artifact_path_json, cobra_compiled):
-                        self.cobra_print("[WARNING] Cobra: Already compiled in %s" %
+                        self.cobra_print("[WARNING] Conflict: Already compiled in %s" %
                                          artifact_path_json, "warning", bold=True)
                         continue
                     self.cobraCompile.file_writer(artifact_path_json, str(cobra_compiled))
@@ -181,7 +193,7 @@ class CobraFramework(CobraConfiguration):
                                               str(configuration_yaml['solidity'])[:-4] + ".json")
 
                     if self.cobraCompile.is_compiled(artifact_path_json, cobra_compiled):
-                        self.cobra_print("[WARNING] Cobra: Already compiled in %s" %
+                        self.cobra_print("[WARNING] Conflict: Already compiled in %s" %
                                          artifact_path_json, "warning", bold=True)
                         continue
                     self.cobraCompile.file_writer(artifact_path_json, str(cobra_compiled))
