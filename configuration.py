@@ -88,13 +88,13 @@ class CobraConfiguration:
         if 'solidity_path_dir' in compile_yaml:
             # Finding contracts array
             if 'contracts' in compile_yaml:
-                artifact_path_dir = None
                 # Checking artifact path directory
                 if 'artifact_path_dir' in compile_yaml:
                     artifact_path_dir = compile_yaml['artifact_path_dir']
                 else:
-                    self.cobra_print("[WARNING] CobraNotFound: Can't find artifact_path_dir. "
-                                     "By default ./build/contracts", "warning", bold=True)
+                    artifact_path_dir = "./build/contracts"
+                    self.cobra_print("[WARNING] Checking: Can't find artifact_path_dir on compile. "
+                                     "by default uses './build/contracts'", bold=True)
                 # Looping contracts
                 for contract in compile_yaml['contracts']:
                     # Finding solidity on contract
