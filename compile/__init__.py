@@ -95,17 +95,28 @@ class CobraCompile:
             return False
         return False
 
-    def to_compile(self, file_path_sol, allow_paths=None, import_remappings=None):
+    def to_compile(self, file_path_sol, allow_paths=None, import_remappings=None, more=None):
         if allow_paths is None:
             allow_paths = str(os.getcwd())
+
         if import_remappings is None:
             import_remappings = []
+
+        if more is not None:
+            more = True
+        else:
+            more = False
+
         solidity_contract = self.file_reader(file_path_sol)
         try:
             compiled_sol = compile_source(solidity_contract, allow_paths=allow_paths, import_remappings=import_remappings)
         except solc.exceptions.SolcError as solcError:
-            solcError = str(solcError).split('\n')
-            self.cobra_print("[ERROR] CobraCompileError: %s" % solcError[0], "error", bold=True)
+            solcError = str(solcError)
+            solcErrorSplit = solcError.split('\n')
+            if not more:
+                self.cobra_print("[ERROR] CobraCompileError: %s" % solcErrorSplit[0], "error", bold=True)
+            else:
+                self.cobra_print("[ERROR] CobraCompileError: %s" % solcError, "error", bold=True)
             sys.exit()
         contract_interface = compiled_sol['<stdin>:' + basename(file_path_sol)[:-4]]
         contract_interface['bin'] = self.bytecode_link_to_md5(contract_interface['bin'], contract_interface)

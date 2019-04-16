@@ -108,8 +108,12 @@ class CobraFramework(CobraConfiguration):
 
         if cobra_args.help:
             parser.print_help()
-        elif cobra_args.compile:
+        elif cobra_args.compile and not \
+                cobra_args.more:
             self.CobraCompile()
+        elif cobra_args.compile and \
+                cobra_args.more:
+            self.CobraCompile(more=True)
 
         elif cobra_args.migrate and not \
                 cobra_args.more:
@@ -153,7 +157,7 @@ class CobraFramework(CobraConfiguration):
         else:
             return color_print(text, bold=bold, highlighter=background, underline=underline)
 
-    def CobraCompile(self):
+    def CobraCompile(self, more=None):
         try:
             read_yaml = self.fileReader("./cobra.yaml")
             load_yaml = self.yamlLoader(read_yaml)
@@ -163,7 +167,7 @@ class CobraFramework(CobraConfiguration):
                 remappings = configuration_yaml['remappings']
                 file_path_sol = join(configuration_yaml['solidity_path_dir'], configuration_yaml['solidity'])
                 if configuration_yaml['links_path_dir'] is None:
-                    cobra_compiled = self.cobraCompile.to_compile(file_path_sol, None, remappings)
+                    cobra_compiled = self.cobraCompile.to_compile(file_path_sol, None, remappings, more)
 
                     if not isdir(configuration_yaml['artifact_path_dir']):
                         makedirs(configuration_yaml['artifact_path_dir'])
@@ -185,7 +189,7 @@ class CobraFramework(CobraConfiguration):
                         else:
                             links_path_dir = links_path_dir + "," + str(allow_path)
 
-                    cobra_compiled = self.cobraCompile.to_compile(file_path_sol, links_path_dir, remappings)
+                    cobra_compiled = self.cobraCompile.to_compile(file_path_sol, links_path_dir, remappings, more)
 
                     if not isdir(configuration_yaml['artifact_path_dir']):
                         makedirs(configuration_yaml['artifact_path_dir'])
