@@ -283,18 +283,37 @@ class CobraConfiguration:
     def account(self, account_yaml):
         if 'address' in account_yaml:
             if 'gas' in account_yaml:
+                if 'gas_price' in account_yaml:
+                    return dict(account=dict(
+                        address=account_yaml['address'],
+                        gas=account_yaml['gas'],
+                        gas_price=account_yaml['gas_price']
+                    ))
+                else:
+                    return dict(account=dict(
+                        address=account_yaml['address'],
+                        gas=account_yaml['gas']
+                    ))
+            else:
+                if 'gas_price' in account_yaml:
+                    return dict(account=dict(
+                        address=account_yaml['address'],
+                        gas_price=account_yaml['gas_price']
+                    ))
+                else:
+                    return dict(account=dict(
+                        address=account_yaml['address']
+                    ))
+        elif 'gas' in account_yaml:
+            if 'gas_price' in account_yaml:
                 return dict(account=dict(
-                    address=account_yaml['address'],
-                    gas=account_yaml['gas']
+                    gas=account_yaml['gas'],
+                    gas_price=account_yaml['gas_price']
                 ))
             else:
                 return dict(account=dict(
-                    address=account_yaml['address']
+                    gas=account_yaml['gas']
                 ))
-        elif 'gas' in account_yaml:
-            return dict(account=dict(
-                gas=account_yaml['gas']
-            ))
         else:
             self.cobra_print("[ERROR] CobraNotFound: Can address/gas in account.", "error", bold=True)
             sys.exit()
@@ -306,62 +325,131 @@ class CobraConfiguration:
             # returns Mnemonic and Password
             if 'mnemonic' in hdwallet_yaml and 'password' in hdwallet_yaml:
                 if 'gas' in hdwallet_yaml:
-                    return dict(hdwallet=dict(
-                        mnemonic=hdwallet_yaml['mnemonic'],
-                        password=hdwallet_yaml['password'],
-                        gas=hdwallet_yaml['gas']
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            password=hdwallet_yaml['password'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            password=hdwallet_yaml['password'],
+                            gas=hdwallet_yaml['gas']
+                        ))
                 else:
-                    return dict(hdwallet=dict(
-                        mnemonic=hdwallet_yaml['mnemonic'],
-                        password=hdwallet_yaml['password']
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            password=hdwallet_yaml['password'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            password=hdwallet_yaml['password']
+                        ))
             # returns Mnemonic
             elif 'mnemonic' in hdwallet_yaml:
                 if 'gas' in hdwallet_yaml:
-                    return dict(hdwallet=dict(
-                        mnemonic=hdwallet_yaml['mnemonic'],
-                        gas=hdwallet_yaml['gas']
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            gas=hdwallet_yaml['gas']
+                        ))
                 else:
-                    return dict(hdwallet=dict(
-                        mnemonic=hdwallet_yaml['mnemonic']
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic']
+                        ))
             # returns Mnemonic (Seed is alias Mnemonic) and Password
             if 'seed' in hdwallet_yaml and 'password' in hdwallet_yaml:
                 if 'gas' in hdwallet_yaml:
-                    return dict(hdwallet=dict(
-                        mnemonic=hdwallet_yaml['seed'],
-                        password=hdwallet_yaml['password'],
-                        gas=hdwallet_yaml['gas']
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            password=hdwallet_yaml['password'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            password=hdwallet_yaml['password'],
+                            gas=hdwallet_yaml['gas']
+                        ))
                 else:
-                    return dict(hdwallet=dict(
-                        mnemonic=hdwallet_yaml['seed'],
-                        password=hdwallet_yaml['password']
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            password=hdwallet_yaml['password'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            password=hdwallet_yaml['password']
+                        ))
             # returns Mnemonic (Seed is alias Mnemonic)
             elif 'seed' in hdwallet_yaml:
                 if 'gas' in hdwallet_yaml:
-                    return dict(hdwallet=dict(
-                        mnemonic=hdwallet_yaml['seed'],
-                        gas=hdwallet_yaml['gas']
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            gas=hdwallet_yaml['gas']
+                        ))
                 else:
-                    return dict(hdwallet=dict(
-                        mnemonic=hdwallet_yaml['seed'],
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed']
+                        ))
             # returns Private Key
             if 'private' in hdwallet_yaml:
                 if 'gas' in hdwallet_yaml:
-                    return dict(hdwallet=dict(
-                        private=hdwallet_yaml['private'],
-                        gas=hdwallet_yaml['gas']
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            private=hdwallet_yaml['private'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            private=hdwallet_yaml['private'],
+                            gas=hdwallet_yaml['gas']
+                        ))
                 else:
-                    return dict(hdwallet=dict(
-                        private=hdwallet_yaml['private']
-                    ))
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            private=hdwallet_yaml['private'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            private=hdwallet_yaml['private']
+                        ))
         else:
             self.cobra_print("[ERROR] CobraNotFound: Can't find mnemonic(seed)/private in hdwallet.", "error",
                              bold=True)
