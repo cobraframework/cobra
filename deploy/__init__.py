@@ -154,8 +154,7 @@ class CobraDeploy(CobraProvider):
                     tx_hash = contract.deploy(transaction=transaction)
                     return tx_hash
             elif self.hdwallet is not None:
-                # self.web3.personal.importRawKey(
-                #     self.hdwallet['private_key'], 'cobraframework')
+                self.web3.personal.importRawKey(self.hdwallet['private_key'], None)
                 if 'gas' in self.hdwallet:
                     transaction = {
                         'from': self.web3.toChecksumAddress(self.hdwallet['address']),
