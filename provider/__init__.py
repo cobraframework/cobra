@@ -83,18 +83,37 @@ class CobraProvider:
         if 'account' in self.cobraNetwork:
             if 'address' in self.cobraNetwork['account']:
                 if 'gas' in self.cobraNetwork['account']:
+                    if 'gas_price' in self.cobraNetwork['account']:
+                        return dict(
+                            address=self.cobraNetwork['account']['address'],
+                            gas=self.cobraNetwork['account']['gas'],
+                            gas_price=self.cobraNetwork['account']['gas_price']
+                        )
+                    else:
+                        return dict(
+                            address=self.cobraNetwork['account']['address'],
+                            gas=self.cobraNetwork['account']['gas']
+                        )
+                else:
+                    if 'gas_price' in self.cobraNetwork['account']:
+                        return dict(
+                            address=self.cobraNetwork['account']['address'],
+                            gas_price=self.cobraNetwork['account']['gas_price']
+                        )
+                    else:
+                        return dict(
+                            address=self.cobraNetwork['account']['address']
+                        )
+            elif 'gas' in self.cobraNetwork['account']:
+                if 'gas_price' in self.cobraNetwork['account']:
                     return dict(
-                        address=self.cobraNetwork['account']['address'],
-                        gas=self.cobraNetwork['account']['gas']
+                        gas=self.cobraNetwork['account']['gas'],
+                        gas_price=self.cobraNetwork['account']['gas_price']
                     )
                 else:
                     return dict(
-                        address=self.cobraNetwork['account']['address']
+                        gas=self.cobraNetwork['account']['gas']
                     )
-            elif 'gas' in self.cobraNetwork['account']:
-                return dict(
-                    gas=self.cobraNetwork['account']['gas']
-                )
         else:
             return None
 
@@ -113,85 +132,170 @@ class CobraProvider:
                             mnemonic=self.cobraNetwork['hdwallet']['mnemonic'],
                             passphrase=self.cobraNetwork['hdwallet']['password'])
                         if 'gas' in self.cobraNetwork['hdwallet']:
-                            return dict(
-                                address=created_hdwallet['address'],
-                                public_key=created_hdwallet['public_key'],
-                                private_key=created_hdwallet['private_key'],
-                                gas=self.cobraNetwork['hdwallet']['gas'],
-                            )
+                            if 'gas_price' in self.cobraNetwork['hdwallet']:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas=self.cobraNetwork['hdwallet']['gas'],
+                                    gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                                )
+                            else:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas=self.cobraNetwork['hdwallet']['gas']
+                                )
                         else:
-                            return dict(
-                                address=created_hdwallet['address'],
-                                public_key=created_hdwallet['public_key'],
-                                private_key=created_hdwallet['private_key'],
-                            )
+                            if 'gas_price' in self.cobraNetwork['hdwallet']:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                                )
+                            else:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key']
+                                )
                     elif 'seed' in self.cobraNetwork['hdwallet']:
                         created_hdwallet = hdWallet.create_hdwallet(
                             mnemonic=self.cobraNetwork['hdwallet']['seed'],
                             passphrase=self.cobraNetwork['hdwallet']['password'])
                         if 'gas' in self.cobraNetwork['hdwallet']:
-                            return dict(
-                                address=created_hdwallet['address'],
-                                public_key=created_hdwallet['public_key'],
-                                private_key=created_hdwallet['private_key'],
-                                gas=self.cobraNetwork['hdwallet']['gas'],
-                            )
+                            if 'gas_price' in self.cobraNetwork['hdwallet']:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas=self.cobraNetwork['hdwallet']['gas'],
+                                    gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                                )
+                            else:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas=self.cobraNetwork['hdwallet']['gas']
+                                )
                         else:
-                            return dict(
-                                address=created_hdwallet['address'],
-                                public_key=created_hdwallet['public_key'],
-                                private_key=created_hdwallet['private_key'],
-                            )
+                            if 'gas_price' in self.cobraNetwork['hdwallet']:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                                )
+                            else:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key']
+                                )
                 else:
                     if 'mnemonic' in self.cobraNetwork['hdwallet']:
                         created_hdwallet = hdWallet.create_hdwallet(
                             mnemonic=self.cobraNetwork['hdwallet']['mnemonic'])
                         if 'gas' in self.cobraNetwork['hdwallet']:
-                            return dict(
-                                address=created_hdwallet['address'],
-                                public_key=created_hdwallet['public_key'],
-                                private_key=created_hdwallet['private_key'],
-                                gas=self.cobraNetwork['hdwallet']['gas'],
-                            )
+                            if 'gas_price' in self.cobraNetwork['hdwallet']:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas=self.cobraNetwork['hdwallet']['gas'],
+                                    gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                                )
+                            else:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas=self.cobraNetwork['hdwallet']['gas']
+                                )
                         else:
-                            return dict(
-                                address=created_hdwallet['address'],
-                                public_key=created_hdwallet['public_key'],
-                                private_key=created_hdwallet['private_key'],
-                            )
+                            if 'gas_price' in self.cobraNetwork['hdwallet']:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                                )
+                            else:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key']
+                                )
                     elif 'seed' in self.cobraNetwork['hdwallet']:
                         created_hdwallet = hdWallet.create_hdwallet(
                             mnemonic=self.cobraNetwork['hdwallet']['seed'])
                         if 'gas' in self.cobraNetwork['hdwallet']:
-                            return dict(
-                                address=created_hdwallet['address'],
-                                public_key=created_hdwallet['public_key'],
-                                private_key=created_hdwallet['private_key'],
-                                gas=self.cobraNetwork['hdwallet']['gas'],
-                            )
+                            if 'gas_price' in self.cobraNetwork['hdwallet']:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas=self.cobraNetwork['hdwallet']['gas'],
+                                    gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                                )
+                            else:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas=self.cobraNetwork['hdwallet']['gas']
+                                )
                         else:
-                            return dict(
-                                address=created_hdwallet['address'],
-                                public_key=created_hdwallet['public_key'],
-                                private_key=created_hdwallet['private_key'],
-                            )
+                            if 'gas_price' in self.cobraNetwork['hdwallet']:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key'],
+                                    gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                                )
+                            else:
+                                return dict(
+                                    address=created_hdwallet['address'],
+                                    public_key=created_hdwallet['public_key'],
+                                    private_key=created_hdwallet['private_key']
+                                )
             elif 'private' in self.cobraNetwork['hdwallet']:
                 try:
                     created_hdwallet = hdWallet.hdwallet_from_private(
                         private=self.cobraNetwork['hdwallet']['private'])
                     if 'gas' in self.cobraNetwork['hdwallet']:
-                        return dict(
-                            address=created_hdwallet['address'],
-                            public_key=created_hdwallet['public_key'],
-                            private_key=created_hdwallet['private_key'],
-                            gas=self.cobraNetwork['hdwallet']['gas'],
-                        )
+                        if 'gas_price' in self.cobraNetwork['hdwallet']:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                                gas=self.cobraNetwork['hdwallet']['gas'],
+                                gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                            )
+                        else:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                                gas=self.cobraNetwork['hdwallet']['gas']
+                            )
                     else:
-                        return dict(
-                            address=created_hdwallet['address'],
-                            public_key=created_hdwallet['public_key'],
-                            private_key=created_hdwallet['private_key'],
-                        )
+                        if 'gas_price' in self.cobraNetwork['hdwallet']:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                                gas_price=self.cobraNetwork['hdwallet']['gas_price']
+                            )
+                        else:
+                            return dict(
+                                address=created_hdwallet['address'],
+                                public_key=created_hdwallet['public_key'],
+                                private_key=created_hdwallet['private_key'],
+                            )
                 except ValueError:
                     self.cobra_print("[ERROR] CobraValueError: Bad private key, if length must be 64!",
                                      "error", bold=True)
