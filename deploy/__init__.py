@@ -276,7 +276,8 @@ class CobraDeploy(CobraProvider):
                 # Deploying contract and received transaction hash
                 tx_hash = self.deploy_contract(contract)
 
-                address = self.web3.eth.getTransactionReceipt(tx_hash)['contractAddress']
+                transactionReceipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
+                address = transactionReceipt['contractAddress']
                 deployed = {
                     "links": {},
                     "contractAddress": address,
@@ -322,7 +323,8 @@ class CobraDeploy(CobraProvider):
             # Deploying contract and received transaction hash
             tx_hash = self.deploy_contract(contract)
 
-            address = self.web3.eth.waitForTransactionReceipt(tx_hash)['contractAddress']
+            transactionReceipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
+            address = transactionReceipt['contractAddress']
             deployed = {
                 "links": dict(),
                 "contractAddress": address,
