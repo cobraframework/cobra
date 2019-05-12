@@ -48,7 +48,6 @@ class CobraDeploy(CobraProvider):
             self.cobra_print(HDWALLET_TEXT % (self.web3.toChecksumAddress(self.hdwallet['address']),
                                               self.hdwallet['public_key'],
                                               self.hdwallet['private_key']), bold=True)
-
         else:
             self.cobra_print(ACCOUNT_TEXT % self.web3.eth.accounts[0], bold=True)
 
@@ -150,7 +149,8 @@ class CobraDeploy(CobraProvider):
                     else:
                         transaction = {
                             'from': self.web3.toChecksumAddress(self.account['address']),
-                            'gas': self.account['gas']
+                            'gas': self.account['gas'],
+                            'gasPrice': self.web3.eth.gasPrice
                         }
                         tx_hash = contract.deploy(transaction=transaction)
                         return tx_hash
@@ -166,66 +166,67 @@ class CobraDeploy(CobraProvider):
                     else:
                         transaction = {
                             'from': self.web3.toChecksumAddress(self.account['address']),
-                            'gas': 3000000
+                            'gas': 3000000,
+                            'gasPrice': self.web3.eth.gasPrice
                         }
                         tx_hash = contract.deploy(transaction=transaction)
                         return tx_hash
             elif self.hdwallet is not None:
-                print(self.hdwallet['address'])
-                # self.web3.personal.unlockAccount(self.hdwallet['private_key'], None)
                 if 'gas' in self.hdwallet:
                     if 'gas_price' in self.hdwallet:
-                        transaction = {
-                            'from': self.web3.toChecksumAddress(self.hdwallet['address']),
+                        account = self.web3.eth.account.privateKeyToAccount(self.hdwallet['private_key'])
+                        construct_txn = contract.constructor().buildTransaction({
+                            'from': account.address,
+                            'value': 0,
+                            'nonce': self.web3.eth.getTransactionCount(account.address),
                             'gas': self.hdwallet['gas'],
                             'gasPrice': self.hdwallet['gas_price']
-                        }
-                        # tx_hash = contract.deploy(transaction=transaction)
-                        tx_hash = contract.constructor().__dict__.get('data_in_transaction')
-
-                        transaction = {
-                            'from': self.hdwallet['address'],  # Only 'from' address, don't insert 'to' address
-                            'value': 0,  # Add how many ethers you'll transfer during the deploy
-                            'gas': 2000000,  # Trying to make it dynamic ..
-                            'gasPrice': self.web3.eth.gasPrice,  # Get Gas Price
-                            'nonce': self.web3.eth.getTransactionCount(self.hdwallet['address']),  # Get Nonce
-                            'data': tx_hash  # Here is the data sent through the network
-                        }
-                        # Sign the transaction using your private key
-                        signed = self.web3.eth.account.signTransaction(transaction, self.hdwallet['private_key'])
-                        # print(signed.rawTransaction)
+                        })
+                        signed = account.signTransaction(construct_txn)
                         tx_hash = self.web3.eth.sendRawTransaction(signed.rawTransaction)
-                        print(tx_hash.hex())
-
-                        sys.exit()
-                        # return tx_hash
+                        return tx_hash
                     else:
-                        transaction = {
-                            'from': self.web3.toChecksumAddress(self.hdwallet['address']),
-                            'gas': self.hdwallet['gas']
-                        }
-                        tx_hash = contract.deploy(transaction=transaction)
+                        account = self.web3.eth.account.privateKeyToAccount(self.hdwallet['private_key'])
+                        construct_txn = contract.constructor().buildTransaction({
+                            'from': account.address,
+                            'value': 0,
+                            'nonce': self.web3.eth.getTransactionCount(account.address),
+                            'gas': self.hdwallet['gas'],
+                            'gasPrice': self.web3.eth.gasPrice
+                        })
+                        signed = account.signTransaction(construct_txn)
+                        tx_hash = self.web3.eth.sendRawTransaction(signed.rawTransaction)
                         return tx_hash
                 else:
                     if 'gas_price' in self.hdwallet:
-                        transaction = {
-                            'from': self.web3.toChecksumAddress(self.hdwallet['address']),
+                        account = self.web3.eth.account.privateKeyToAccount(self.hdwallet['private_key'])
+                        construct_txn = contract.constructor().buildTransaction({
+                            'from': account.address,
+                            'value': 0,
+                            'nonce': self.web3.eth.getTransactionCount(account.address),
                             'gas': 3000000,
                             'gasPrice': self.hdwallet['gas_price']
-                        }
-                        tx_hash = contract.deploy(transaction=transaction)
+                        })
+                        signed = account.signTransaction(construct_txn)
+                        tx_hash = self.web3.eth.sendRawTransaction(signed.rawTransaction)
                         return tx_hash
                     else:
-                        transaction = {
-                            'from': self.web3.toChecksumAddress(self.hdwallet['address']),
-                            'gas': 3000000
-                        }
-                        tx_hash = contract.deploy(transaction=transaction)
+                        account = self.web3.eth.account.privateKeyToAccount(self.hdwallet['private_key'])
+                        construct_txn = contract.constructor().buildTransaction({
+                            'from': account.address,
+                            'value': 0,
+                            'nonce': self.web3.eth.getTransactionCount(account.address),
+                            'gas': 3000000,
+                            'gasPrice': self.web3.eth.gasPrice
+                        })
+                        signed = account.signTransaction(construct_txn)
+                        tx_hash = self.web3.eth.sendRawTransaction(signed.rawTransaction)
                         return tx_hash
             else:
                 transaction = {
                     'from': self.web3.eth.accounts[0],
-                    'gas': 3000000
+                    'gas': 3000000,
+                    'gasPrice': self.web3.eth.gasPrice
                 }
                 tx_hash = contract.deploy(transaction=transaction)
                 return tx_hash
