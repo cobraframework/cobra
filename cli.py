@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+# COBRA FRAMEWORK
+
 """
 Cobra is a fast and simple development environment framework for ethereum virtual
 machine and it have testing framework for testing smart contract(Solidity file).
@@ -114,6 +117,7 @@ def cobraPrint(text, color=None, bold=False, background=None, underline=False):
         return color_print(text, bold=bold, highlighter=background, underline=underline)
 
 
+# File Reader
 def fileReader(file):
     try:
         with open(file, 'r') as read_file:
@@ -125,6 +129,7 @@ def fileReader(file):
     sys.exit()
 
 
+# YAML file loader
 def yamlLoader(yaml_file):
     try:
         import yaml
@@ -140,6 +145,7 @@ def yamlLoader(yaml_file):
     sys.exit()
 
 
+# JSON file loader
 def jsonLoader(json_file):
     try:
         import json
