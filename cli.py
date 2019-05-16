@@ -18,6 +18,17 @@ from __future__ import with_statement
 __author__ = 'Meheret Tesfaye'
 __version__ = '0.1.0'
 __license__ = 'MIT'
+__epilog__ = '''\
+                            --------------------
+                            !!!PLEASE HELP ME!!!
+                            --------------------
+                Donate in Bitcoin: 3JiPsp6bT6PkXF3f9yZsL5hrdQwtVuXXAk
+                Donate in Ethereum: 0xD32AAEDF28A848e21040B6F643861A9077F83106
+                '''
+__description__ = '''\
+                Cobra Framework is a world class development environment, testing framework and
+                asset pipeline for blockchains using the Ethereum Virtual Machine (EVM), aiming 
+                to make life as a developer easier.   https://github.com/cobraframework'''
 
 import sys
 
@@ -37,17 +48,8 @@ if __name__ == "__main__":
         usage="[-h] [help] [compile {--more}] [deploy {--more}] [migrate {--more}] "
               "[test {--unittest} or {--pytest}, {--more}]",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=textwrap.dedent('''\
-                            --------------------
-                            !!!PLEASE HELP ME!!!
-                            --------------------
-                Donate in Bitcoin: 3JiPsp6bT6PkXF3f9yZsL5hrdQwtVuXXAk
-                Donate in Ethereum: 0xD32AAEDF28A848e21040B6F643861A9077F83106
-                '''),
-        description=textwrap.dedent('''\
-                Cobra Framework is a world class development environment, testing framework and
-                asset pipeline for blockchains using the Ethereum Virtual Machine (EVM), aiming 
-                to make life as a developer easier.   https://github.com/cobraframework'''))
+        epilog=textwrap.dedent(__epilog__),
+        description=textwrap.dedent(__description__))
 
     parser.set_defaults(compile=False, deploy=False, migrate=False,
                         test=False, unittest=False, pytest=False, help=False)
@@ -95,47 +97,630 @@ if __name__ == "__main__":
     # Cobra Agreements
     cobra_args = parser.parse_args()
 
-    print(cobra_args)
 
-#     if cobra_args.help:
-#         parser.print_help()
-#     elif cobra_args.compile and not \
-#             cobra_args.more:
-#         self.CobraCompile()
-#     elif cobra_args.compile and \
-#             cobra_args.more:
-#         self.CobraCompile(more=True)
-#
-#     elif cobra_args.migrate and not \
-#             cobra_args.more:
-#         self.CobraDeploy()
-#     elif cobra_args.migrate and \
-#             cobra_args.more:
-#         self.CobraDeploy(more=True)
-#
-#     elif cobra_args.deploy and not \
-#             cobra_args.more:
-#         self.CobraDeploy()
-#     elif cobra_args.deploy and \
-#             cobra_args.more:
-#         self.CobraDeploy(more=True)
-#
-#     elif cobra_args.test and not \
-#             cobra_args.unittest and not cobra_args.pytest:
-#         self.CobraUnitTest()
-#
-#     elif cobra_args.unittest and not \
-#             cobra_args.more:
-#         self.CobraUnitTest()
-#     elif cobra_args.unittest and \
-#             cobra_args.more:
-#         self.CobraUnitTest(more=True)
-#
-#     elif cobra_args.pytest and not \
-#             cobra_args.more:
-#         self.CobraPyTest()
-#     elif cobra_args.pytest and \
-#             cobra_args.more:
-#         self.CobraPyTest()
+def cobraPrint(text, color=None, bold=False, background=None, underline=False):
+    try:
+        from lazyme.string import color_print
+    except ImportError:
+        print("Please install lazyme!")
+        sys.exit(0)
+    if color == 'success':
+        return color_print(text, color='green', bold=bold, highlighter=background, underline=underline)
+    elif color == 'warning':
+        return color_print(text, color='yellow', bold=bold, highlighter=background, underline=underline)
+    elif color == 'error':
+        return color_print(text, color='red', bold=bold, highlighter=background, underline=underline)
+    else:
+        return color_print(text, bold=bold, highlighter=background, underline=underline)
 
 
+def fileReader(file):
+    try:
+        with open(file, 'r') as read_file:
+            return_file = read_file.read()
+            read_file.close()
+            return return_file
+    except FileNotFoundError:
+        cobraPrint("[Cobra] FileNotFound: %s" % file, "error", bold=True)
+    sys.exit()
+
+
+def yamlLoader(yaml_file):
+    try:
+        import yaml
+        from yaml import load
+    except ImportError:
+        cobraPrint("Please install yaml!", "error")
+        sys.exit()
+    try:
+        load_compile = load(yaml_file)
+        return load_compile
+    except yaml.scanner.ScannerError as scannerError:
+        cobraPrint("[Cobra] YAMLScannerError: %s" % scannerError, "error", bold=True)
+    sys.exit()
+
+
+def jsonLoader(json_file):
+    try:
+        import json
+        from json import loads
+    except ImportError:
+        cobraPrint("Please install json!", "error")
+        sys.exit()
+    try:
+        loaded_json = loads(json_file)
+        return loaded_json
+    except json.decoder.JSONDecodeError as jsonDecodeError:
+        cobraPrint("[Cobra] JSONDecodeError: %s" % jsonDecodeError, "error", bold=True)
+    sys.exit()
+
+
+class Configuration:
+
+    def __init__(self):
+        pass
+
+    def hasRemapping(self, contract):
+        # Finding remappings and checking not None
+        if 'remappings' in contract and \
+                contract['remappings']:
+            return True
+        # Finding remappings and checking None
+        elif 'remappings' in contract and \
+                not contract['remappings']:
+            return False
+        else:
+            return False
+
+    def hasSolidityPathDir(self, contract):
+        # Finding solidity path dir and checking not None
+        if 'solidity_path_dir' in contract and \
+                contract['solidity_path_dir']:
+            return True
+        # Finding solidity path dir and checking None
+        elif 'solidity_path_dir' in contract and \
+                not contract['solidity_path_dir']:
+            return False
+        else:
+            return False
+
+    def hasLinksPathDir(self, contract):
+        # Finding links path dir on contract checking not None
+        if 'links_path_dir' in contract and \
+                contract['links_path_dir']:
+            return True
+        # Finding links path dir on contract checking None
+        elif 'links_path_dir' in contract and \
+                not contract['links_path_dir']:
+            return False
+        else:
+            return False
+
+    def compile(self, compile_yaml):
+        compiles = []
+
+        # Finding solidity path directory
+        if 'solidity_path_dir' in compile_yaml:
+            # Finding contracts array
+            if 'contracts' in compile_yaml:
+                # Checking artifact path directory
+                if 'artifact_path_dir' in compile_yaml:
+                    artifact_path_dir = compile_yaml['artifact_path_dir']
+                else:
+                    artifact_path_dir = "./build/contracts"
+                    cobraPrint("[WARNING] Checking: Can't find artifact_path_dir on compile. "
+                               "by default uses './build/contracts'", bold=True)
+                # Looping contracts
+                for contract in compile_yaml['contracts']:
+                    # Finding solidity on contract
+                    if 'solidity' in contract['contract']:
+                        if self.hasLinksPathDir(contract['contract']):
+                            if self.hasSolidityPathDir(contract['contract']):
+                                if self.hasRemapping(contract['contract']):
+                                    compiles.append(dict(
+                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=contract['contract']['links_path_dir'],
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=contract['contract']['remappings']
+                                    ))
+                                    continue
+                                else:
+                                    compiles.append(dict(
+                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=contract['contract']['links_path_dir'],
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=None
+                                    ))
+                                    continue
+                            else:
+                                if self.hasRemapping(contract['contract']):
+                                    compiles.append(dict(
+                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=contract['contract']['links_path_dir'],
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=contract['contract']['remappings']
+                                    ))
+                                    continue
+                                else:
+                                    compiles.append(dict(
+                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=contract['contract']['links_path_dir'],
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=None
+                                    ))
+                                    continue
+                        else:
+                            if self.hasSolidityPathDir(contract['contract']):
+                                if self.hasRemapping(contract['contract']):
+                                    compiles.append(dict(
+                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=None,
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=contract['contract']['remappings']
+                                    ))
+                                    continue
+                                else:
+                                    compiles.append(dict(
+                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=None,
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=None
+                                    ))
+                                    continue
+                            else:
+                                if self.hasRemapping(contract['contract']):
+                                    compiles.append(dict(
+                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=None,
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=contract['contract']['remappings']
+                                    ))
+                                    continue
+                                else:
+                                    compiles.append(dict(
+                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                        solidity=contract['contract']['solidity'],
+                                        links_path_dir=None,
+                                        artifact_path_dir=artifact_path_dir,
+                                        remappings=None
+                                    ))
+                                    continue
+                    else:
+                        cobraPrint("[ERROR] CobraNotFound: Can't find solidity in contract.",
+                                   "error", bold=True)
+                        sys.exit()
+            else:
+                cobraPrint("[ERROR] CobraNotFound: Can't find contracts in compile [cobra.yaml]",
+                           "error", bold=True)
+                sys.exit()
+        else:
+            cobraPrint("[ERROR] Cobra: Can't find solidity_path_dir in compile [cobra.yaml]",
+                       "error", bold=True)
+            sys.exit()
+
+        return compiles
+
+    def deploy(self, deploy_yaml):
+        deploys = []
+
+        if 'artifact_path_dir' in deploy_yaml:
+            if 'contracts' in deploy_yaml:
+                for contract in deploy_yaml['contracts']:
+
+                    if 'artifact' in contract['contract']:
+                        if 'links' in contract['contract']:
+                            if contract['contract']['links']:
+                                deploys.append(dict(
+                                    artifact_path_dir=deploy_yaml['artifact_path_dir'],
+                                    artifact=contract['contract']['artifact'],
+                                    links=contract['contract']['links']
+                                ))
+                                continue
+                            elif not contract['contract']['links']:
+                                deploys.append(dict(
+                                    artifact_path_dir=deploy_yaml['artifact_path_dir'],
+                                    artifact=contract['contract']['artifact'],
+                                    links=None
+                                ))
+                                continue
+                        else:
+                            deploys.append(dict(
+                                artifact_path_dir=deploy_yaml['artifact_path_dir'],
+                                artifact=contract['contract']['artifact'],
+                                links=None
+                            ))
+                            continue
+                    else:
+                        cobraPrint("[ERROR] CobraNotFound: Can't find artifact in contract.", "error", bold=True)
+                        sys.exit()
+            else:
+                cobraPrint(
+                    "[ERROR] CobraNotFound: Can't find contracts in deploy", "error", bold=True)
+                sys.exit()
+        else:
+            cobraPrint(
+                "[ERROR] CobraNotFound: Can't find artifact_path_dir in deploy", "error", bold=True)
+            sys.exit()
+
+        return deploys
+
+    def test(self, test_yaml):
+        tests = []
+
+        if 'artifact_path_dir' in test_yaml:
+            if 'contracts' in test_yaml:
+                for contract in test_yaml['contracts']:
+
+                    if 'artifact' in contract['contract']:
+                        if 'links' in contract['contract']:
+                            if contract['contract']['links']:
+                                tests.append(dict(
+                                    artifact_path_dir=test_yaml['artifact_path_dir'],
+                                    artifact=contract['contract']['artifact'],
+                                    links=contract['contract']['links']
+                                ))
+                                continue
+                            elif not contract['contract']['links']:
+                                tests.append(dict(
+                                    artifact_path_dir=test_yaml['artifact_path_dir'],
+                                    artifact=contract['contract']['artifact'],
+                                    links=None
+                                ))
+                                continue
+                        else:
+                            tests.append(dict(
+                                artifact_path_dir=test_yaml['artifact_path_dir'],
+                                artifact=contract['contract']['artifact'],
+                                links=None
+                            ))
+                            continue
+                    else:
+                        cobraPrint("[ERROR] CobraNotFound: Can't find artifact in contract.", "error", bold=True)
+                        sys.exit()
+            else:
+                cobraPrint(
+                    "[ERROR] CobraNotFound: Can't find contracts in test", "error", bold=True)
+                sys.exit()
+        else:
+            cobraPrint(
+                "[ERROR] CobraNotFound: Can't find artifact_path_dir in test", "error", bold=True)
+            sys.exit()
+
+        return tests
+
+    def account(self, account_yaml):
+        if 'address' in account_yaml:
+            if 'gas' in account_yaml:
+                if 'gas_price' in account_yaml:
+                    return dict(account=dict(
+                        address=account_yaml['address'],
+                        gas=account_yaml['gas'],
+                        gas_price=account_yaml['gas_price']
+                    ))
+                else:
+                    return dict(account=dict(
+                        address=account_yaml['address'],
+                        gas=account_yaml['gas']
+                    ))
+            else:
+                if 'gas_price' in account_yaml:
+                    return dict(account=dict(
+                        address=account_yaml['address'],
+                        gas_price=account_yaml['gas_price']
+                    ))
+                else:
+                    return dict(account=dict(
+                        address=account_yaml['address']
+                    ))
+        elif 'gas' in account_yaml:
+            if 'gas_price' in account_yaml:
+                return dict(account=dict(
+                    gas=account_yaml['gas'],
+                    gas_price=account_yaml['gas_price']
+                ))
+            else:
+                return dict(account=dict(
+                    gas=account_yaml['gas']
+                ))
+        else:
+            cobraPrint("[ERROR] CobraNotFound: Can address/gas in account.", "error", bold=True)
+            sys.exit()
+
+    def hdwallet(self, hdwallet_yaml):
+        if 'mnemonic' in hdwallet_yaml or \
+                'seed' in hdwallet_yaml or \
+                'private' in hdwallet_yaml:
+            # returns Mnemonic and Password
+            if 'mnemonic' in hdwallet_yaml and 'password' in hdwallet_yaml:
+                if 'gas' in hdwallet_yaml:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            password=hdwallet_yaml['password'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            password=hdwallet_yaml['password'],
+                            gas=hdwallet_yaml['gas']
+                        ))
+                else:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            password=hdwallet_yaml['password'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            password=hdwallet_yaml['password']
+                        ))
+            # returns Mnemonic
+            elif 'mnemonic' in hdwallet_yaml:
+                if 'gas' in hdwallet_yaml:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            gas=hdwallet_yaml['gas']
+                        ))
+                else:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['mnemonic']
+                        ))
+            # returns Mnemonic (Seed is alias Mnemonic) and Password
+            if 'seed' in hdwallet_yaml and 'password' in hdwallet_yaml:
+                if 'gas' in hdwallet_yaml:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            password=hdwallet_yaml['password'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            password=hdwallet_yaml['password'],
+                            gas=hdwallet_yaml['gas']
+                        ))
+                else:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            password=hdwallet_yaml['password'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            password=hdwallet_yaml['password']
+                        ))
+            # returns Mnemonic (Seed is alias Mnemonic)
+            elif 'seed' in hdwallet_yaml:
+                if 'gas' in hdwallet_yaml:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            gas=hdwallet_yaml['gas']
+                        ))
+                else:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            mnemonic=hdwallet_yaml['seed']
+                        ))
+            # returns Private Key
+            if 'private' in hdwallet_yaml:
+                if 'gas' in hdwallet_yaml:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            private=hdwallet_yaml['private'],
+                            gas=hdwallet_yaml['gas'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            private=hdwallet_yaml['private'],
+                            gas=hdwallet_yaml['gas']
+                        ))
+                else:
+                    if 'gas_price' in hdwallet_yaml:
+                        return dict(hdwallet=dict(
+                            private=hdwallet_yaml['private'],
+                            gas_price=hdwallet_yaml['gas_price']
+                        ))
+                    else:
+                        return dict(hdwallet=dict(
+                            private=hdwallet_yaml['private']
+                        ))
+        else:
+            cobraPrint("[ERROR] CobraNotFound: Can't find mnemonic(seed)/private in hdwallet.", "error",
+                       bold=True)
+            sys.exit()
+
+    def network(self, network_yaml):
+        if 'development' in network_yaml:
+            if 'host' in network_yaml['development'] or \
+                    'url' in network_yaml['development']:
+                if 'host' in network_yaml['development']:
+                    if 'port' in network_yaml['development']:
+                        # Protocol
+                        if 'protocol' in network_yaml['development']:
+
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                        # No Protocol
+                        else:
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    host=network_yaml['development']['host'],
+                                    port=network_yaml['development']['port']
+                                )
+                    else:
+                        cobraPrint("[ERROR] CobraNotFound: Can't find port in %s when you are using host."
+                                   % 'development', "error", bold=True)
+                        sys.exit()
+                elif 'url' in network_yaml['development']:
+                    # Port
+                    if 'port' in network_yaml['development']:
+                        # Protocol
+                        if 'protocol' in network_yaml['development']:
+
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                        # No Protocol
+                        else:
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    url=network_yaml['development']['url'],
+                                    port=network_yaml['development']['port']
+                                )
+                    # No Port
+                    else:
+                        # Protocol
+                        if 'protocol' in network_yaml['development']:
+
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    url=network_yaml['development']['url'],
+                                    protocol=network_yaml['development']['protocol']
+                                )
+                        # No Protocol
+                        else:
+                            if 'hdwallet' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url']
+                                )
+                                hdwallet = self.hdwallet(network_yaml['development']['hdwallet'])
+                                return {**__, **hdwallet}
+                            elif 'account' in network_yaml['development']:
+                                __ = dict(
+                                    url=network_yaml['development']['url']
+                                )
+                                account = self.account(network_yaml['development']['account'])
+                                return {**__, **account}
+                            else:
+                                return dict(
+                                    url=network_yaml['development']['url']
+                                )
+            else:
+                cobraPrint("[ERROR] CobraNotFound: Can't find host/url in %s." % 'development',
+                           "error", bold=True)
+                sys.exit()
+        else:
+            cobraPrint("[ERROR] CobraNotFound: Can't find development in network.", "error", bold=True)
+            sys.exit()
