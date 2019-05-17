@@ -10,12 +10,12 @@ import sys
 import websockets
 from datetime import datetime
 
-ACCOUNT_TEXT = """Deploying by:
-    Address: %s"""
-HDWALLET_TEXT = """Deploying by:
-    Address: %s
-    Public Key: %s
-    Private Key: %s"""
+ACCOUNT_TEXT = """Balance: %d
+Address: %s"""
+HDWALLET_TEXT = """Balance: %d
+Address: %s
+Public Key: %s
+Private Key: %s"""
 
 
 class CobraDeploy(CobraProvider):
@@ -30,6 +30,7 @@ class CobraDeploy(CobraProvider):
         self.web3 = self.get_web3()
         self.account = self.get_account()
         self.hdwallet = self.get_hdwallet()
+        # self.display_account()
 
     def cobra_print(self, text, color=None, bold=False, background=None, underline=False):
         if color == 'success':
@@ -43,9 +44,11 @@ class CobraDeploy(CobraProvider):
 
     def display_account(self):
         if self.account is not None:
-            self.cobra_print(ACCOUNT_TEXT % self.web3.toChecksumAddress(self.account['address']), bold=True)
+            self.cobra_print(ACCOUNT_TEXT % (self.web3.eth.getBalance(self.account['address']),
+                                             self.web3.toChecksumAddress(self.account['address'])), bold=True)
         elif self.hdwallet is not None:
-            self.cobra_print(HDWALLET_TEXT % (self.web3.toChecksumAddress(self.hdwallet['address']),
+            self.cobra_print(HDWALLET_TEXT % (self.web3.eth.getBalance(self.hdwallet['address']),
+                                              self.web3.toChecksumAddress(self.hdwallet['address']),
                                               self.hdwallet['public_key'],
                                               self.hdwallet['private_key']), bold=True)
         else:

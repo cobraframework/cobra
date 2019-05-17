@@ -183,16 +183,16 @@ class CobraInterfaces(CobraConfiguration):
             self.more = False
 
     def getInterfaces(self):
-        readiedYaml = self.file_reader(self.yamlFile)
-        loadedYaml = self.yaml_loader(readiedYaml)
+        readiedYaml = self.fileReader(self.yamlFile)
+        loadedYaml = self.yamlLoader(readiedYaml)
         if 'test' in loadedYaml:
             testYaml = loadedYaml['test']
             configurationsYaml = self.test(testYaml)
             for configurationYaml in configurationsYaml:
                 artifactJson = join(configurationYaml['artifact_path_dir'],
                                     configurationYaml['artifact'])
-                readiedArtifactJson = self.file_reader(artifactJson)
-                loadedArtifactJson = self.json_loader(readiedArtifactJson)
+                readiedArtifactJson = self.fileReader(artifactJson)
+                loadedArtifactJson = self.jsonLoader(readiedArtifactJson)
                 if configurationYaml['links'] is None:
                     self.testWithOutLink(loadedArtifactJson)
                 else:

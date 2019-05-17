@@ -1,12 +1,12 @@
-from lazyme.string import color_print
-from solc import compile_source
-from datetime import datetime
 from json import loads, dumps
+import json
 from os.path import basename
 import solc
-import json
-import web3
 import sys
+from solc import compile_source
+from datetime import datetime
+import web3
+from lazyme.string import color_print
 import re
 import os
 

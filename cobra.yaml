@@ -12,7 +12,7 @@ compile:
       contract: {
           solidity: "MetaCoin.sol",
           remappings: [],
-          links_path_dir: ["/home/meheret"]
+          links_path_dir: ["/"]
       }
     ]
 
@@ -39,7 +39,8 @@ test:
         artifact: "ConvertLib.json"
     },
     contract: {
-        artifact: "Mercy.json"
+        artifact: "Mercy.json",
+        links: []
     },
     contract: {
         artifact: "MetaCoin.json",
@@ -49,19 +50,20 @@ test:
 
 network:
   development: {
-#      url: "localhost:8545",
-      host: "localhost",
-      port: 8545,
+      url: "https://ropsten.infura.io/v3/14ba444524c3489fa46331b771a23d5c",
+#      host: "localhost",
+#      port: 8545,
       hdwallet: {
-#          mnemonic: "meheret tesfaye batu bayu",
+          mnemonic: "meheret tesfaye batu bayu",
 #          seed: "meheret tesfaye batu bayu",
-#          password: "meherett",
-          private: "603223a655005aed5294d0db4a7bc5095378e43e09cb4a1417c2650e949a4695",
-#          gas: 3000000
+          password: "meherett",
+#          private: "006ef09265e27a579d6fab1301f9af7b36d290473327ac007889deb35cb2b0e7",
+          gas: 3000000,
+#          gas_price: 1000000000000
       },
-      protocol: "HTTP",
+      protocol: "HTTPS",
 #      account: {
-#        address: "0x32c1965d6745c7bc6c97a02bd67e1963f93703fc",
+#        address: "0x6a373a75c388ac2d160f1d2b6d9ada34f29831cd",
 #        gas: 3000000
 #      }
   }
