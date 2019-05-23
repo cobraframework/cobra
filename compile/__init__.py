@@ -109,7 +109,9 @@ class CobraCompile:
 
         solidity_contract = self.file_reader(file_path_sol)
         try:
-            compiled_sol = compile_source(solidity_contract, allow_paths=allow_paths, import_remappings=import_remappings)
+            compiled_sol = compile_source(solidity_contract,
+                                          allow_paths=allow_paths,
+                                          import_remappings=import_remappings)
         except solc.exceptions.SolcError as solcError:
             solcError = str(solcError)
             solcErrorSplit = solcError.split('\n')
