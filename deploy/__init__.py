@@ -1,4 +1,4 @@
-from lazyme.string import color_print
+from colorama import Fore, Style
 from json import loads, dumps
 import json
 from solc import link_code
@@ -301,16 +301,19 @@ class CobraDeploy(CobraProvider):
                 artifact['networks'].setdefault(self.generate_numbers(), deployed)
                 artifact['updatedAt'] = str(datetime.now())
 
-                self.cobra_print("Deploy: %s done!" % contract_name, "success")
-                self.cobra_print("          TransactionHash: " + str(self.web3.toHex(tx_hash)))
-                self.cobra_print("          Address: %s" % str(address))
+                self.cobra_print(title="Deploy",
+                                 text="%s done!" % contract_name, type="success")
+                self.cobra_print(title="          TransactionHash",
+                                 text=str(self.web3.toHex(tx_hash)))
+                self.cobra_print(title="          Address", text=str(address))
 
                 artifact = self.web3.toText(dumps(artifact, indent=1).encode())
                 return artifact
             except KeyError:
                 return None
         else:
-            self.cobra_print("Deploy: %s already deployed.%s" % (contract, contract[:-5]), "warning")
+            self.cobra_print(title="Deploy", text="%s already deployed.%s" %
+                                                  (contract, contract_name), type="warning")
             return None
 
     def deploy_with_out_link(self, dir_path, contract, more=None):
@@ -362,12 +365,15 @@ class CobraDeploy(CobraProvider):
             artifact['networks'].setdefault(self.generate_numbers(), deployed)
             artifact['updatedAt'] = str(datetime.now())
 
-            self.cobra_print("Deploy: %s done!" % contract_name, "success")
-            self.cobra_print("          TransactionHash: " + str(self.web3.toHex(tx_hash)))
-            self.cobra_print("          Address: %s" % str(address))
+            self.cobra_print(title="Deploy",
+                             text="%s done!" % contract_name, type="success")
+            self.cobra_print(title="          TransactionHash",
+                             text=str(self.web3.toHex(tx_hash)))
+            self.cobra_print(title="          Address", text=str(address))
 
             artifact = self.web3.toText(dumps(artifact, indent=1).encode())
             return artifact
         else:
-            self.cobra_print("Deploy: %s already deployed.%s" % (contract, contract_name[:-5]), "warning")
+            self.cobra_print(title="Deploy", text="%s already deployed.%s" %
+                                                  (contract, contract_name), type="warning")
             return None

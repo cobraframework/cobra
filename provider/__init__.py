@@ -14,17 +14,38 @@ class CobraProvider:
         self.account = self.get_account()
         self.hdwallet = self.get_hdwallet()
 
-    def cobra_print(self, text, color=None):
+    def cobra_print(self, text, type=None, title=None):
         # Checking text instance is string
         if isinstance(text, str):
-            if color == 'success':
-                return print(Style.DIM + Fore.GREEN + '[SUCCESS]' + Style.RESET_ALL + ' ' + text)
-            elif color == 'warning':
-                return print(Style.DIM + Fore.YELLOW + '[WARNING]' + Style.RESET_ALL + ' ' + text)
-            elif color == 'error':
-                return print(Style.DIM + Fore.RED + '[ERROR]' + Style.RESET_ALL + ' ' + text)
-            else:
-                return print(text)
+            if title is None:
+                if type == 'success':
+                    return print(Style.DIM + Fore.GREEN + '[SUCCESS]'
+                                 + Style.RESET_ALL + ' ' + text)
+                elif type == 'warning':
+                    return print(Style.DIM + Fore.YELLOW + '[WARNING]'
+                                 + Style.RESET_ALL + ' ' + text)
+                elif type == 'error':
+                    return print(Style.DIM + Fore.RED + '[ERROR]'
+                                 + Style.RESET_ALL + ' ' + text)
+                else:
+                    return print(text)
+            elif title is not None \
+                    and isinstance(title, str):
+                if type == 'success':
+                    return print(Style.DIM + Fore.GREEN + '[SUCCESS]'
+                                 + Style.RESET_ALL + ' ' + Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+                elif type == 'warning':
+                    return print(Style.DIM + Fore.YELLOW + '[WARNING]'
+                                 + Style.RESET_ALL + ' ' + Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+                elif type == 'error':
+                    return print(Style.DIM + Fore.RED + '[ERROR]'
+                                 + Style.RESET_ALL + ' ' + Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+                else:
+                    return print(Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
 
     # Get Web3 Instance
     def get_web3(self):
