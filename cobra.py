@@ -13,6 +13,7 @@ License: MIT (see LICENSE for details)
 """
 
 from test import CobraInterfaces
+from colorama import Fore, Style
 from configuration import CobraConfiguration
 from eth_tester import EthereumTester
 from unittest import TestSuite
@@ -147,16 +148,6 @@ class CobraFramework(CobraConfiguration):
                 cobra_args.more:
             self.CobraPyTest()
 
-    def cobra_print(self, text, color=None, bold=False, background=None, underline=False):
-        if color == 'success':
-            return color_print(text, color='green', bold=bold, highlighter=background, underline=underline)
-        elif color == 'warning':
-            return color_print(text, color='yellow', bold=bold, highlighter=background, underline=underline)
-        elif color == 'error':
-            return color_print(text, color='red', bold=bold, highlighter=background, underline=underline)
-        else:
-            return color_print(text, bold=bold, highlighter=background, underline=underline)
-
     def CobraCompile(self, more=None):
         try:
             read_yaml = self.fileReader("./cobra.yaml")
@@ -171,16 +162,17 @@ class CobraFramework(CobraConfiguration):
 
                     if not isdir(configuration_yaml['artifact_path_dir']):
                         makedirs(configuration_yaml['artifact_path_dir'])
+                    solidity_name = str(configuration_yaml['solidity'])
                     artifact_path_json = join(configuration_yaml['artifact_path_dir'],
-                                              str(configuration_yaml['solidity'])[:-4] + ".json")
+                                              solidity_name[:-4] + ".json")
 
                     if self.cobraCompile.is_compiled(artifact_path_json, cobra_compiled):
-                        self.cobra_print("[WARNING] Conflict: Already compiled in %s" %
-                                         artifact_path_json, "warning", bold=True)
+                        self.cobra_print("Conflict: %s already compiled in %s" %
+                                         (solidity_name, artifact_path_json), "warning")
                         continue
                     self.cobraCompile.file_writer(artifact_path_json, str(cobra_compiled))
-                    self.cobra_print("[SUCCESS] Cobra: Compiled %s" %
-                                     artifact_path_json, "success", bold=True)
+                    self.cobra_print("Compile: %s done in %s" %
+                                     (solidity_name, artifact_path_json), "success")
                 else:
                     links_path_dir = str(os.getcwd())
                     for allow_path in configuration_yaml['links_path_dir']:
@@ -193,18 +185,19 @@ class CobraFramework(CobraConfiguration):
 
                     if not isdir(configuration_yaml['artifact_path_dir']):
                         makedirs(configuration_yaml['artifact_path_dir'])
+                    solidity_name = str(configuration_yaml['solidity'])
                     artifact_path_json = join(configuration_yaml['artifact_path_dir'],
-                                              str(configuration_yaml['solidity'])[:-4] + ".json")
+                                              solidity_name[:-4] + ".json")
 
                     if self.cobraCompile.is_compiled(artifact_path_json, cobra_compiled):
-                        self.cobra_print("[WARNING] Conflict: Already compiled in %s" %
-                                         artifact_path_json, "warning", bold=True)
+                        self.cobra_print("Conflict: %s already compiled in %s" %
+                                         (solidity_name, artifact_path_json), "warning")
                         continue
                     self.cobraCompile.file_writer(artifact_path_json, str(cobra_compiled))
-                    self.cobra_print("[SUCCESS] Cobra: Compiling %s" %
-                                     artifact_path_json, "success", bold=True)
+                    self.cobra_print("Compile: %s done in %s" %
+                                     (solidity_name, artifact_path_json), "success")
         except KeyError:
-            self.cobra_print("[ERROR] Cobra: Can't find compile in cobra.yaml", "error", bold=True)
+            self.cobra_print("NotFound: Can't find compile in cobra.yaml", "error")
             sys.exit()
 
     def CobraDeploy(self, more=None):
@@ -222,8 +215,8 @@ class CobraFramework(CobraConfiguration):
                         configuration_yaml['artifact'], more=more)
                     if artifact_json is not None:
                         self.cobraDeploy.file_writer(artifact_path_json, str(artifact_json))
-                        self.cobra_print("[SUCCESS] Cobra: Deploying %s" %
-                                         str(configuration_yaml['artifact'])[:-5], "success", bold=True)
+                        self.cobra_print("Cobra: Deploying %s" %
+                                         str(configuration_yaml['artifact'])[:-5], "success")
                     continue
                 else:
                     artifact_path_json = join(configuration_yaml['artifact_path_dir'], configuration_yaml['artifact'])
@@ -233,11 +226,11 @@ class CobraFramework(CobraConfiguration):
                         configuration_yaml['links'], more=more)
                     if artifact_json is not None:
                         self.cobraDeploy.file_writer(artifact_path_json, str(artifact_json))
-                        self.cobra_print("[SUCCESS] Cobra: Deploying %s" %
-                                         str(configuration_yaml['artifact'])[:-5], "success", bold=True)
+                        self.cobra_print("Cobra: Deploying %s" %
+                                         str(configuration_yaml['artifact'])[:-5], "success")
                     continue
         except KeyError:
-            self.cobra_print("[ERROR] CobraNotFound: Can't find deploy in cobra.yaml", "error", bold=True)
+            self.cobra_print("NotFound: Can't find deploy in cobra.yaml", "error")
             sys.exit()
 
     def CobraNetwork(self):
@@ -248,7 +241,7 @@ class CobraFramework(CobraConfiguration):
             configuration_yaml = self.network(network_yaml)
             return configuration_yaml
         except KeyError:
-            self.cobra_print("[ERROR] CobraNotFound: Can't find network in cobra.yaml", "error", bold=True)
+            self.cobra_print("NotFound: Can't find network in cobra.yaml", "error")
             sys.exit()
 
     def CobraUnitTest(self, more=None):
@@ -309,11 +302,11 @@ class CobraFramework(CobraConfiguration):
                 unittest.TextTestRunner(verbosity=2).run(testSuite)
 
             except KeyError:
-                self.cobra_print("[ERROR] CobraNotFound: Can't find test_paths in test", "error", bold=True)
+                self.cobra_print("NotFound: Can't find test_paths in test", "error")
                 sys.exit()
 
         except KeyError:
-            self.cobra_print("[ERROR] CobraNotFound: Can't find test in cobra.yaml", "error", bold=True)
+            self.cobra_print("NotFound: Can't find test in cobra.yaml", "error")
             sys.exit()
 
     def CobraPyTest(self):
@@ -331,12 +324,12 @@ class CobraFramework(CobraConfiguration):
                 pass
 
         if not pytest:
-            self.cobra_print("[ERROR] PyTestNotFound: install pytest framework 'pip install pytest'!",
-                             "error", bold=True)
+            self.cobra_print("NotFound: Install pytest framework 'pip install pytest'!",
+                             "error")
             sys.exit()
         elif not pytest_cobra:
-            self.cobra_print("[ERROR] PyTestCobraNotFound: install pytest-cobra 'pip install pytest-cobra'!",
-                             "error", bold=True)
+            self.cobra_print("NotFound: Install pytest-cobra 'pip install pytest-cobra'!",
+                             "error")
             sys.exit()
         try:
             read_yaml = self.fileReader("./cobra.yaml")
@@ -351,11 +344,11 @@ class CobraFramework(CobraConfiguration):
                         _test.append(test)
                 __import__("pytest").main(_test)
             except KeyError:
-                self.cobra_print("[ERROR] CobraNotFound: Can't find test_paths in test", "error", bold=True)
+                self.cobra_print("NotFound: Can't find test_paths in test", "error")
                 sys.exit()
 
         except KeyError:
-            self.cobra_print("[ERROR] CobraNotFound: Can't find test in cobra.yaml", "error", bold=True)
+            self.cobra_print("NotFound: Can't find test in cobra.yaml", "error")
             sys.exit()
 
 
