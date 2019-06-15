@@ -3,6 +3,7 @@ import json
 from os.path import basename
 import solc
 import sys
+from colorama import Fore, Style
 from solc import compile_source
 from datetime import datetime
 import web3
@@ -18,15 +19,17 @@ class CobraCompile:
     def __init__(self):
         pass
 
-    def cobra_print(self, text, color=None, bold=False, background=None, underline=False):
-        if color == 'success':
-            return color_print(text, color='green', bold=bold, highlighter=background, underline=underline)
-        elif color == 'warning':
-            return color_print(text, color='yellow', bold=bold, highlighter=background, underline=underline)
-        elif color == 'error':
-            return color_print(text, color='red', bold=bold, highlighter=background, underline=underline)
-        else:
-            return color_print(text, bold=bold, highlighter=background, underline=underline)
+    def cobra_print(self, text, color=None):
+        # Checking text instance is string
+        if isinstance(text, str):
+            if color == 'success':
+                return print(Style.DIM + Fore.GREEN + '[SUCCESS]' + Style.RESET_ALL + ' ' + text)
+            elif color == 'warning':
+                return print(Style.DIM + Fore.YELLOW + '[WARNING]' + Style.RESET_ALL + ' ' + text)
+            elif color == 'error':
+                return print(Style.DIM + Fore.RED + '[ERROR]' + Style.RESET_ALL + ' ' + text)
+            else:
+                return print(text)
 
     def strip(self, strip):
         return strip.strip()[1:-1]
@@ -38,7 +41,7 @@ class CobraCompile:
                 read_file.close()
                 return return_file
         except FileNotFoundError:
-            self.cobra_print("[ERROR] CobraFileNotFound: %s" % file_path, "error", bold=True)
+            self.cobra_print("FileNotFound: %s" % file_path, "error")
             sys.exit()
 
     def file_writer(self, file_path, docs):
@@ -116,9 +119,9 @@ class CobraCompile:
             solcError = str(solcError)
             solcErrorSplit = solcError.split('\n')
             if not more:
-                self.cobra_print("[ERROR] CobraCompileError: %s" % solcErrorSplit[0], "error", bold=True)
+                self.cobra_print("Compile: %s" % solcErrorSplit[0], "error")
             else:
-                self.cobra_print("[ERROR] CobraCompileError: %s" % solcError, "error", bold=True)
+                self.cobra_print("Compile: %s" % solcError, "error")
             sys.exit()
         contract_interface = compiled_sol['<stdin>:' + basename(file_path_sol)[:-4]]
         contract_interface['bin'] = self.bytecode_link_to_md5(contract_interface['bin'], contract_interface)
