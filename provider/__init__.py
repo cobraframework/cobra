@@ -1,6 +1,7 @@
 from lazyme.string import color_print
 from web3 import Web3, HTTPProvider, \
     WebsocketProvider, IPCProvider
+from colorama import Fore, Style
 import pkg_resources
 import sys
 
@@ -13,15 +14,17 @@ class CobraProvider:
         self.account = self.get_account()
         self.hdwallet = self.get_hdwallet()
 
-    def cobra_print(self, text, color=None, bold=False, background=None, underline=False):
-        if color == 'success':
-            return color_print(text, color='green', bold=bold, highlighter=background, underline=underline)
-        elif color == 'warning':
-            return color_print(text, color='yellow', bold=bold, highlighter=background, underline=underline)
-        elif color == 'error':
-            return color_print(text, color='red', bold=bold, highlighter=background, underline=underline)
-        else:
-            return color_print(text, bold=bold, highlighter=background, underline=underline)
+    def cobra_print(self, text, color=None):
+        # Checking text instance is string
+        if isinstance(text, str):
+            if color == 'success':
+                return print(Style.DIM + Fore.GREEN + '[SUCCESS]' + Style.RESET_ALL + ' ' + text)
+            elif color == 'warning':
+                return print(Style.DIM + Fore.YELLOW + '[WARNING]' + Style.RESET_ALL + ' ' + text)
+            elif color == 'error':
+                return print(Style.DIM + Fore.RED + '[ERROR]' + Style.RESET_ALL + ' ' + text)
+            else:
+                return print(text)
 
     # Get Web3 Instance
     def get_web3(self):
@@ -39,7 +42,7 @@ class CobraProvider:
 
         if not package:
             if error_message:
-                self.cobra_print(error_message, "error", bold=True)
+                self.cobra_print(error_message, "error")
             sys.exit()
 
     # Provider HTTP, WS or ICP
@@ -67,6 +70,10 @@ class CobraProvider:
                 if not self.get_url_host_port().startswith("http://"):
                     return HTTPProvider(str("http://") + self.get_url_host_port())
                 return HTTPProvider(self.get_url_host_port())
+        else:
+            self.cobra_print("NotFound: Can't find protocol in %s." % 'development',
+                             "error")
+            sys.exit()
 
     # Protocol HTTP, WS or ICP
     def get_url_host_port(self):
@@ -121,7 +128,7 @@ class CobraProvider:
     def get_hdwallet(self):
         if 'hdwallet' in self.cobraNetwork:
             self.package_checker("cobra-hdwallet",
-                                 "[ERROR] CobraHDWalletNotFound: install 'pip install cobra-hdwallet'!")
+                                 "CobraHDWalletNotFound: install 'pip install cobra-hdwallet'!")
             cobra_hdwallet = __import__("cobra_hdwallet")
             hdWallet = cobra_hdwallet.HDWallet()
             if 'mnemonic' in self.cobraNetwork['hdwallet'] or \
@@ -297,8 +304,8 @@ class CobraProvider:
                                 private_key=created_hdwallet['private_key'],
                             )
                 except ValueError:
-                    self.cobra_print("[ERROR] CobraValueError: Bad private key, if length must be 64!",
-                                     "error", bold=True)
+                    self.cobra_print("ValueError: Bad private key, if length must be 64!",
+                                     "error")
                     sys.exit()
         else:
             return None
