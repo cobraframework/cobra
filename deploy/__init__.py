@@ -277,7 +277,23 @@ class CobraDeploy(CobraProvider):
                 contract = self.web3.eth.contract(abi=abi, bytecode=linked_bytecode)
 
                 # Deploying contract and received transaction hash
-                tx_hash = self.deploy_contract(contract)
+                try:
+                    tx_hash = self.deploy_contract(contract)
+                except requests.exceptions.ConnectionError:
+                    self.cobra_print(
+                        "[ERROR] HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                        "error", bold=True)
+                    sys.exit()
+                except websockets.exceptions.InvalidMessage:
+                    self.cobra_print(
+                        "[ERROR] WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                        "error", bold=True)
+                    sys.exit()
+                except FileNotFoundError:
+                    self.cobra_print(
+                        "[ERROR] ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                        "error", bold=True)
+                    sys.exit()
 
                 transactionReceipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
                 address = transactionReceipt['contractAddress']
@@ -324,7 +340,23 @@ class CobraDeploy(CobraProvider):
             contract = self.web3.eth.contract(abi=abi, bytecode=bytecode)
 
             # Deploying contract and received transaction hash
-            tx_hash = self.deploy_contract(contract)
+            try:
+                tx_hash = self.deploy_contract(contract)
+            except requests.exceptions.ConnectionError:
+                self.cobra_print(
+                    "[ERROR] HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                    "error", bold=True)
+                sys.exit()
+            except websockets.exceptions.InvalidMessage:
+                self.cobra_print(
+                    "[ERROR] WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                    "error", bold=True)
+                sys.exit()
+            except FileNotFoundError:
+                self.cobra_print(
+                    "[ERROR] ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                    "error", bold=True)
+                sys.exit()
 
             transactionReceipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
             address = transactionReceipt['contractAddress']
