@@ -1,4 +1,4 @@
-from lazyme.string import color_print
+from colorama import Fore, Style
 import json
 import yaml
 import sys
@@ -9,15 +9,17 @@ class CobraConfiguration:
     def __init__(self):
         pass
 
-    def cobra_print(self, text, color=None, bold=False, background=None, underline=False):
-        if color == 'success':
-            return color_print(text, color='green', bold=bold, highlighter=background, underline=underline)
-        elif color == 'warning':
-            return color_print(text, color='yellow', bold=bold, highlighter=background, underline=underline)
-        elif color == 'error':
-            return color_print(text, color='red', bold=bold, highlighter=background, underline=underline)
-        else:
-            return color_print(text, bold=bold, highlighter=background, underline=underline)
+    def cobra_print(self, text, color=None):
+
+        if isinstance(text, str):
+            if color == 'success':
+                return print(Style.DIM + Fore.GREEN + '[SUCCESS]' + Style.RESET_ALL + ' ' + text)
+            elif color == 'warning':
+                return print(Style.DIM + Fore.YELLOW + '[WARNING]' + Style.RESET_ALL + ' ' + text)
+            elif color == 'error':
+                return print(Style.DIM + Fore.RED + '[ERROR]' + Style.RESET_ALL + ' ' + text)
+            else:
+                return print(text)
 
     def fileReader(self, file):
         try:
@@ -26,7 +28,7 @@ class CobraConfiguration:
                 read_file.close()
                 return return_file
         except FileNotFoundError:
-            self.cobra_print("[Cobra] FileNotFound: %s" % file, "error", bold=True)
+            self.cobra_print("FileNotFound: %s" % file, "error")
         sys.exit()
 
     def yamlLoader(self, yaml_file):
@@ -34,7 +36,9 @@ class CobraConfiguration:
             load_compile = yaml.load(yaml_file)
             return load_compile
         except yaml.scanner.ScannerError as scannerError:
-            self.cobra_print("[Cobra] YAMLScannerError: %s" % scannerError, "error", bold=True)
+            self.cobra_print("YAMLScannerError: %s" % scannerError, "error")
+        except yaml.parser.ParserError as parserError:
+            self.cobra_print("YAMLParserError: %s" % parserError, "error")
         sys.exit()
 
     def jsonLoader(self, json_file):
@@ -42,7 +46,7 @@ class CobraConfiguration:
             loaded_json = json.loads(json_file)
             return loaded_json
         except json.decoder.JSONDecodeError as jsonDecodeError:
-            self.cobra_print("[Cobra] JSONDecodeError: %s" % jsonDecodeError, "error", bold=True)
+            self.cobra_print("JSONDecodeError: %s" % jsonDecodeError, "error")
         sys.exit()
 
     def hasRemapping(self, contract):
@@ -93,8 +97,8 @@ class CobraConfiguration:
                     artifact_path_dir = compile_yaml['artifact_path_dir']
                 else:
                     artifact_path_dir = "./build/contracts"
-                    self.cobra_print("[WARNING] Checking: Can't find artifact_path_dir on compile. "
-                                     "by default uses './build/contracts'", bold=True)
+                    self.cobra_print("Checking: artifact_path_dir on compile. "
+                                     "by default uses './build/contracts'", "warning")
                 # Looping contracts
                 for contract in compile_yaml['contracts']:
                     # Finding solidity on contract
@@ -178,16 +182,16 @@ class CobraConfiguration:
                                     ))
                                     continue
                     else:
-                        self.cobra_print("[ERROR] CobraNotFound: Can't find solidity in contract.",
-                                         "error", bold=True)
+                        self.cobra_print("NotFound: solidity in contract.",
+                                         "error")
                         sys.exit()
             else:
-                self.cobra_print("[ERROR] CobraNotFound: Can't find contracts in compile [cobra.yaml]",
-                                 "error", bold=True)
+                self.cobra_print("NotFound: contracts in compile [cobra.yaml]",
+                                 "error")
                 sys.exit()
         else:
-            self.cobra_print("[ERROR] Cobra: Can't find solidity_path_dir in compile [cobra.yaml]",
-                             "error", bold=True)
+            self.cobra_print("NotFound: solidity_path_dir in compile [cobra.yaml]",
+                             "error")
             sys.exit()
 
         return compiles
@@ -223,15 +227,15 @@ class CobraConfiguration:
                             ))
                             continue
                     else:
-                        self.cobra_print("[ERROR] CobraNotFound: Can't find artifact in contract.", "error", bold=True)
+                        self.cobra_print("NotFound: artifact in contract.", "error")
                         sys.exit()
             else:
                 self.cobra_print(
-                    "[ERROR] CobraNotFound: Can't find contracts in deploy", "error", bold=True)
+                    "NotFound: contracts in deploy", "error")
                 sys.exit()
         else:
             self.cobra_print(
-                "[ERROR] CobraNotFound: Can't find artifact_path_dir in deploy", "error", bold=True)
+                "NotFound: artifact_path_dir in deploy", "error")
             sys.exit()
 
         return deploys
@@ -267,15 +271,13 @@ class CobraConfiguration:
                             ))
                             continue
                     else:
-                        self.cobra_print("[ERROR] CobraNotFound: Can't find artifact in contract.", "error", bold=True)
+                        self.cobra_print("NotFound: artifact in contract.", "error")
                         sys.exit()
             else:
-                self.cobra_print(
-                    "[ERROR] CobraNotFound: Can't find contracts in test", "error", bold=True)
+                self.cobra_print("NotFound: contracts in test", "error")
                 sys.exit()
         else:
-            self.cobra_print(
-                "[ERROR] CobraNotFound: Can't find artifact_path_dir in test", "error", bold=True)
+            self.cobra_print("NotFound: artifact_path_dir in test", "error")
             sys.exit()
 
         return tests
@@ -315,7 +317,7 @@ class CobraConfiguration:
                     gas=account_yaml['gas']
                 ))
         else:
-            self.cobra_print("[ERROR] CobraNotFound: Can address/gas in account.", "error", bold=True)
+            self.cobra_print("NotFound: Can address/gas in account.", "error")
             sys.exit()
 
     def hdwallet(self, hdwallet_yaml):
@@ -451,8 +453,7 @@ class CobraConfiguration:
                             private=hdwallet_yaml['private']
                         ))
         else:
-            self.cobra_print("[ERROR] CobraNotFound: Can't find mnemonic(seed)/private in hdwallet.", "error",
-                             bold=True)
+            self.cobra_print("NotFound: mnemonic(seed)/private in hdwallet.", "error")
             sys.exit()
 
     def network(self, network_yaml):
@@ -508,8 +509,8 @@ class CobraConfiguration:
                                     port=network_yaml['development']['port']
                                 )
                     else:
-                        self.cobra_print("[ERROR] CobraNotFound: Can't find port in %s when you are using host."
-                                         % 'development', "error", bold=True)
+                        self.cobra_print("NotFound: port in %s when you are using host."
+                                         % 'development', "error")
                         sys.exit()
                 elif 'url' in network_yaml['development']:
                     # Port
@@ -603,9 +604,9 @@ class CobraConfiguration:
                                     url=network_yaml['development']['url']
                                 )
             else:
-                self.cobra_print("[ERROR] CobraNotFound: Can't find host/url in %s." % 'development',
-                                 "error", bold=True)
+                self.cobra_print("NotFound: host/url in %s." % 'development',
+                                 "error")
                 sys.exit()
         else:
-            self.cobra_print("[ERROR] CobraNotFound: Can't find development in network.", "error", bold=True)
+            self.cobra_print("NotFound: development in network.", "error")
             sys.exit()
