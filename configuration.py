@@ -10,7 +10,7 @@ class CobraConfiguration:
         pass
 
     def cobra_print(self, text, color=None):
-
+        # Checking text instance is string
         if isinstance(text, str):
             if color == 'success':
                 return print(Style.DIM + Fore.GREEN + '[SUCCESS]' + Style.RESET_ALL + ' ' + text)
@@ -50,13 +50,13 @@ class CobraConfiguration:
         sys.exit()
 
     def hasRemapping(self, contract):
-        # Finding remappings and checking not None
-        if 'remappings' in contract and \
-                contract['remappings']:
+        # Finding import_remappings and checking not None
+        if 'import_remappings' in contract and \
+                contract['import_remappings']:
             return True
-        # Finding remappings and checking None
-        elif 'remappings' in contract and \
-                not contract['remappings']:
+        # Finding import_remappings and checking None
+        elif 'import_remappings' in contract and \
+                not contract['import_remappings']:
             return False
         else:
             return False
@@ -111,7 +111,7 @@ class CobraConfiguration:
                                         solidity=contract['contract']['solidity'],
                                         links_path_dir=contract['contract']['links_path_dir'],
                                         artifact_path_dir=artifact_path_dir,
-                                        remappings=contract['contract']['remappings']
+                                        import_remappings=contract['contract']['import_remappings']
                                     ))
                                     continue
                                 else:
@@ -120,7 +120,7 @@ class CobraConfiguration:
                                         solidity=contract['contract']['solidity'],
                                         links_path_dir=contract['contract']['links_path_dir'],
                                         artifact_path_dir=artifact_path_dir,
-                                        remappings=None
+                                        import_remappings=None
                                     ))
                                     continue
                             else:
@@ -130,7 +130,7 @@ class CobraConfiguration:
                                         solidity=contract['contract']['solidity'],
                                         links_path_dir=contract['contract']['links_path_dir'],
                                         artifact_path_dir=artifact_path_dir,
-                                        remappings=contract['contract']['remappings']
+                                        import_remappings=contract['contract']['import_remappings']
                                     ))
                                     continue
                                 else:
@@ -139,7 +139,7 @@ class CobraConfiguration:
                                         solidity=contract['contract']['solidity'],
                                         links_path_dir=contract['contract']['links_path_dir'],
                                         artifact_path_dir=artifact_path_dir,
-                                        remappings=None
+                                        import_remappings=None
                                     ))
                                     continue
                         else:
@@ -150,7 +150,7 @@ class CobraConfiguration:
                                         solidity=contract['contract']['solidity'],
                                         links_path_dir=None,
                                         artifact_path_dir=artifact_path_dir,
-                                        remappings=contract['contract']['remappings']
+                                        import_remappings=contract['contract']['import_remappings']
                                     ))
                                     continue
                                 else:
@@ -159,7 +159,7 @@ class CobraConfiguration:
                                         solidity=contract['contract']['solidity'],
                                         links_path_dir=None,
                                         artifact_path_dir=artifact_path_dir,
-                                        remappings=None
+                                        import_remappings=None
                                     ))
                                     continue
                             else:
@@ -169,7 +169,7 @@ class CobraConfiguration:
                                         solidity=contract['contract']['solidity'],
                                         links_path_dir=None,
                                         artifact_path_dir=artifact_path_dir,
-                                        remappings=contract['contract']['remappings']
+                                        import_remappings=contract['contract']['import_remappings']
                                     ))
                                     continue
                                 else:
@@ -178,7 +178,7 @@ class CobraConfiguration:
                                         solidity=contract['contract']['solidity'],
                                         links_path_dir=None,
                                         artifact_path_dir=artifact_path_dir,
-                                        remappings=None
+                                        import_remappings=None
                                     ))
                                     continue
                     else:
