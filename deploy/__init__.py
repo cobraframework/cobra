@@ -32,27 +32,17 @@ class CobraDeploy(CobraProvider):
         self.hdwallet = self.get_hdwallet()
         # self.display_account()
 
-    def cobra_print(self, text, color=None, bold=False, background=None, underline=False):
-        if color == 'success':
-            return color_print(text, color='green', bold=bold, highlighter=background, underline=underline)
-        elif color == 'warning':
-            return color_print(text, color='yellow', bold=bold, highlighter=background, underline=underline)
-        elif color == 'error':
-            return color_print(text, color='red', bold=bold, highlighter=background, underline=underline)
-        else:
-            return color_print(text, bold=bold, highlighter=background, underline=underline)
-
     def display_account(self):
         if self.account is not None:
             self.cobra_print(ACCOUNT_TEXT % (self.web3.eth.getBalance(self.account['address']),
-                                             self.web3.toChecksumAddress(self.account['address'])), bold=True)
+                                             self.web3.toChecksumAddress(self.account['address'])))
         elif self.hdwallet is not None:
             self.cobra_print(HDWALLET_TEXT % (self.web3.eth.getBalance(self.hdwallet['address']),
                                               self.web3.toChecksumAddress(self.hdwallet['address']),
                                               self.hdwallet['public_key'],
-                                              self.hdwallet['private_key']), bold=True)
+                                              self.hdwallet['private_key']))
         else:
-            self.cobra_print(ACCOUNT_TEXT % self.web3.eth.accounts[0], bold=True)
+            self.cobra_print(ACCOUNT_TEXT % self.web3.eth.accounts[0])
 
     def file_reader(self, file_path):
         try:
@@ -61,7 +51,7 @@ class CobraDeploy(CobraProvider):
                 read_file.close()
                 return return_file
         except FileNotFoundError:
-            self.cobra_print("FileNotFound: %s" % file_path, "error", bold=True)
+            self.cobra_print("FileNotFound: %s" % file_path, "error")
             sys.exit()
 
     def file_writer(self, file_path, docs):
@@ -93,18 +83,18 @@ class CobraDeploy(CobraProvider):
                     continue
                 except requests.exceptions.ConnectionError:
                     self.cobra_print(
-                        "[ERROR] HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error", bold=True)
+                        "HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                        "error")
                     sys.exit()
                 except websockets.exceptions.InvalidMessage:
                     self.cobra_print(
-                        "[ERROR] WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error", bold=True)
+                        "WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                        "error")
                     sys.exit()
                 except FileNotFoundError:
                     self.cobra_print(
-                        "[ERROR] ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error", bold=True)
+                        "ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                        "error")
                     sys.exit()
         except KeyError:
             return False
@@ -132,7 +122,7 @@ class CobraDeploy(CobraProvider):
                 except KeyError:
                     return
             except json.decoder.JSONDecodeError:
-                self.cobra_print("ArtifactDecodeError: %s" % link_file_path, "error", bold=True)
+                self.cobra_print("ArtifactDecodeError: %s" % link_file_path, "error")
                 return
         return contract_name_and_address
 
@@ -238,20 +228,20 @@ class CobraDeploy(CobraProvider):
             if 'message' in valueError and not self.more:
                 message = str(valueError['message'])
                 split_message = message.split('\n')
-                self.cobra_print("[ERROR] %s" % split_message[0],
-                                 "error", bold=True)
+                self.cobra_print("%s" % split_message[0],
+                                 "error")
             elif 'message' in valueError and self.more:
                 message = str(valueError['message'])
-                self.cobra_print("[ERROR] %s" % message,
-                                 "error", bold=True)
+                self.cobra_print("%s" % message,
+                                 "error")
             elif not self.more:
                 message = str(valueError)
-                self.cobra_print("[ERROR] %s..." % message[:75],
-                                 "error", bold=True)
+                self.cobra_print("%s..." % message[:75],
+                                 "error")
             elif self.more:
                 message = str(valueError)
-                self.cobra_print("[ERROR] %s..." % message,
-                                 "error", bold=True)
+                self.cobra_print("%s..." % message,
+                                 "error")
             sys.exit()
 
     def deploy_with_link(self, dir_path, contract, links, more=None):
@@ -259,16 +249,19 @@ class CobraDeploy(CobraProvider):
             self.more = True
         else:
             self.more = False
+
+        contract_name = str(contract[:-5])
         file_path = join(dir_path, contract)
         artifact_not_loads = self.file_reader(file_path)
+
         try:
             artifact = loads(artifact_not_loads)
         except json.decoder.JSONDecodeError:
-            self.cobra_print("ArtifactDecodeError: %s" % file_path, "error", bold=True)
+            self.cobra_print("ArtifactDecodeError: %s" % file_path, "error")
             return
 
         if not self.isDeployed(artifact):
-            self.cobra_print("Deploying " + contract[:-5] + "...", "warning", bold=True)
+            self.cobra_print("Deploying " + contract_name + "...")
             abi = artifact['abi']
             unlinked_bytecode = artifact['bin']
             get_link_address = self.get_links_address(dir_path, links)
@@ -281,18 +274,18 @@ class CobraDeploy(CobraProvider):
                     tx_hash = self.deploy_contract(contract)
                 except requests.exceptions.ConnectionError:
                     self.cobra_print(
-                        "[ERROR] HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error", bold=True)
+                        "HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                        "error")
                     sys.exit()
                 except websockets.exceptions.InvalidMessage:
                     self.cobra_print(
-                        "[ERROR] WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error", bold=True)
+                        "WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                        "error")
                     sys.exit()
                 except FileNotFoundError:
                     self.cobra_print(
-                        "[ERROR] ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error", bold=True)
+                        "ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                        "error")
                     sys.exit()
 
                 transactionReceipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
@@ -308,15 +301,16 @@ class CobraDeploy(CobraProvider):
                 artifact['networks'].setdefault(self.generate_numbers(), deployed)
                 artifact['updatedAt'] = str(datetime.now())
 
-                self.cobra_print("TransactionHash: " + str(self.web3.toHex(tx_hash)), 'success', bold=True)
-                self.cobra_print("Address: %s" % str(address), 'success', bold=True)
+                self.cobra_print("Deploy: %s done!" % contract_name, "success")
+                self.cobra_print("          TransactionHash: " + str(self.web3.toHex(tx_hash)))
+                self.cobra_print("          Address: %s" % str(address))
 
                 artifact = self.web3.toText(dumps(artifact, indent=1).encode())
                 return artifact
             except KeyError:
                 return None
         else:
-            self.cobra_print("[WARNING] Conflict: Already Deployed." + contract[:-5], "warning", bold=True)
+            self.cobra_print("Deploy: %s already deployed.%s" % (contract, contract[:-5]), "warning")
             return None
 
     def deploy_with_out_link(self, dir_path, contract, more=None):
@@ -330,11 +324,11 @@ class CobraDeploy(CobraProvider):
         try:
             artifact = loads(artifact_not_loads)
         except json.decoder.JSONDecodeError:
-            self.cobra_print("ArtifactDecodeError: %s" % file_path, "error", bold=True)
+            self.cobra_print("ArtifactDecodeError: %s" % file_path, "error")
             sys.exit()
 
         if not self.isDeployed(artifact):
-            self.cobra_print("Deploying " + contract_name + "...", "warning", bold=True)
+            self.cobra_print("Deploying " + contract_name + "...")
             abi = artifact['abi']
             bytecode = artifact['bin']
             contract = self.web3.eth.contract(abi=abi, bytecode=bytecode)
@@ -344,18 +338,18 @@ class CobraDeploy(CobraProvider):
                 tx_hash = self.deploy_contract(contract)
             except requests.exceptions.ConnectionError:
                 self.cobra_print(
-                    "[ERROR] HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                    "error", bold=True)
+                    "HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                    "error")
                 sys.exit()
             except websockets.exceptions.InvalidMessage:
                 self.cobra_print(
-                    "[ERROR] WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                    "error", bold=True)
+                    "WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                    "error")
                 sys.exit()
             except FileNotFoundError:
                 self.cobra_print(
-                    "[ERROR] ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                    "error", bold=True)
+                    "ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
+                    "error")
                 sys.exit()
 
             transactionReceipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
@@ -368,11 +362,12 @@ class CobraDeploy(CobraProvider):
             artifact['networks'].setdefault(self.generate_numbers(), deployed)
             artifact['updatedAt'] = str(datetime.now())
 
-            self.cobra_print("TransactionHash: " + str(self.web3.toHex(tx_hash)), 'success', bold=True)
-            self.cobra_print("Address: %s" % str(address), 'success', bold=True)
+            self.cobra_print("Deploy: %s done!" % contract_name, "success")
+            self.cobra_print("          TransactionHash: " + str(self.web3.toHex(tx_hash)))
+            self.cobra_print("          Address: %s" % str(address))
 
             artifact = self.web3.toText(dumps(artifact, indent=1).encode())
             return artifact
         else:
-            self.cobra_print("[WARNING] Conflict: Already Deployed." + contract[:-5], "warning", bold=True)
+            self.cobra_print("Deploy: %s already deployed.%s" % (contract, contract_name[:-5]), "warning")
             return None
