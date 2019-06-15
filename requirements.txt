@@ -1,3 +1,4 @@
+colorama== 0.4.1
 websockets==6.0
 cryptography==2.5
 eth-abi==1.2.2
