@@ -35,7 +35,7 @@ import unittest
 import argparse
 
 
-def CobraArgumentParser(self, argv):
+def CobraArgumentParser(argv):
     parser = argparse.ArgumentParser(
         prog="cobra",
         usage="[-h] [help] [compile {--more}] [deploy {--more}] [migrate {--more}] "
@@ -103,43 +103,58 @@ def CobraArgumentParser(self, argv):
         parser.print_help()
     elif cobra_args.compile and not \
             cobra_args.more:
-        cobraFramework = CobraFramework()
-        cobraFramework.CobraCompile()
+        cobraFramework = CobraFramework(more=False)
+        cobraFramework.CobraCompile(more=False)
     elif cobra_args.compile and \
             cobra_args.more:
-        self.CobraCompile(more=True)
+        cobraFramework = CobraFramework(more=True)
+        cobraFramework.CobraCompile(more=True)
 
     elif cobra_args.migrate and not \
             cobra_args.more:
-        self.CobraDeploy()
+        cobraFramework = CobraFramework(more=False)
+        cobraFramework.CobraDeploy(more=False)
     elif cobra_args.migrate and \
             cobra_args.more:
-        self.CobraDeploy(more=True)
+        cobraFramework = CobraFramework(more=True)
+        cobraFramework.CobraDeploy(more=True)
 
     elif cobra_args.deploy and not \
             cobra_args.more:
-        self.CobraDeploy()
+        cobraFramework = CobraFramework(more=False)
+        cobraFramework.CobraDeploy(more=False)
     elif cobra_args.deploy and \
             cobra_args.more:
-        self.CobraDeploy(more=True)
+        cobraFramework = CobraFramework(more=True)
+        cobraFramework.CobraDeploy(more=True)
 
-    elif cobra_args.test and not \
-            cobra_args.unittest and not cobra_args.pytest:
-        self.CobraUnitTest()
+    elif cobra_args.test and not cobra_args.unittest\
+            and not cobra_args.pytest and not cobra_args.more:
+        cobraFramework = CobraFramework(more=False)
+        cobraFramework.CobraUnitTest(more=False)
+
+    elif cobra_args.test and not cobra_args.unittest\
+            and not cobra_args.pytest and cobra_args.more:
+        cobraFramework = CobraFramework(more=True)
+        cobraFramework.CobraUnitTest(more=True)
 
     elif cobra_args.unittest and not \
             cobra_args.more:
-        self.CobraUnitTest()
+        cobraFramework = CobraFramework(more=False)
+        cobraFramework.CobraUnitTest(more=False)
     elif cobra_args.unittest and \
             cobra_args.more:
-        self.CobraUnitTest(more=True)
+        cobraFramework = CobraFramework(more=True)
+        cobraFramework.CobraUnitTest(more=True)
 
     elif cobra_args.pytest and not \
             cobra_args.more:
-        self.CobraPyTest()
+        cobraFramework = CobraFramework(more=False)
+        cobraFramework.CobraPyTest(more=False)
     elif cobra_args.pytest and \
             cobra_args.more:
-        self.CobraPyTest()
+        cobraFramework = CobraFramework(more=True)
+        cobraFramework.CobraPyTest(more=True)
     parser.exit()
 
 
@@ -149,9 +164,10 @@ class CobraFramework(CobraConfiguration):
         super().__init__()
         self.cobraCompile = CobraCompile(more)
         self.cobraNetwork = self.CobraNetwork(more)
-        self.cobraDeploy = CobraDeploy(self.cobraNetwork)
+        self.cobraDeploy = CobraDeploy(self.cobraNetwork, more)
 
     def CobraCompile(self, more=False):
+        print(more)
         try:
             read_yaml = self.fileReader("./cobra.yaml", more=more)
             load_yaml = self.yamlLoader(read_yaml, more=more)
@@ -236,8 +252,8 @@ class CobraFramework(CobraConfiguration):
 
     def CobraNetwork(self, more=False):
         try:
-            read_yaml = self.fileReader("./cobra.yaml")
-            load_yaml = self.yamlLoader(read_yaml)
+            read_yaml = self.fileReader("./cobra.yaml", more)
+            load_yaml = self.yamlLoader(read_yaml, more)
             network_yaml = load_yaml['network']
             configuration_yaml = self.network(network_yaml)
             return configuration_yaml
@@ -245,7 +261,7 @@ class CobraFramework(CobraConfiguration):
             self.cobra_print("network in cobra.yaml", "error", "NotFound")
             sys.exit()
 
-    def CobraUnitTest(self, more=None):
+    def CobraUnitTest(self, more=False):
         """
         Start testing Cobra using Unittest to test Smart Contract (Solidity file)
 
@@ -289,7 +305,8 @@ class CobraFramework(CobraConfiguration):
                 test_paths = test_yaml['test_paths']
                 for test_path in test_paths:
                     test_loader = unittest.defaultTestLoader.discover(
-                        Path(test_path).resolve(), pattern='*_test.py', top_level_dir=Path(test_path).resolve())
+                        Path(test_path).resolve(), pattern='*_test.py',
+                        top_level_dir=Path(test_path).resolve())
                     for all_test_suite in test_loader:
                         for test_suites in all_test_suite:
                             for test_suite in test_suites:

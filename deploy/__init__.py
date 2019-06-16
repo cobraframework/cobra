@@ -24,8 +24,8 @@ class CobraDeploy(CobraProvider):
      "updatedAt": "%s"
     }""" % str(datetime.now())
 
-    def __init__(self, cobraNetwork):
-        self.more = None
+    def __init__(self, cobraNetwork, more=False):
+        self.more = more
         self.cobraNetwork = cobraNetwork
         self.web3 = self.get_web3()
         self.account = self.get_account()
@@ -244,11 +244,7 @@ class CobraDeploy(CobraProvider):
                                  "error")
             sys.exit()
 
-    def deploy_with_link(self, dir_path, contract, links, more=None):
-        if more is not None:
-            self.more = True
-        else:
-            self.more = False
+    def deploy_with_link(self, dir_path, contract, links, more=False):
 
         contract_name = str(contract[:-5])
         file_path = join(dir_path, contract)
@@ -317,11 +313,8 @@ class CobraDeploy(CobraProvider):
                                                   contract_name, type="warning")
             return None
 
-    def deploy_with_out_link(self, dir_path, contract, more=None):
-        if more is not None:
-            self.more = True
-        else:
-            self.more = False
+    def deploy_with_out_link(self, dir_path, contract, more=False):
+
         file_path = join(dir_path, contract)
         contract_name = str(contract[:-5])
         artifact_not_loads = self.file_reader(file_path)
