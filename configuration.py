@@ -9,44 +9,104 @@ class CobraConfiguration:
     def __init__(self):
         pass
 
-    def cobra_print(self, text, color=None):
+    def cobra_print(self, text, type=None, title=None, space=False, space_number=0):
         # Checking text instance is string
         if isinstance(text, str):
-            if color == 'success':
-                return print(Style.DIM + Fore.GREEN + '[SUCCESS]' + Style.RESET_ALL + ' ' + text)
-            elif color == 'warning':
-                return print(Style.DIM + Fore.YELLOW + '[WARNING]' + Style.RESET_ALL + ' ' + text)
-            elif color == 'error':
-                return print(Style.DIM + Fore.RED + '[ERROR]' + Style.RESET_ALL + ' ' + text)
-            else:
-                return print(text)
+            if title is None:
+                if type == 'success':
+                    return print(Style.DIM + Fore.GREEN + '[SUCCESS]'
+                                 + Style.RESET_ALL + ' ' + text)
+                elif type == 'warning':
+                    return print(Style.DIM + Fore.YELLOW + '[WARNING]'
+                                 + Style.RESET_ALL + ' ' + text)
+                elif type == 'error':
+                    return print(Style.DIM + Fore.RED + '[ERROR]'
+                                 + Style.RESET_ALL + ' ' + text)
+                else:
+                    return print(text)
+            elif title is not None \
+                    and isinstance(title, str) and not space:
+                if type == 'success':
+                    return print(Style.DIM + Fore.GREEN + '[SUCCESS]'
+                                 + Style.RESET_ALL + ' ' + Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+                elif type == 'warning':
+                    return print(Style.DIM + Fore.YELLOW + '[WARNING]'
+                                 + Style.RESET_ALL + ' ' + Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+                elif type == 'error':
+                    return print(Style.DIM + Fore.RED + '[ERROR]'
+                                 + Style.RESET_ALL + ' ' + Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+                else:
+                    return print(Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+            elif title is not None \
+                    and isinstance(title, str) and space:
+                if type == 'success':
+                    return print(Style.DIM + Fore.GREEN + '         '
+                                 + Style.RESET_ALL + ' ' + Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+                elif type == 'warning':
+                    return print(Style.DIM + Fore.YELLOW + '         '
+                                 + Style.RESET_ALL + ' ' + Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+                elif type == 'error':
+                    return print(Style.DIM + Fore.RED + '      '
+                                 + Style.RESET_ALL + ' ' + Fore.WHITE + title
+                                 + ': ' + Style.RESET_ALL + text)
+                else:
+                    if space_number is 0:
+                        return print(Fore.WHITE + '' + title
+                                     + ': ' + Style.RESET_ALL + text)
+                    else:
+                        return print(Fore.WHITE + ' ' * space_number + title
+                                     + ': ' + Style.RESET_ALL + text)
 
-    def fileReader(self, file):
+    def fileReader(self, file, more=False):
         try:
             with open(file, 'r') as read_file:
                 return_file = read_file.read()
                 read_file.close()
                 return return_file
-        except FileNotFoundError:
-            self.cobra_print("FileNotFound: %s" % file, "error")
+        except FileNotFoundError as fileNotFoundError:
+            if more:
+                self.cobra_print(str(fileNotFoundError), "error", "FileNotFoundError")
+            else:
+                self.cobra_print(file, "error", "FileNotFoundError")
         sys.exit()
 
-    def yamlLoader(self, yaml_file):
+    def yamlLoader(self, yaml_file, more=False):
         try:
             load_compile = yaml.load(yaml_file)
             return load_compile
         except yaml.scanner.ScannerError as scannerError:
-            self.cobra_print("YAMLScannerError: %s" % scannerError, "error")
+            if more:
+                self.cobra_print(str(scannerError),
+                                 "error", "ScannerError")
+            else:
+                self.cobra_print(str(scannerError).split('\n')[0],
+                                 "error", "ScannerError")
         except yaml.parser.ParserError as parserError:
-            self.cobra_print("YAMLParserError: %s" % parserError, "error")
+            if more:
+                self.cobra_print(str(parserError),
+                                 "error", "ParserError")
+            else:
+                self.cobra_print(str(parserError).split('\n')[0],
+                                 "error", "ParserError")
         sys.exit()
 
-    def jsonLoader(self, json_file):
+    def jsonLoader(self, json_file, more=False):
         try:
             loaded_json = json.loads(json_file)
             return loaded_json
         except json.decoder.JSONDecodeError as jsonDecodeError:
-            self.cobra_print("JSONDecodeError: %s" % jsonDecodeError, "error")
+            if more:
+                self.cobra_print(str(jsonDecodeError),
+                                 "error", "JSONDecodeError")
+            else:
+                self.cobra_print(str(jsonDecodeError).split('\n')[0],
+                                 "error", "JSONDecodeError")
         sys.exit()
 
     def hasRemapping(self, contract):
@@ -182,16 +242,16 @@ class CobraConfiguration:
                                     ))
                                     continue
                     else:
-                        self.cobra_print("NotFound: solidity in contract.",
-                                         "error")
+                        self.cobra_print("solidity in contract.",
+                                         "error", "NotFound")
                         sys.exit()
             else:
-                self.cobra_print("NotFound: contracts in compile [cobra.yaml]",
-                                 "error")
+                self.cobra_print("contracts in compile [cobra.yaml]",
+                                 "error", "NotFound")
                 sys.exit()
         else:
-            self.cobra_print("NotFound: solidity_path_dir in compile [cobra.yaml]",
-                             "error")
+            self.cobra_print("solidity_path_dir in compile [cobra.yaml]",
+                             "error", "NotFound")
             sys.exit()
 
         return compiles
@@ -227,15 +287,16 @@ class CobraConfiguration:
                             ))
                             continue
                     else:
-                        self.cobra_print("NotFound: artifact in contract.", "error")
+                        self.cobra_print("artifact in contract.",
+                                         "error", "NotFound")
                         sys.exit()
             else:
-                self.cobra_print(
-                    "NotFound: contracts in deploy", "error")
+                self.cobra_print("contracts in deploy", 
+                                 "error", "NotFound")
                 sys.exit()
         else:
-            self.cobra_print(
-                "NotFound: artifact_path_dir in deploy", "error")
+            self.cobra_print("artifact_path_dir in deploy",
+                             "error", "NotFound")
             sys.exit()
 
         return deploys
@@ -271,13 +332,16 @@ class CobraConfiguration:
                             ))
                             continue
                     else:
-                        self.cobra_print("NotFound: artifact in contract.", "error")
+                        self.cobra_print("artifact in contract.",
+                                         "error", "NotFound")
                         sys.exit()
             else:
-                self.cobra_print("NotFound: contracts in test", "error")
+                self.cobra_print("contracts in test",
+                                 "error", "NotFound")
                 sys.exit()
         else:
-            self.cobra_print("NotFound: artifact_path_dir in test", "error")
+            self.cobra_print("artifact_path_dir in test",
+                             "error", "NotFound")
             sys.exit()
 
         return tests
@@ -317,7 +381,7 @@ class CobraConfiguration:
                     gas=account_yaml['gas']
                 ))
         else:
-            self.cobra_print("NotFound: Can address/gas in account.", "error")
+            self.cobra_print("Can address/gas in account.", "error")
             sys.exit()
 
     def hdwallet(self, hdwallet_yaml):
@@ -453,7 +517,7 @@ class CobraConfiguration:
                             private=hdwallet_yaml['private']
                         ))
         else:
-            self.cobra_print("NotFound: mnemonic(seed)/private in hdwallet.", "error")
+            self.cobra_print("mnemonic(seed)/private in hdwallet.", "error")
             sys.exit()
 
     def network(self, network_yaml):
@@ -509,8 +573,8 @@ class CobraConfiguration:
                                     port=network_yaml['development']['port']
                                 )
                     else:
-                        self.cobra_print("NotFound: port in %s when you are using host."
-                                         % 'development', "error")
+                        self.cobra_print("port in %s when you are using host."
+                                         % 'development', "error", "Error")
                         sys.exit()
                 elif 'url' in network_yaml['development']:
                     # Port
@@ -604,9 +668,10 @@ class CobraConfiguration:
                                     url=network_yaml['development']['url']
                                 )
             else:
-                self.cobra_print("NotFound: host/url in %s." % 'development',
-                                 "error")
+                self.cobra_print("host/url in %s." % 'development',
+                                 "error", "NotFound")
                 sys.exit()
         else:
-            self.cobra_print("NotFound: development in network.", "error")
+            self.cobra_print("development in network.",
+                             "error", "NotFound")
             sys.exit()

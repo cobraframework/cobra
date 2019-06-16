@@ -16,20 +16,8 @@ class CobraCompile:
 
     network = """{,\n "networks": {},\n "updatedAt": "%s"\n}""" % str(datetime.now())
 
-    def __init__(self):
-        pass
-
-    def cobra_print(self, text, color=None):
-        # Checking text instance is string
-        if isinstance(text, str):
-            if color == 'success':
-                return print(Style.DIM + Fore.GREEN + '[SUCCESS]' + Style.RESET_ALL + ' ' + text)
-            elif color == 'warning':
-                return print(Style.DIM + Fore.YELLOW + '[WARNING]' + Style.RESET_ALL + ' ' + text)
-            elif color == 'error':
-                return print(Style.DIM + Fore.RED + '[ERROR]' + Style.RESET_ALL + ' ' + text)
-            else:
-                return print(text)
+    def __init__(self, more=False):
+        self.more = more
 
     def strip(self, strip):
         return strip.strip()[1:-1]
@@ -40,8 +28,11 @@ class CobraCompile:
                 return_file = read_file.read()
                 read_file.close()
                 return return_file
-        except FileNotFoundError:
-            self.cobra_print("FileNotFound: %s" % file_path, "error")
+        except FileNotFoundError as fileNotFoundError:
+            if more:
+                self.cobra_print(str(fileNotFoundError), "error", "FileNotFoundError")
+            else:
+                self.cobra_print(file_path, "error", "FileNotFoundError")
             sys.exit()
 
     def file_writer(self, file_path, docs):
@@ -98,17 +89,12 @@ class CobraCompile:
             return False
         return False
 
-    def to_compile(self, file_path_sol, allow_paths=None, import_remappings=None, more=None):
+    def to_compile(self, file_path_sol, allow_paths=None, import_remappings=None, more=False):
         if allow_paths is None:
             allow_paths = str(os.getcwd())
 
         if import_remappings is None:
             import_remappings = []
-
-        if more is not None:
-            more = True
-        else:
-            more = False
 
         solidity_contract = self.file_reader(file_path_sol)
         try:
@@ -116,12 +102,10 @@ class CobraCompile:
                                           allow_paths=allow_paths,
                                           import_remappings=import_remappings)
         except solc.exceptions.SolcError as solcError:
-            solcError = str(solcError)
-            solcErrorSplit = solcError.split('\n')
-            if not more:
-                self.cobra_print("Compile: %s" % solcErrorSplit[0], "error")
+            if more:
+                self.cobra_print(str(solcError), "error", "Compile")
             else:
-                self.cobra_print("Compile: %s" % solcError, "error")
+                self.cobra_print(str(solcError).split('\n')[0], "error", "Compile")
             sys.exit()
         contract_interface = compiled_sol['<stdin>:' + basename(file_path_sol)[:-4]]
         contract_interface['bin'] = self.bytecode_link_to_md5(contract_interface['bin'], contract_interface)
