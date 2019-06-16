@@ -175,7 +175,7 @@ class CobraFramework(CobraConfiguration):
             for configuration_yaml in configurations_yaml:
                 import_remappings = configuration_yaml['import_remappings']
                 file_path_sol = join(configuration_yaml['solidity_path_dir'], configuration_yaml['solidity'])
-                if configuration_yaml['links_path_dir'] is None:
+                if configuration_yaml['allow_paths'] is None:
                     cobra_compiled = self.cobraCompile.to_compile(file_path_sol, None,
                                                                   import_remappings, more=more)
 
@@ -193,15 +193,15 @@ class CobraFramework(CobraConfiguration):
                     self.cobra_print("%s done in %s" %
                                      (solidity_name, artifact_path_json), "success", "Compile")
                 else:
-                    links_path_dir = str(os.getcwd())
-                    for allow_path in configuration_yaml['links_path_dir']:
+                    allow_paths = str()
+                    for allow_path in configuration_yaml['allow_paths']:
                         if str(allow_path) == "":
-                            links_path_dir = str(os.getcwd())
+                            allow_paths = allow_path
                         else:
-                            links_path_dir = links_path_dir + "," + str(allow_path)
+                            allow_paths = allow_paths + "," + str(allow_path)
 
                     cobra_compiled = self.cobraCompile.to_compile(file_path_sol,
-                                                                  links_path_dir, import_remappings, more)
+                                                                  allow_paths, import_remappings, more)
 
                     if not isdir(configuration_yaml['artifact_path_dir']):
                         makedirs(configuration_yaml['artifact_path_dir'])

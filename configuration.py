@@ -133,12 +133,12 @@ class CobraConfiguration:
 
     def hasLinksPathDir(self, contract):
         # Finding links path dir on contract checking not None
-        if 'links_path_dir' in contract and \
-                contract['links_path_dir']:
+        if 'allow_paths' in contract and \
+                contract['allow_paths']:
             return True
         # Finding links path dir on contract checking None
-        elif 'links_path_dir' in contract and \
-                not contract['links_path_dir']:
+        elif 'allow_paths' in contract and \
+                not contract['allow_paths']:
             return False
         else:
             return False
@@ -168,7 +168,7 @@ class CobraConfiguration:
                                         compiles.append(dict(
                                             solidity_path_dir=contract['contract']['solidity_path_dir'],
                                             solidity=contract['contract']['solidity'],
-                                            links_path_dir=contract['contract']['links_path_dir'],
+                                            allow_paths=contract['contract']['allow_paths'],
                                             artifact_path_dir=artifact_path_dir,
                                             import_remappings=contract['contract']['import_remappings']
                                         ))
@@ -177,7 +177,7 @@ class CobraConfiguration:
                                         compiles.append(dict(
                                             solidity_path_dir=contract['contract']['solidity_path_dir'],
                                             solidity=contract['contract']['solidity'],
-                                            links_path_dir=contract['contract']['links_path_dir'],
+                                            allow_paths=contract['contract']['allow_paths'],
                                             artifact_path_dir=artifact_path_dir,
                                             import_remappings=None
                                         ))
@@ -187,7 +187,7 @@ class CobraConfiguration:
                                         compiles.append(dict(
                                             solidity_path_dir=compile_yaml['solidity_path_dir'],
                                             solidity=contract['contract']['solidity'],
-                                            links_path_dir=contract['contract']['links_path_dir'],
+                                            allow_paths=contract['contract']['allow_paths'],
                                             artifact_path_dir=artifact_path_dir,
                                             import_remappings=contract['contract']['import_remappings']
                                         ))
@@ -196,7 +196,7 @@ class CobraConfiguration:
                                         compiles.append(dict(
                                             solidity_path_dir=compile_yaml['solidity_path_dir'],
                                             solidity=contract['contract']['solidity'],
-                                            links_path_dir=contract['contract']['links_path_dir'],
+                                            allow_paths=contract['contract']['allow_paths'],
                                             artifact_path_dir=artifact_path_dir,
                                             import_remappings=None
                                         ))
@@ -207,7 +207,7 @@ class CobraConfiguration:
                                         compiles.append(dict(
                                             solidity_path_dir=contract['contract']['solidity_path_dir'],
                                             solidity=contract['contract']['solidity'],
-                                            links_path_dir=None,
+                                            allow_paths=None,
                                             artifact_path_dir=artifact_path_dir,
                                             import_remappings=contract['contract']['import_remappings']
                                         ))
@@ -216,7 +216,7 @@ class CobraConfiguration:
                                         compiles.append(dict(
                                             solidity_path_dir=contract['contract']['solidity_path_dir'],
                                             solidity=contract['contract']['solidity'],
-                                            links_path_dir=None,
+                                            allow_paths=None,
                                             artifact_path_dir=artifact_path_dir,
                                             import_remappings=None
                                         ))
@@ -226,7 +226,7 @@ class CobraConfiguration:
                                         compiles.append(dict(
                                             solidity_path_dir=compile_yaml['solidity_path_dir'],
                                             solidity=contract['contract']['solidity'],
-                                            links_path_dir=None,
+                                            allow_paths=None,
                                             artifact_path_dir=artifact_path_dir,
                                             import_remappings=contract['contract']['import_remappings']
                                         ))
@@ -235,7 +235,7 @@ class CobraConfiguration:
                                         compiles.append(dict(
                                             solidity_path_dir=compile_yaml['solidity_path_dir'],
                                             solidity=contract['contract']['solidity'],
-                                            links_path_dir=None,
+                                            allow_paths=None,
                                             artifact_path_dir=artifact_path_dir,
                                             import_remappings=None
                                         ))

@@ -11,13 +11,19 @@ compile:
       },
       contract: {
           solidity: "MetaCoin.sol",
-          remappings: [],
-          links_path_dir: ["/"]
+          import_remappings: [
+            "mercy=/home/meheret/PycharmProjects/Cobra/examples",
+            "convertLib=/home/meheret"
+          ],
+          allow_paths: [
+            "/home/meheret",
+            "/home/meheret/PycharmProjects/Cobra/examples"
+          ]
       }
     ]
 
 deploy:
-  artifact_path_dir: "./build/contracts/"
+  artifact_pth_dir: "./build/contracts/"
   contracts: [
     contract: {
         artifact: "ConvertLib.json"
@@ -50,20 +56,20 @@ test:
 
 network:
   development: {
-      url: "https://ropsten.infura.io/v3/14ba444524c3489fa46331b771a23d5c",
-#      host: "localhost",
-#      port: 8545,
-      hdwallet: {
-          mnemonic: "meheret tesfaye batu bayu",
+#      url: "https://ropsten.infura.io/v3/14ba444524c3489fa46331b771a23d5c",
+      host: "localhost",
+      port: 8545,
+#      hdwallet: {
+#          mnemonic: "meheret tesfaye batu bayu",
 #          seed: "meheret tesfaye batu bayu",
-          password: "meherett",
+#          password: "meherett",
 #          private: "006ef09265e27a579d6fab1301f9af7b36d290473327ac007889deb35cb2b0e7",
-          gas: 3000000,
+#          gas: 3000000,
 #          gas_price: 1000000000000
-      },
-      protocol: "HTTPS",
+#      },
+      protocol: "HTTP",
 #      account: {
-#        address: "0x6a373a75c388ac2d160f1d2b6d9ada34f29831cd",
+#        address: "0xbe24372ae7b2f37e204ff1daa3d1be0bb4403ba2",
 #        gas: 3000000
 #      }
   }
