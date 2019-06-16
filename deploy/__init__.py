@@ -51,7 +51,7 @@ class CobraDeploy(CobraProvider):
                 read_file.close()
                 return return_file
         except FileNotFoundError:
-            self.cobra_print("FileNotFound: %s" % file_path, "error")
+            self.cobra_print(file_path, "error", "FileNotFound")
             sys.exit()
 
     def file_writer(self, file_path, docs):
@@ -83,18 +83,18 @@ class CobraDeploy(CobraProvider):
                     continue
                 except requests.exceptions.ConnectionError:
                     self.cobra_print(
-                        "HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error")
+                        "'%s' failed!" % (self.get_url_host_port()),
+                        "error", "HTTPConnectionPool")
                     sys.exit()
                 except websockets.exceptions.InvalidMessage:
                     self.cobra_print(
-                        "WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error")
+                        "'%s' failed!" % (self.get_url_host_port()),
+                        "error", "WebSocketsConnectionPool")
                     sys.exit()
                 except FileNotFoundError:
                     self.cobra_print(
-                        "ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error")
+                        "'%s' failed!" % (self.get_url_host_port()),
+                        "error", "ICPConnectionPool")
                     sys.exit()
         except KeyError:
             return False
@@ -121,8 +121,8 @@ class CobraDeploy(CobraProvider):
                             continue
                 except KeyError:
                     return
-            except json.decoder.JSONDecodeError:
-                self.cobra_print("ArtifactDecodeError: %s" % link_file_path, "error")
+            except json.decoder.JSONDecodeError as jsonDecodeError:
+                self.cobra_print(str(jsonDecodeError), "error", "JSONDecodeError")
                 return
         return contract_name_and_address
 
@@ -256,8 +256,8 @@ class CobraDeploy(CobraProvider):
 
         try:
             artifact = loads(artifact_not_loads)
-        except json.decoder.JSONDecodeError:
-            self.cobra_print("ArtifactDecodeError: %s" % file_path, "error")
+        except json.decoder.JSONDecodeError as jsonDecodeError:
+            self.cobra_print("%s" % jsonDecodeError, "error", "JSONDecodeError")
             return
 
         if not self.isDeployed(artifact):
@@ -274,18 +274,18 @@ class CobraDeploy(CobraProvider):
                     tx_hash = self.deploy_contract(contract)
                 except requests.exceptions.ConnectionError:
                     self.cobra_print(
-                        "HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error")
+                        "'%s' failed!" % (self.get_url_host_port()),
+                        "error", "HTTPConnectionPool")
                     sys.exit()
                 except websockets.exceptions.InvalidMessage:
                     self.cobra_print(
-                        "WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error")
+                        "'%s' failed!" % (self.get_url_host_port()),
+                        "error", "WebSocketsConnectionPool")
                     sys.exit()
                 except FileNotFoundError:
                     self.cobra_print(
-                        "ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                        "error")
+                        "'%s' failed!" % (self.get_url_host_port()),
+                        "error", "ICPConnectionPool")
                     sys.exit()
 
                 transactionReceipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
@@ -303,17 +303,18 @@ class CobraDeploy(CobraProvider):
 
                 self.cobra_print(title="Deploy",
                                  text="%s done!" % contract_name, type="success")
-                self.cobra_print(title="          TransactionHash",
-                                 text=str(self.web3.toHex(tx_hash)))
-                self.cobra_print(title="          Address", text=str(address))
+                self.cobra_print(title="TransactionHash", space=True,
+                                 text=str(self.web3.toHex(tx_hash)), type="success")
+                self.cobra_print(title="Address", space=True,
+                                 text=str(address), type="success")
 
                 artifact = self.web3.toText(dumps(artifact, indent=1).encode())
                 return artifact
             except KeyError:
                 return None
         else:
-            self.cobra_print(title="Deploy", text="%s already deployed.%s" %
-                                                  (contract, contract_name), type="warning")
+            self.cobra_print(title="Deploy", text="Already deployed.%s" %
+                                                  contract_name, type="warning")
             return None
 
     def deploy_with_out_link(self, dir_path, contract, more=None):
@@ -326,8 +327,8 @@ class CobraDeploy(CobraProvider):
         artifact_not_loads = self.file_reader(file_path)
         try:
             artifact = loads(artifact_not_loads)
-        except json.decoder.JSONDecodeError:
-            self.cobra_print("ArtifactDecodeError: %s" % file_path, "error")
+        except json.decoder.JSONDecodeError as jsonDecodeError:
+            self.cobra_print(jsonDecodeError, "error", "JSONDecodeError")
             sys.exit()
 
         if not self.isDeployed(artifact):
@@ -341,18 +342,18 @@ class CobraDeploy(CobraProvider):
                 tx_hash = self.deploy_contract(contract)
             except requests.exceptions.ConnectionError:
                 self.cobra_print(
-                    "HTTPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                    "error")
+                    "'%s' failed!" % (self.get_url_host_port()),
+                    "error", "HTTPConnectionPool")
                 sys.exit()
             except websockets.exceptions.InvalidMessage:
                 self.cobra_print(
-                    "WebSocketsConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                    "error")
+                    "'%s' failed!" % (self.get_url_host_port()),
+                    "error", "WebSocketsConnectionPool")
                 sys.exit()
             except FileNotFoundError:
                 self.cobra_print(
-                    "ICPConnectionPool: '%s' failed!" % (self.get_url_host_port()),
-                    "error")
+                    "'%s' failed!" % (self.get_url_host_port()),
+                    "error", "ICPConnectionPool")
                 sys.exit()
 
             transactionReceipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
@@ -367,13 +368,14 @@ class CobraDeploy(CobraProvider):
 
             self.cobra_print(title="Deploy",
                              text="%s done!" % contract_name, type="success")
-            self.cobra_print(title="          TransactionHash",
-                             text=str(self.web3.toHex(tx_hash)))
-            self.cobra_print(title="          Address", text=str(address))
+            self.cobra_print(title="TransactionHash", space=True,
+                             text=str(self.web3.toHex(tx_hash)), type="success")
+            self.cobra_print(title="Address", space=True,
+                             text=str(address), type="success")
 
             artifact = self.web3.toText(dumps(artifact, indent=1).encode())
             return artifact
         else:
-            self.cobra_print(title="Deploy", text="%s already deployed.%s" %
-                                                  (contract, contract_name), type="warning")
+            self.cobra_print(title="Deploy", text="Already deployed.%s" %
+                                                  contract_name, type="warning")
             return None
