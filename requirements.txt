@@ -12,7 +12,7 @@ py-solc==3.2.0
 pycryptodome==3.7.3
 pysha3==1.0.2
 pytest==3.10.1
-pytest-cobra==0.0.2
+pytest-cobra==1.0.1
 PyYAML==3.13
 requests==2.21.0
 web3==4.8.2
