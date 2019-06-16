@@ -167,9 +167,8 @@ class CobraFramework(CobraConfiguration):
         self.cobraDeploy = CobraDeploy(self.cobraNetwork, more)
 
     def CobraCompile(self, more=False):
-        print(more)
         try:
-            read_yaml = self.fileReader("./cobra.yaml", more=more)
+            read_yaml = self.fileReader("./cobra.yaml")
             load_yaml = self.yamlLoader(read_yaml, more=more)
             compile_yaml = load_yaml['compile']
             configurations_yaml = self.compile(compile_yaml)
@@ -223,7 +222,7 @@ class CobraFramework(CobraConfiguration):
 
     def CobraDeploy(self, more=False):
         try:
-            read_yaml = self.fileReader("./cobra.yaml", more=more)
+            read_yaml = self.fileReader("./cobra.yaml")
             load_yaml = self.yamlLoader(read_yaml, more=more)
             deploy_yaml = load_yaml['deploy']
             configurations_yaml = self.deploy(deploy_yaml)
@@ -252,8 +251,8 @@ class CobraFramework(CobraConfiguration):
 
     def CobraNetwork(self, more=False):
         try:
-            read_yaml = self.fileReader("./cobra.yaml", more)
-            load_yaml = self.yamlLoader(read_yaml, more)
+            read_yaml = self.fileReader("./cobra.yaml")
+            load_yaml = self.yamlLoader(read_yaml, more=more)
             network_yaml = load_yaml['network']
             configuration_yaml = self.network(network_yaml)
             return configuration_yaml
@@ -351,7 +350,7 @@ class CobraFramework(CobraConfiguration):
             sys.exit()
         try:
             read_yaml = self.fileReader("./cobra.yaml")
-            load_yaml = self.yamlLoader(read_yaml)
+            load_yaml = self.yamlLoader(read_yaml, more=more)
             test_yaml = load_yaml['test']
             try:
                 _test = ['--cobra', 'cobra.yaml']

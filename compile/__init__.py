@@ -28,11 +28,8 @@ class CobraCompile:
                 return_file = read_file.read()
                 read_file.close()
                 return return_file
-        except FileNotFoundError as fileNotFoundError:
-            if more:
-                self.cobra_print(str(fileNotFoundError), "error", "FileNotFoundError")
-            else:
-                self.cobra_print(file_path, "error", "FileNotFoundError")
+        except FileNotFoundError:
+            self.cobra_print(file_path, "error", "FileNotFoundError")
             sys.exit()
 
     def file_writer(self, file_path, docs):

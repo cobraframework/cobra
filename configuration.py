@@ -63,17 +63,15 @@ class CobraConfiguration:
                         return print(Fore.WHITE + ' ' * space_number + title
                                      + ': ' + Style.RESET_ALL + text)
 
-    def fileReader(self, file, more=False):
+    def fileReader(self, file_path):
         try:
-            with open(file, 'r') as read_file:
+            with open(file_path, 'r') as read_file:
                 return_file = read_file.read()
                 read_file.close()
                 return return_file
-        except FileNotFoundError as fileNotFoundError:
-            if more:
-                self.cobra_print(str(fileNotFoundError), "error", "FileNotFoundError")
-            else:
-                self.cobra_print(file, "error", "FileNotFoundError")
+        except FileNotFoundError:
+            self.cobra_print("No such file or directory '%s'" % file_path,
+                             "error", "FileNotFoundError")
         sys.exit()
 
     def yamlLoader(self, yaml_file, more=False):
@@ -157,92 +155,97 @@ class CobraConfiguration:
                     artifact_path_dir = compile_yaml['artifact_path_dir']
                 else:
                     artifact_path_dir = "./build/contracts"
-                    self.cobra_print("Checking: artifact_path_dir on compile. "
-                                     "by default uses './build/contracts'", "warning")
+                    self.cobra_print("artifact_path_dir on compile. "
+                                     "by default uses './build/contracts'", "warning", "NotFound")
                 # Looping contracts
                 for contract in compile_yaml['contracts']:
                     # Finding solidity on contract
-                    if 'solidity' in contract['contract']:
-                        if self.hasLinksPathDir(contract['contract']):
-                            if self.hasSolidityPathDir(contract['contract']):
-                                if self.hasRemapping(contract['contract']):
-                                    compiles.append(dict(
-                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                        solidity=contract['contract']['solidity'],
-                                        links_path_dir=contract['contract']['links_path_dir'],
-                                        artifact_path_dir=artifact_path_dir,
-                                        import_remappings=contract['contract']['import_remappings']
-                                    ))
-                                    continue
+                    if 'contract' in contract:
+                        if 'solidity' in contract['contract']:
+                            if self.hasLinksPathDir(contract['contract']):
+                                if self.hasSolidityPathDir(contract['contract']):
+                                    if self.hasRemapping(contract['contract']):
+                                        compiles.append(dict(
+                                            solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                            solidity=contract['contract']['solidity'],
+                                            links_path_dir=contract['contract']['links_path_dir'],
+                                            artifact_path_dir=artifact_path_dir,
+                                            import_remappings=contract['contract']['import_remappings']
+                                        ))
+                                        continue
+                                    else:
+                                        compiles.append(dict(
+                                            solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                            solidity=contract['contract']['solidity'],
+                                            links_path_dir=contract['contract']['links_path_dir'],
+                                            artifact_path_dir=artifact_path_dir,
+                                            import_remappings=None
+                                        ))
+                                        continue
                                 else:
-                                    compiles.append(dict(
-                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                        solidity=contract['contract']['solidity'],
-                                        links_path_dir=contract['contract']['links_path_dir'],
-                                        artifact_path_dir=artifact_path_dir,
-                                        import_remappings=None
-                                    ))
-                                    continue
+                                    if self.hasRemapping(contract['contract']):
+                                        compiles.append(dict(
+                                            solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                            solidity=contract['contract']['solidity'],
+                                            links_path_dir=contract['contract']['links_path_dir'],
+                                            artifact_path_dir=artifact_path_dir,
+                                            import_remappings=contract['contract']['import_remappings']
+                                        ))
+                                        continue
+                                    else:
+                                        compiles.append(dict(
+                                            solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                            solidity=contract['contract']['solidity'],
+                                            links_path_dir=contract['contract']['links_path_dir'],
+                                            artifact_path_dir=artifact_path_dir,
+                                            import_remappings=None
+                                        ))
+                                        continue
                             else:
-                                if self.hasRemapping(contract['contract']):
-                                    compiles.append(dict(
-                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                        solidity=contract['contract']['solidity'],
-                                        links_path_dir=contract['contract']['links_path_dir'],
-                                        artifact_path_dir=artifact_path_dir,
-                                        import_remappings=contract['contract']['import_remappings']
-                                    ))
-                                    continue
+                                if self.hasSolidityPathDir(contract['contract']):
+                                    if self.hasRemapping(contract['contract']):
+                                        compiles.append(dict(
+                                            solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                            solidity=contract['contract']['solidity'],
+                                            links_path_dir=None,
+                                            artifact_path_dir=artifact_path_dir,
+                                            import_remappings=contract['contract']['import_remappings']
+                                        ))
+                                        continue
+                                    else:
+                                        compiles.append(dict(
+                                            solidity_path_dir=contract['contract']['solidity_path_dir'],
+                                            solidity=contract['contract']['solidity'],
+                                            links_path_dir=None,
+                                            artifact_path_dir=artifact_path_dir,
+                                            import_remappings=None
+                                        ))
+                                        continue
                                 else:
-                                    compiles.append(dict(
-                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                        solidity=contract['contract']['solidity'],
-                                        links_path_dir=contract['contract']['links_path_dir'],
-                                        artifact_path_dir=artifact_path_dir,
-                                        import_remappings=None
-                                    ))
-                                    continue
+                                    if self.hasRemapping(contract['contract']):
+                                        compiles.append(dict(
+                                            solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                            solidity=contract['contract']['solidity'],
+                                            links_path_dir=None,
+                                            artifact_path_dir=artifact_path_dir,
+                                            import_remappings=contract['contract']['import_remappings']
+                                        ))
+                                        continue
+                                    else:
+                                        compiles.append(dict(
+                                            solidity_path_dir=compile_yaml['solidity_path_dir'],
+                                            solidity=contract['contract']['solidity'],
+                                            links_path_dir=None,
+                                            artifact_path_dir=artifact_path_dir,
+                                            import_remappings=None
+                                        ))
+                                        continue
                         else:
-                            if self.hasSolidityPathDir(contract['contract']):
-                                if self.hasRemapping(contract['contract']):
-                                    compiles.append(dict(
-                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                        solidity=contract['contract']['solidity'],
-                                        links_path_dir=None,
-                                        artifact_path_dir=artifact_path_dir,
-                                        import_remappings=contract['contract']['import_remappings']
-                                    ))
-                                    continue
-                                else:
-                                    compiles.append(dict(
-                                        solidity_path_dir=contract['contract']['solidity_path_dir'],
-                                        solidity=contract['contract']['solidity'],
-                                        links_path_dir=None,
-                                        artifact_path_dir=artifact_path_dir,
-                                        import_remappings=None
-                                    ))
-                                    continue
-                            else:
-                                if self.hasRemapping(contract['contract']):
-                                    compiles.append(dict(
-                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                        solidity=contract['contract']['solidity'],
-                                        links_path_dir=None,
-                                        artifact_path_dir=artifact_path_dir,
-                                        import_remappings=contract['contract']['import_remappings']
-                                    ))
-                                    continue
-                                else:
-                                    compiles.append(dict(
-                                        solidity_path_dir=compile_yaml['solidity_path_dir'],
-                                        solidity=contract['contract']['solidity'],
-                                        links_path_dir=None,
-                                        artifact_path_dir=artifact_path_dir,
-                                        import_remappings=None
-                                    ))
-                                    continue
+                            self.cobra_print("solidity in contract [cobra.yaml]",
+                                             "error", "NotFound")
+                            sys.exit()
                     else:
-                        self.cobra_print("solidity in contract.",
+                        self.cobra_print("contract in contracts [cobra.yaml]",
                                          "error", "NotFound")
                         sys.exit()
             else:
@@ -287,15 +290,15 @@ class CobraConfiguration:
                             ))
                             continue
                     else:
-                        self.cobra_print("artifact in contract.",
+                        self.cobra_print("artifact in contract [cobra.yaml]",
                                          "error", "NotFound")
                         sys.exit()
             else:
-                self.cobra_print("contracts in deploy", 
+                self.cobra_print("contracts in deploy [cobra.yaml]",
                                  "error", "NotFound")
                 sys.exit()
         else:
-            self.cobra_print("artifact_path_dir in deploy",
+            self.cobra_print("artifact_path_dir in deploy [cobra.yaml]",
                              "error", "NotFound")
             sys.exit()
 
@@ -332,15 +335,15 @@ class CobraConfiguration:
                             ))
                             continue
                     else:
-                        self.cobra_print("artifact in contract.",
+                        self.cobra_print("artifact in contract [cobra.yaml]",
                                          "error", "NotFound")
                         sys.exit()
             else:
-                self.cobra_print("contracts in test",
+                self.cobra_print("contracts in test [cobra.yaml]",
                                  "error", "NotFound")
                 sys.exit()
         else:
-            self.cobra_print("artifact_path_dir in test",
+            self.cobra_print("artifact_path_dir in test [cobra.yaml]",
                              "error", "NotFound")
             sys.exit()
 
@@ -381,7 +384,7 @@ class CobraConfiguration:
                     gas=account_yaml['gas']
                 ))
         else:
-            self.cobra_print("Can address/gas in account.", "error")
+            self.cobra_print("address/gas in account [cobra.yaml]", "error", "NotFound")
             sys.exit()
 
     def hdwallet(self, hdwallet_yaml):
@@ -517,7 +520,7 @@ class CobraConfiguration:
                             private=hdwallet_yaml['private']
                         ))
         else:
-            self.cobra_print("mnemonic(seed)/private in hdwallet.", "error")
+            self.cobra_print("mnemonic(seed)/private in hdwallet [cobra.yaml]", "error")
             sys.exit()
 
     def network(self, network_yaml):
@@ -668,10 +671,10 @@ class CobraConfiguration:
                                     url=network_yaml['development']['url']
                                 )
             else:
-                self.cobra_print("host/url in %s." % 'development',
+                self.cobra_print("host/url in %s [cobra.yaml]" % 'development',
                                  "error", "NotFound")
                 sys.exit()
         else:
-            self.cobra_print("development in network.",
+            self.cobra_print("development in network [cobra.yaml]",
                              "error", "NotFound")
             sys.exit()

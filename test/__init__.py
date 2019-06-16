@@ -172,15 +172,12 @@ class CobraFactory:
 
 class CobraInterfaces(CobraConfiguration):
 
-    def __init__(self, web3: Web3, yamlFile, more=None):
+    def __init__(self, web3: Web3, yamlFile, more=False):
         super().__init__()
         self.web3 = web3
         self.contracts = dict()
         self.yamlFile = yamlFile
-        if more is not None:
-            self.more = True
-        else:
-            self.more = False
+        self.more = more
 
     def getInterfaces(self):
         readiedYaml = self.fileReader(self.yamlFile)

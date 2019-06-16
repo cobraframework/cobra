@@ -71,31 +71,36 @@ class CobraDeploy(CobraProvider):
 
     def isDeployed(self, artifact):
         try:
-            for network in artifact['networks'].keys():
-                deployed = artifact['networks'].get(network)
-                try:
-                    deployedWeb3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
-                    if deployed['contractAddress'] == deployedWeb3['contractAddress']:
-                        return True
-                    else:
+            networks = artifact['networks']
+            if networks:
+                for network in networks.keys():
+                    deployed = networks.get(network)
+                    try:
+                        deployedWeb3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
+                        if deployed['contractAddress'] == deployedWeb3['contractAddress']:
+                            return True
+                        else:
+                            continue
+                    except TypeError:
                         continue
-                except TypeError:
-                    continue
-                except requests.exceptions.ConnectionError:
-                    self.cobra_print(
-                        "'%s' failed!" % (self.get_url_host_port()),
-                        "error", "HTTPConnectionPool")
-                    sys.exit()
-                except websockets.exceptions.InvalidMessage:
-                    self.cobra_print(
-                        "'%s' failed!" % (self.get_url_host_port()),
-                        "error", "WebSocketsConnectionPool")
-                    sys.exit()
-                except FileNotFoundError:
-                    self.cobra_print(
-                        "'%s' failed!" % (self.get_url_host_port()),
-                        "error", "ICPConnectionPool")
-                    sys.exit()
+            else:
+                self.web3.eth.getTransactionReceipt(str())
+                return False
+        except requests.exceptions.ConnectionError:
+            self.cobra_print(
+                "'%s' failed!" % (self.get_url_host_port()),
+                "error", "HTTPConnectionPool")
+            sys.exit()
+        except websockets.exceptions.InvalidMessage:
+            self.cobra_print(
+                "'%s' failed!" % (self.get_url_host_port()),
+                "error", "WebSocketsConnectionPool")
+            sys.exit()
+        except FileNotFoundError:
+            self.cobra_print(
+                "'%s' failed!" % (self.get_url_host_port()),
+                "error", "ICPConnectionPool")
+            sys.exit()
         except KeyError:
             return False
 
