@@ -1,5 +1,8 @@
+import json
+import sys
+import yaml
+
 from .console_log import console_log
-import json, yaml, sys
 
 
 def file_reader(file_path):
@@ -33,6 +36,10 @@ def yaml_loader(yaml_file, more=False):
             console_log(str(parserError).split('\n')[0],
                         "error", "ParserError")
     sys.exit()
+
+
+def strip(_strip):
+    return _strip.strip()[1:-1]
 
 
 def json_loader(json_file, more=False):
