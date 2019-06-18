@@ -2,7 +2,7 @@ from eth_tester.exceptions import TransactionFailed
 from eth_tester import EthereumTester
 
 
-class CobraFailureHandler:
+class FailureHandler:
 
     def __init__(self, ethereum_tester: EthereumTester):
         self.ethereum_tester = ethereum_tester
