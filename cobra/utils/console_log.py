@@ -1,32 +1,32 @@
 from colorama import Fore, Style
 
 
-def console_log(self, text, type=None, title=None, space=False, space_number=0):
+def console_log(text, _type=None, title=None, space=False, space_number=0):
     # Checking text instance is string
     if isinstance(text, str):
         if title is None:
-            if type == 'success':
+            if _type == 'success':
                 return print(Style.DIM + Fore.GREEN + '[SUCCESS]'
                              + Style.RESET_ALL + ' ' + text)
-            elif type == 'warning':
+            elif _type == 'warning':
                 return print(Style.DIM + Fore.YELLOW + '[WARNING]'
                              + Style.RESET_ALL + ' ' + text)
-            elif type == 'error':
+            elif _type == 'error':
                 return print(Style.DIM + Fore.RED + '[ERROR]'
                              + Style.RESET_ALL + ' ' + text)
             else:
                 return print(text)
         elif title is not None \
                 and isinstance(title, str) and not space:
-            if type == 'success':
+            if _type == 'success':
                 return print(Style.DIM + Fore.GREEN + '[SUCCESS]'
                              + Style.RESET_ALL + ' ' + Fore.WHITE + title
                              + ': ' + Style.RESET_ALL + text)
-            elif type == 'warning':
+            elif _type == 'warning':
                 return print(Style.DIM + Fore.YELLOW + '[WARNING]'
                              + Style.RESET_ALL + ' ' + Fore.WHITE + title
                              + ': ' + Style.RESET_ALL + text)
-            elif type == 'error':
+            elif _type == 'error':
                 return print(Style.DIM + Fore.RED + '[ERROR]'
                              + Style.RESET_ALL + ' ' + Fore.WHITE + title
                              + ': ' + Style.RESET_ALL + text)
@@ -35,15 +35,15 @@ def console_log(self, text, type=None, title=None, space=False, space_number=0):
                              + ': ' + Style.RESET_ALL + text)
         elif title is not None \
                 and isinstance(title, str) and space:
-            if type == 'success':
+            if _type == 'success':
                 return print(Style.DIM + Fore.GREEN + '         '
                              + Style.RESET_ALL + ' ' + Fore.WHITE + title
                              + ': ' + Style.RESET_ALL + text)
-            elif type == 'warning':
+            elif _type == 'warning':
                 return print(Style.DIM + Fore.YELLOW + '         '
                              + Style.RESET_ALL + ' ' + Fore.WHITE + title
                              + ': ' + Style.RESET_ALL + text)
-            elif type == 'error':
+            elif _type == 'error':
                 return print(Style.DIM + Fore.RED + '      '
                              + Style.RESET_ALL + ' ' + Fore.WHITE + title
                              + ': ' + Style.RESET_ALL + text)
