@@ -1,8 +1,7 @@
-from cobra.utils.console_log import console_log
-import sys
+from cobra.project import *
 
 
-class CobraConfiguration:
+class Configuration:
 
     def __init__(self):
         pass
