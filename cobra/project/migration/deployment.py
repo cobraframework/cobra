@@ -14,8 +14,8 @@ class Deployment(Provider):
         try:
             networks = artifact['networks']
             if networks:
-                for network in networks.keys():
-                    deployed = networks.get(network)
+                for __network in networks.keys():
+                    deployed = networks.get(__network)
                     try:
                         deployed_web3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
                         if deployed['contractAddress'] == deployed_web3['contractAddress']:
@@ -54,8 +54,8 @@ class Deployment(Provider):
                 artifact = loads(artifact_not_loads)
                 try:
                     networks = artifact['networks']
-                    for network in networks.keys():
-                        deployed = networks.get(network)
+                    for __network in networks.keys():
+                        deployed = networks.get(__network)
                         try:
                             deployed_web3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
                             if deployed['contractAddress'] == deployed_web3['contractAddress']:
