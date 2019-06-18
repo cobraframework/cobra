@@ -38,6 +38,13 @@ def strip(_strip):
     return _strip.strip()[1:-1]
 
 
+def file_writer(file_path, docs):
+    with open(file_path, 'w') as write_file:
+        write_file.write(docs)
+        write_file.close()
+        return
+
+
 def json_loader(json_file, more=False):
     try:
         loaded_json = json.loads(json_file)
