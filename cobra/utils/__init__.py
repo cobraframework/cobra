@@ -10,7 +10,8 @@ from cobra.utils.utils import (
     file_reader,
     yaml_loader,
     json_loader,
-    strip
+    strip,
+    file_writer
 )
 
 __all__ = [
@@ -23,6 +24,7 @@ __all__ = [
     "package_checker",
     "file_reader",
     "yaml",
+    "file_writer",
     "generate_numbers",
     "console_log",
 ]
