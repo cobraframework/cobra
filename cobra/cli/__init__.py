@@ -1,6 +1,9 @@
 import textwrap
 import argparse
+import sys
 
+usage = "[-h] [help] [compile {--more}] [deploy {--more}] [migrate {--more}] " \
+        "[test {--unittest} or {--pytest}, {--more}]"
 
 description = textwrap.dedent('''\
         Cobra Framework is a world class development environment, testing framework and
@@ -8,11 +11,10 @@ description = textwrap.dedent('''\
         to make life as a developer easier.   https://github.com/cobraframework''')
 
 
-def argument_parser(argv):
+def main(argv):
     parser = argparse.ArgumentParser(
         prog="cobra",
-        usage="[-h] [help] [compile {--more}] [deploy {--more}] [migrate {--more}] "
-              "[test {--unittest} or {--pytest}, {--more}]",
+        usage=usage,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent('''\
                     --------------------
@@ -129,4 +131,4 @@ def argument_parser(argv):
 
 
 if __name__ == "__main__":
-    CobraArgumentParser(sys.argv[1:])
+    main(sys.argv[1:])

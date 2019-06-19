@@ -5,7 +5,7 @@ def main(more=False):
     configuration = Configuration()
     read_yaml = file_reader("./cobra.yaml")
     load_yaml = yaml_loader(read_yaml, more=more)
-    try:
+    if 'compile' in load_yaml:
         compile_yaml = load_yaml['compile']
         configurations_yaml = configuration\
             .compile(compile_yaml)
@@ -53,6 +53,6 @@ def main(more=False):
                 file_writer(artifact_path_json, str(cobra_compiled))
                 console_log("%s done in %s" %
                             (solidity_name, artifact_path_json), "success", "Compile")
-    except KeyError:
+    else:
         console_log("compile in cobra.yaml", "error", "NotFound")
         sys.exit()
