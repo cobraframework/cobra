@@ -1,4 +1,4 @@
-from cobra.cli import _network
+from cobra.cli.network import _network
 from cobra import *
 
 

@@ -10,8 +10,9 @@ description = textwrap.dedent('''\
         to make life as a developer easier.   https://github.com/cobraframework''')
 
 
-def main(argv):
-    argv = sys.argv[1:]
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
     parser = argparse.ArgumentParser(
         prog="cobra",
         usage=usage,
