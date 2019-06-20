@@ -11,15 +11,15 @@ def _compile(more=False):
             .compile(compile_yaml)
         for configuration_yaml in configurations_yaml:
             import_remappings = configuration_yaml['import_remappings']
-            file_path_sol = join(configuration_yaml['solidity_path_dir'], configuration_yaml['solidity'])
+            file_path_sol = join(configuration_yaml['solidity_path'], configuration_yaml['solidity'])
             if configuration_yaml['allow_paths'] is None:
                 cobra_compiled = to_compile(file_path_sol, None,
                                             import_remappings, more=more)
 
-                if not isdir(configuration_yaml['artifact_path_dir']):
-                    makedirs(configuration_yaml['artifact_path_dir'])
+                if not isdir(configuration_yaml['artifact_path']):
+                    makedirs(configuration_yaml['artifact_path'])
                 solidity_name = str(configuration_yaml['solidity'])
-                artifact_path_json = join(configuration_yaml['artifact_path_dir'],
+                artifact_path_json = join(configuration_yaml['artifact_path'],
                                           solidity_name[:-4] + ".json")
 
                 if is_compiled(artifact_path_json, cobra_compiled):
@@ -40,10 +40,10 @@ def _compile(more=False):
                 cobra_compiled = to_compile(file_path_sol,
                                             allow_paths, import_remappings, more)
 
-                if not isdir(configuration_yaml['artifact_path_dir']):
-                    makedirs(configuration_yaml['artifact_path_dir'])
+                if not isdir(configuration_yaml['artifact_path']):
+                    makedirs(configuration_yaml['artifact_path'])
                 solidity_name = str(configuration_yaml['solidity'])
-                artifact_path_json = join(configuration_yaml['artifact_path_dir'],
+                artifact_path_json = join(configuration_yaml['artifact_path'],
                                           solidity_name[:-4] + ".json")
 
                 if is_compiled(artifact_path_json, cobra_compiled):
