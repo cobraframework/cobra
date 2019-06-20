@@ -48,10 +48,10 @@ def _unittest(more=False):
                     Path(test_path).resolve(), pattern='*_test.py',
                     top_level_dir=Path(test_path).resolve())
                 for all_test_suite in test_loader:
-                    for test_suites in all_test_suite:
-                        for test_suite in test_suites:
+                    for _test_suites in all_test_suite:
+                        for _test_suite in _test_suites:
                             test_case_classes\
-                                .append(test_suite.__class__)
+                                .append(_test_suite.__class__)
 
             # Added test case class on test suite array
             for test_case_class in list(set(test_case_classes)):
