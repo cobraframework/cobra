@@ -14,17 +14,17 @@ def _migrate(more=False):
         # deployment.display_account()
         for configuration_yaml in configurations_yaml:
             if configuration_yaml['links'] is None:
-                artifact_path_json = join(configuration_yaml['artifact_path_dir'], configuration_yaml['artifact'])
+                artifact_path_json = join(configuration_yaml['artifact_path'], configuration_yaml['artifact'])
                 artifact_json = deployment.deploy_with_out_link(
-                    configuration_yaml['artifact_path_dir'],
+                    configuration_yaml['artifact_path'],
                     configuration_yaml['artifact'], more=more)
                 if artifact_json is not None:
                     file_writer(artifact_path_json, str(artifact_json))
                 continue
             else:
-                artifact_path_json = join(configuration_yaml['artifact_path_dir'], configuration_yaml['artifact'])
+                artifact_path_json = join(configuration_yaml['artifact_path'], configuration_yaml['artifact'])
                 artifact_json = deployment.deploy_with_link(
-                    configuration_yaml['artifact_path_dir'],
+                    configuration_yaml['artifact_path'],
                     configuration_yaml['artifact'],
                     configuration_yaml['links'], more=more)
                 if artifact_json is not None:
