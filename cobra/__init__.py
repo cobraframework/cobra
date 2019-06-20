@@ -1,5 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+# COBRA FRAMEWORK
+
 """
 Cobra is a fast and simple development environment framework for ethereum virtual
 machine and it have testing framework for testing smart contract(Solidity file).
@@ -8,6 +11,7 @@ Python Standard Library.
 
 Homepage and documentation: http://cobraframework.github.io
 
+Email: meherett@zoho.com
 Copyright (c) 2019, Meheret Tesfaye.
 License: MIT (see LICENSE for details)
 """
