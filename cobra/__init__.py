@@ -29,8 +29,8 @@ from eth_tester import EthereumTester
 from os.path import join, isdir
 from web3.providers.eth_tester import EthereumTesterProvider
 
-from cobra.test.interfaces import Interfaces
-from cobra.test import Test
+from .test.interfaces import Interfaces
+from .test import Test
 from .project.configuration import Configuration
 from .project.migration.deployment import Deployment
 from .project.sources.compiler import (
@@ -38,6 +38,13 @@ from .project.sources.compiler import (
     bytecode_link_from_file,
     bytecode_link_to_md5,
     to_compile
+)
+from .utils.console_log import console_log
+from .utils.utils import (
+    file_reader,
+    file_writer,
+    json_loader,
+    yaml_loader
 )
 
 __all__ = [
@@ -53,10 +60,16 @@ __all__ = [
     "isdir", "sys",
     "is_compiled",
     "textwrap",
-    "unittest",
+    "unittest", "Test",
+    "Interfaces",
     "argparse",
+    "console_log",
     "to_compile",
     "pkg_resources",
+    "file_reader",
+    "file_writer",
+    "json_loader",
+    "yaml_loader",
     "bytecode_link_to_md5",
     "bytecode_link_from_file",
 ]
