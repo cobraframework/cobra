@@ -20,10 +20,10 @@ class Tester:
         self.compiled_interfaces = compiled_interfaces
 
     def contract(self, name):
-        for compiledInterface in self.compiled_interfaces.keys():
-            contract_name = compiledInterface.split(":")
+        for compiled_interface in self.compiled_interfaces.keys():
+            contract_name = compiled_interface.split(":")
             if contract_name[0] == name:
-                interface = self.compiled_interfaces.get(compiledInterface)
+                interface = self.compiled_interfaces.get(compiled_interface)
                 return self.new(interface)
             else:
                 continue
