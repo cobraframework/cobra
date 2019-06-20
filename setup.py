@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as _readme:
     long_description = _readme.read()
@@ -19,11 +19,19 @@ setup(
     author_email='meherett@zoho.com',
     url='https://github.com/cobraframework/cobra',
     install_requires=requirements,
+    # tests_require=[
+    #    'pytest==3.10.1'
+    # ],
+    # setup_requires=[
+    #    'pytest==3.10.1'
+    # ],
     keywords=['cobra'],
     entry_points={
         'console_scripts': ["cobra=cobra.cli.__main__:main"]
     },
     python_requires=">=3.6,<4",
+    packages=find_packages(),
+    include_package_data=True,
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

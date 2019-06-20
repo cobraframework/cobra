@@ -52,6 +52,7 @@ def _unittest(more=False):
                 except ImportError as importError:
                     console_log(str(importError), "error", "ImportError")
                     sys.exit()
+
                 for all_test_suite in test_loader:
                     for _test_suites in all_test_suite:
                         for _test_suite in _test_suites:
