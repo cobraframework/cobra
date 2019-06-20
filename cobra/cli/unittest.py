@@ -44,9 +44,14 @@ def _unittest(more=False):
         if 'test_paths' in test_yaml:
             test_paths = test_yaml['test_paths']
             for test_path in test_paths:
-                test_loader = unittest.defaultTestLoader.discover(
-                    Path(test_path).resolve(), pattern='*_test.py',
-                    top_level_dir=Path(test_path).resolve())
+
+                try:
+                    test_loader = unittest.defaultTestLoader.discover(
+                        start_dir=str(Path(test_path).resolve()), pattern='*_test.py',
+                        top_level_dir=str(Path(test_path).resolve()))
+                except ImportError as importError:
+                    console_log(str(importError), "error", "ImportError")
+                    sys.exit()
                 for all_test_suite in test_loader:
                     for _test_suites in all_test_suite:
                         for _test_suite in _test_suites:
