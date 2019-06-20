@@ -1,25 +1,25 @@
 from cobra import *
 
 
-def pytest(more=False):
-    _pytest = False
-    _pytest_cobra = False
+def _pytest(more=False):
+    pytest = False
+    pytest_cobra = False
     installed_packages = pkg_resources.working_set
     package_keys = sorted(['%s' % installed_package.key
                            for installed_package in installed_packages])
     for package_key in package_keys:
         if package_key == 'pytest':
-            _pytest = True
+            pytest = True
         elif package_key == 'pytest-cobra':
-            _pytest_cobra = True
+            pytest_cobra = True
         else:
             pass
 
-    if not _pytest:
+    if not pytest:
         console_log("Install pytest framework 'pip install pytest'!",
                     "error", "NotFound")
         sys.exit()
-    elif not _pytest_cobra:
+    elif not pytest_cobra:
         console_log("Install pytest-cobra 'pip install pytest-cobra'!",
                     "error", "NotFound")
         sys.exit()

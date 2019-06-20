@@ -4,18 +4,18 @@ import argparse
 import sys
 
 from cobra.cli.compile import _compile
-from cobra.cli.migration import migrate
-from cobra.cli.network import network
-from cobra.cli.unittest import unittest
-from cobra.cli.pytest import pytest
+from cobra.cli.migration import _migrate
+from cobra.cli.network import _network
+from cobra.cli.unittest import _unittest
+from cobra.cli.pytest import _pytest
 
 __all__ = [
     "textwrap",
     "argparse",
     "sys",
     "_compile",
-    "migrate",
-    "network",
-    "unittest",
-    "pytest"
+    "_migrate",
+    "_network",
+    "_unittest",
+    "_pytest"
 ]

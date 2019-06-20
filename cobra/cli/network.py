@@ -1,7 +1,7 @@
 from cobra import *
 
 
-def network(more=False):
+def _network(more=False):
     configuration = Configuration()
     read_yaml = file_reader("./cobra.yaml")
     load_yaml = yaml_loader(read_yaml, more=more)

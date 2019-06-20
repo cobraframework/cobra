@@ -1,9 +1,9 @@
-from cobra.cli.network import network as nwk
+from cobra.cli import _network
 from cobra import *
 
 
-def migrate(more=False):
-    network = nwk(more)
+def _migrate(more=False):
+    network = _network(more)
     deployment = Deployment(network, more)
     configuration = Configuration()
     read_yaml = file_reader("./cobra.yaml")
