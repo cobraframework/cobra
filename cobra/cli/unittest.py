@@ -1,7 +1,7 @@
 from cobra import *
 
 
-def main(more=False):
+def unittest(more=False):
     """
     Start testing Cobra using Unittest to test Smart Contract (Solidity file)
 
