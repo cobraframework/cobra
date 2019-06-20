@@ -5,7 +5,7 @@ class Deployment(Provider):
 
     def __init__(self, _network, more=False):
         self.more = more
-        self._network = _network
+        self.network = _network
         self.web3 = self.get_web3()
         self.account = self.get_account()
         self.hdwallet = self.get_hdwallet()
