@@ -1,0 +1,40 @@
+compile:
+  solidity_path: "./sources"
+  artifact_path: "./contracts"
+  contracts: [
+      contract: {
+          solidity: "ConvertLib.sol",
+      },
+      contract: {
+          solidity: "MetaCoin.sol",
+          import_remappings: [
+            "=/home/meheret/PycharmProjects/Cobra/tests/sources/"
+          ],
+          allow_paths: [
+            "/home/meheret/PycharmProjects/Cobra/tests/sources/"
+          ]
+      }
+    ]
+
+deploy:
+  artifact_path: "../contracts"
+  contracts: [
+    contract: {
+        artifact: "ConvertLib.json"
+    },
+    contract: {
+        artifact: "MetaCoin.json",
+        links: ["ConvertLib.json"]
+    }
+  ]
+
+network:
+  development: {
+      host: "localhost",
+      port: 8545,
+      protocol: "HTTP",
+#      account: {
+#        address: "0xbe24372ae7b2f37e204ff1daa3d1be0bb4403ba2",
+#        gas: 3000000
+#      }
+  }
