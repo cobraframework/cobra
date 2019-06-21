@@ -19,12 +19,6 @@ setup(
     author_email='meherett@zoho.com',
     url='https://github.com/cobraframework/cobra',
     install_requires=requirements,
-    # tests_require=[
-    #    'pytest==3.10.1'
-    # ],
-    # setup_requires=[
-    #    'pytest==3.10.1'
-    # ],
     keywords=['cobra'],
     entry_points={
         'console_scripts': ["cobra=cobra.cli.__main__:main"]

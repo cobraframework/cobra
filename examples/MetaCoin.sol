@@ -1,9 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "./mercy/Mercy.sol";
-//import "/home/meheret/PycharmProjects/Cobra/examples/Mercy.sol";
 import "./convertLib/ConvertLib.sol";
-//import "/home/meheret/ConvertLib.sol";
 
 // This is just a simple example of a coin-like contract.
 // It is not standards compatible and cannot be expected to talk to other
@@ -29,10 +26,6 @@ contract MetaCoin {
 
 	function getBalanceInEth(address addr) public view returns(uint){
 		return ConvertLib.convert(getBalance(addr),2);
-	}
-
-    function getB(address addr) public view returns(uint){
-		return Mercy.mercy(getBalance(addr),2);
 	}
 
 	function getBalance(address addr) public view returns(uint) {
