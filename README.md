@@ -1,4 +1,4 @@
-![Image](../cobra/master/cobra.png?raw=true)
+![Image](../blob/master/cobra.png?raw=true)
 
 # Cobra 
 
