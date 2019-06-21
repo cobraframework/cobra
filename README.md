@@ -1,6 +1,4 @@
-<p align="start">	
-  <img src="file:///home/meheret/PycharmProjects/Cobra/cobra.png">		
-</p>
+![Image](../cobra/master/cobra.png?raw=true)
 
 # Cobra 
 
