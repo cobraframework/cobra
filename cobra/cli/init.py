@@ -15,11 +15,11 @@ def _init(url=None):
         with zipfile.ZipFile(io.BytesIO(response.content)) as _zips:
                 _zips.extractall(getcwd())
     except requests.exceptions.MissingSchema as missingSchema:
-        console_log(missingSchema, "error", "MissingSchema")
+        console_log(str(missingSchema), "error", "MissingSchema")
         sys.exit()
     except requests.exceptions.InvalidSchema as invalidSchema:
-        console_log(invalidSchema, "error", "InvalidSchema")
+        console_log(str(invalidSchema), "error", "InvalidSchema")
         sys.exit()
     except zipfile.BadZipFile as badZipFile:
-        console_log(badZipFile, "error", "BadZipFile")
+        console_log(str(badZipFile), "error", "BadZipFile")
         sys.exit()
