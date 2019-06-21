@@ -1,13 +1,13 @@
 from cobra.cli import *
 
 
-usage = "[-h] [help] [compile {--more}] [deploy {--more}] [migrate {--more}] " \
+usage = "[-h] [help] [init] [compile {--more}] [deploy {--more}] [migrate {--more}] " \
         "[test {--unittest} or {--pytest}, {--more}]"
 
 description = textwrap.dedent('''\
-        Cobra Framework is a world class development environment, testing framework and
-        asset pipeline for blockchains using the Ethereum Virtual Machine (EVM), aiming
-        to make life as a developer easier.   https://github.com/cobraframework''')
+        Cobra Framework is a development environment, testing framework and asset
+        pipeline for blockchains using the Ethereum Virtual Machine (EVM), 
+        https://github.com/cobraframework''')
 
 
 def main(argv=None):
@@ -21,12 +21,12 @@ def main(argv=None):
                     --------------------
                     !!!PLEASE HELP ME!!!
                     --------------------
-        Donate in Bitcoin: 3JiPsp6bT6PkXF3f9yZsL5hrdQwtVuXXAk
-        Donate in Ethereum: 0xD32AAEDF28A848e21040B6F643861A9077F83106
+        Donate with Bitcoin: 3JiPsp6bT6PkXF3f9yZsL5hrdQwtVuXXAk
+        Donate with Ethereum: 0xA963a015d355F08d82cDDD815FFe758f0092fE57
         '''),
         description=description)
 
-    parser.set_defaults(compile=False, deploy=False, migrate=False,
+    parser.set_defaults(init=False, compile=False, deploy=False, migrate=False,
                         test=False, unittest=False, pytest=False, help=False)
 
     cobra_parser = parser.add_subparsers(
@@ -35,8 +35,12 @@ def main(argv=None):
                     Cobra commands list below here!'''))
 
     parser_help = cobra_parser.add_parser('help')
-    parser_help.add_argument("help", action='store_true',
+    parser_help.add_argument('help', action='store_true',
                              help='Show this help message and exit')
+
+    parser_help = cobra_parser.add_parser('init')
+    parser_help.add_argument('init', action='store_true',
+                             help='Clone template!')
 
     parser_compile = cobra_parser.add_parser('compile')
     parser_compile.add_argument("compile", action='store_true',
@@ -74,6 +78,10 @@ def main(argv=None):
 
     if cobra_args.help:
         parser.print_help()
+
+    elif cobra_args.init:
+        _init(None)
+
     elif cobra_args.compile and not \
             cobra_args.more:
         _compile(False)

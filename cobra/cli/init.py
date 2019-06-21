@@ -1,0 +1,25 @@
+from cobra import *
+
+
+"""
+Download a template Greeter contract file and extract its contents in memory
+yields (filename, file-like object) pairs
+"""
+
+
+def _init(url=None):
+    if url is None:
+        url = "https://github.com/cobraframework/cobra/raw/master/cobra/cli/template/Greeter.zip"
+    try:
+        response = requests.get(url)
+        with zipfile.ZipFile(io.BytesIO(response.content)) as _zips:
+                _zips.extractall(getcwd())
+    except requests.exceptions.MissingSchema as missingSchema:
+        console_log(missingSchema, "error", "MissingSchema")
+        sys.exit()
+    except requests.exceptions.InvalidSchema as invalidSchema:
+        console_log(invalidSchema, "error", "InvalidSchema")
+        sys.exit()
+    except zipfile.BadZipFile as badZipFile:
+        console_log(badZipFile, "error", "BadZipFile")
+        sys.exit()

@@ -22,11 +22,16 @@ import argparse
 import os
 import sys
 import textwrap
+import requests
+import io
+import zipfile
 
 from web3 import Web3
 from glob import glob
+from os import getcwd
 from unittest import TestSuite
 from os import makedirs
+from os.path import basename
 from colorama import Fore, Style
 from pathlib import Path
 from eth_tester import EthereumTester
@@ -67,6 +72,10 @@ __all__ = [
     "unittest", "Test",
     "Interfaces",
     "argparse",
+    "requests",
+    "zipfile",
+    "basename",
+    "getcwd", "io",
     "console_log",
     "to_compile",
     "pkg_resources",
