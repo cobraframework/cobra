@@ -1,4 +1,5 @@
-<img src="https://raw.githubusercontent.com/meherett/cobra/master/cobra.svg?token=AHMADHI5OJUF3GFKVITITKS5BXAS4" width="200">
+![Cobra Logo](../master/cobra.png?raw=true)
+<img src="../master/cobra.png?raw=true" width="200">
 
 ![GitHub License](https://img.shields.io/github/license/cobraframework/pytest-cobra.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Django.svg)
