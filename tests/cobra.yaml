@@ -1,6 +1,6 @@
 compile:
-  solidity_path: "./sources"
-  artifact_path: "./contracts"
+  solidity_path: "tests/sources"
+  artifact_path: "tests/contracts"
   contracts: [
       contract: {
           solidity: "ConvertLib.sol",
@@ -17,7 +17,7 @@ compile:
     ]
 
 deploy:
-  artifact_path: "../contracts"
+  artifact_path: "tests/contracts"
   contracts: [
     contract: {
         artifact: "ConvertLib.json"

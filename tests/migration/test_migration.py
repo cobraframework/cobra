@@ -13,13 +13,14 @@ import os
 
 # Testing deployment
 def test_migration():
-    cobra_yaml = yaml_loader(file_reader("../cobra.yaml"), False)
+    cobra_yaml = yaml_loader(file_reader("tests/cobra.yaml"), False)
     deployment = Deployment(
         Configuration().network(cobra_yaml['network']), False)
     configurations_deploy = Configuration().deploy(cobra_yaml['deploy'])
 
     for configuration_deploy in configurations_deploy:
         if configuration_deploy['links'] is None:
+            print(os.path.isdir(configuration_deploy['artifact_path']))
             assert os.path.isdir(configuration_deploy['artifact_path'])
             artifact_path_json = join(configuration_deploy['artifact_path'], configuration_deploy['artifact'])
             assert os.path.isfile(artifact_path_json)
