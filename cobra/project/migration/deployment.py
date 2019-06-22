@@ -167,7 +167,7 @@ class Deployment(Provider):
                     'gas': 3000000,
                     'gasPrice': self.web3.eth.gasPrice
                 }
-                tx_hash = contract.deploy(transaction=transaction)
+                tx_hash = contract.constructor().transact(transaction=transaction)
                 return tx_hash
         except ValueError as valueError:
             value_error = valueError.args.__getitem__(0)
