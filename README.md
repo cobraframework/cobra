@@ -1,5 +1,4 @@
-![Cobra Logo](../master/cobra.png?raw=true)
-<img src="../master/cobra.png?raw=true" width="200">
+<img src="../master/cobra.png?raw=true" width="225">
 
 ![GitHub License](https://img.shields.io/github/license/cobraframework/pytest-cobra.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Django.svg)
@@ -7,6 +6,8 @@
 ![Github Date](https://img.shields.io/github/release-date/cobraframework/pytest-cobra.svg?color=black)
 ![PyPI Wheel](https://img.shields.io/pypi/wheel/pytest-cobra.svg)
 [![Donate with Ethereum](https://en.cryptobadges.io/badge/micro/0xD32AAEDF28A848e21040B6F643861A9077F83106)](https://en.cryptobadges.io/donate/0xD32AAEDF28A848e21040B6F643861A9077F83106)
+
+---
 
 *Cobra is a fast and simple development environment framework for ethereum virtual
 machine(EVM).*
