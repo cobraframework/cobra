@@ -1,6 +1,4 @@
-![Cobra Logo](../master/cobra.png?raw=true)
-
-# Cobra 
+<img src="../master/cobra.svg?raw=true">
 
 ![GitHub License](https://img.shields.io/github/license/cobraframework/pytest-cobra.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Django.svg)
