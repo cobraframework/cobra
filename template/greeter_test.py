@@ -15,9 +15,9 @@ class Greeter(Test):
 
 # # by PYTEST
 # def test_greeter(cobra):
-#     # Get Contract Factory
+#     # Get Greeter Contract Factory
 #     greeter = cobra.contract('Greeter')
-#     # Deploying MetaCoin
+#     # Deploying Greeter
 #     greeter = greeter.deploy()
 #
 #     assert greeter.greet() == "Hello" "Oops! Not Equal."
