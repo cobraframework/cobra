@@ -24,7 +24,6 @@ web3 = "==4.8.2"
 
 [packages]
 cobra = {editable = true,path = "."}
-lazyme = {editable = true,path = "."}
 
 [requires]
 python_version = "3.6"
