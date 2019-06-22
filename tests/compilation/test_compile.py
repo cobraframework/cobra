@@ -49,8 +49,8 @@ metacoin_bin = "608060405234801561001057600080fd5b506127106000803273ffffffffffff
 # Testing to_compile function
 def test_to_compile():
     # Source MetaCoin and ConvertLib
-    convertlib_path = "../sources/ConvertLib.sol"
-    metacoin_path = "../sources/MetaCoin.sol"
+    convertlib_path = "tests/sources/ConvertLib.sol"
+    metacoin_path = "tests/sources/MetaCoin.sol"
 
     # Import remappings of MetaCoin
     metacoin_import_remappings = ['=/home/meheret/PycharmProjects/Cobra/tests/sources/']
