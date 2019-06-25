@@ -1,4 +1,5 @@
 from cobra.cli import *
+from cobra.utils.console_log import console_log
 
 
 usage = "[-h] [help] [init] [compile {--more}] [deploy {--more}] [migrate {--more}] " \
@@ -76,8 +77,10 @@ def main(argv=None):
     # Cobra Agreements
     cobra_args = parser.parse_args()
 
-    if cobra_args.help \
-            or not argv:
+    if not argv:
+        console_log(usage, title="Usage")
+
+    elif cobra_args.help:
         parser.print_help()
 
     elif cobra_args.init:
