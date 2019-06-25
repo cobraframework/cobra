@@ -17,11 +17,11 @@ def _pytest(more=False):
 
     if not pytest:
         console_log("Install pytest framework 'pip install pytest'!",
-                    "error", "NotFound")
+                    "error", "PyTestNotFound")
         sys.exit()
     elif not pytest_cobra:
         console_log("Install pytest-cobra 'pip install pytest-cobra'!",
-                    "error", "NotFound")
+                    "error", "PyTestCobraNotFound")
         sys.exit()
     try:
         read_yaml = file_reader("./cobra.yaml")
