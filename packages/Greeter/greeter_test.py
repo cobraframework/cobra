@@ -1,4 +1,4 @@
-# by UNITTEST
+# using UNITTEST
 from cobra.test import Test
 
 
@@ -13,7 +13,7 @@ class Greeter(Test):
         self.assertEqual(greeter.greet(), "Hello", "Oops! Not Equal.")
 
 
-# # by PYTEST
+# # using PYTEST
 # def test_greeter(cobra):
 #     # Get Greeter Contract Factory
 #     greeter = cobra.contract('Greeter')
