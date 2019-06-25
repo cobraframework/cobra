@@ -96,7 +96,8 @@ class Provider:
     def get_hdwallet(self):
         if 'hdwallet' in self.network:
             package_checker("cobra-hdwallet",
-                            "CobraHDWalletNotFound: install 'pip install cobra-hdwallet'!")
+                            "install 'pip install cobra-hdwallet'!",
+                            "CobraHDWalletNotFound")
             cobra_hdwallet = __import__("cobra_hdwallet")
             hdwallet = cobra_hdwallet.HDWallet()
             if 'mnemonic' in self.network['hdwallet'] or \
