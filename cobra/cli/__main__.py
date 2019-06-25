@@ -76,7 +76,8 @@ def main(argv=None):
     # Cobra Agreements
     cobra_args = parser.parse_args()
 
-    if cobra_args.help:
+    if cobra_args.help \
+            or not argv:
         parser.print_help()
 
     elif cobra_args.init:
