@@ -4,11 +4,11 @@ from cobra.utils import package_checker
 
 def _pytest(more=False):
     package_checker("pytest",
-                    "Install pytest framework 'pip install pytest'!",
-                    "PyTestNotFound")
+                    "Install PyTest Framework 'pip install pytest>=3.7.1,<4.0.0'!",
+                    "NotFound")
     package_checker("pytest-cobra",
-                    "Install pytest-cobra 'pip install pytest-cobra'!",
-                    "PyTestCobraNotFound")
+                    "Install PyTest-Cobra 'pip install pytest-cobra'!",
+                    "NotFound")
     try:
         read_yaml = file_reader("./cobra.yaml")
         load_yaml = yaml_loader(read_yaml, more=more)
