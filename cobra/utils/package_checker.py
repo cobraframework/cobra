@@ -1,4 +1,5 @@
 from cobra.utils import *
+from .console_log import console_log
 
 
 # Package Checker
