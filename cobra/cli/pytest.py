@@ -1,28 +1,14 @@
 from cobra import *
+from cobra.utils import package_checker
 
 
 def _pytest(more=False):
-    pytest = False
-    pytest_cobra = False
-    installed_packages = pkg_resources.working_set
-    package_keys = sorted(['%s' % installed_package.key
-                           for installed_package in installed_packages])
-    for package_key in package_keys:
-        if package_key == 'pytest':
-            pytest = True
-        elif package_key == 'pytest-cobra':
-            pytest_cobra = True
-        else:
-            pass
-
-    if not pytest:
-        console_log("Install pytest framework 'pip install pytest'!",
-                    "error", "PyTestNotFound")
-        sys.exit()
-    elif not pytest_cobra:
-        console_log("Install pytest-cobra 'pip install pytest-cobra'!",
-                    "error", "PyTestCobraNotFound")
-        sys.exit()
+    package_checker("pytest",
+                    "Install pytest framework 'pip install pytest'!",
+                    "PyTestNotFound")
+    package_checker("pytest-cobra",
+                    "Install pytest-cobra 'pip install pytest-cobra'!",
+                    "PyTestCobraNotFound")
     try:
         read_yaml = file_reader("./cobra.yaml")
         load_yaml = yaml_loader(read_yaml, more=more)
