@@ -7,7 +7,7 @@ with open("requirements.txt", "r") as _requirements:
     requirements = list(map(str.strip, _requirements.read().split("\n")))[:-1]
 
 setup(
-    name="cobra",
+    name="py-cobra",
     version='0.1.0',
     description='Cobra Framework is a world class development environment, testing framework and '
                 'asset pipeline for blockchains using the Ethereum Virtual Machine (EVM)'
