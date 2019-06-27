@@ -9,8 +9,12 @@
 
 ---
 
-*A fast, flexible and simple development environment framework for Ethereum smart contract, testing and 
-deployment on Ethereum virtual machine(EVM).*
+A fast, flexible and simple development environment framework for Ethereum smart contract, testing and 
+deployment on Ethereum virtual machine(EVM).
+
+With cobra you can get built-in smart contract compilation, linking, deployment, binary management, 
+automated contract testing with Unittest and PyTest frameworks, scriptable deployment & migrations framework 
+and network management for deploying to many public & private networks like INFURA or ganache-cli
 
 ## Dependency
 
@@ -55,17 +59,71 @@ $ cobra --help
 From there, you can run `cobra compile`, `cobra deploy/migrate` and `cobra test --unittest/--pytest` 
 to compile your contracts, deploy those contracts to the network, and run their associated unit tests.
 
+<details>
+<summary>cobra.yaml</summary>
+
+```yaml
+compile:
+  solidity_path: "./contracts"
+  artifact_path: "./build/contracts"
+  contracts: [
+      contract: {
+          solidity: "Contract.sol",
+      }
+    ]
+
+deploy:
+  artifact_path: "./build/contracts/"
+  contracts: [
+    contract: {
+        artifact: "Contract.json"
+    }
+  ]
+
+test:
+  artifact_path: "./build/contracts/"
+  test_paths: ["./tests"]
+  contracts: [
+    contract: {
+        artifact: "Contract.json"
+    }
+  ]
+
+network:
+  development: {
+#      url: "https://ropsten.infura.io/...",
+      host: "localhost",
+      port: 8545,
+#      hdwallet: {
+#          mnemonic: "meheret tesfaye batu bayu",
+#          password: "meherett",
+#          private: "5f8935bb3b61b312ba1114cbf6f1ea30102383f2b043a1b213aa482132d25049",
+#          gas: 3000000
+#      },
+      protocol: "HTTP",
+      account: {
+        address: "0x6a373a75c388ac2d160f1d2b6d9ada34f29831cd",
+        gas: 3000000
+      }
+  }
+```
+</details>
+
 ## Testing
 Tests are still under development.
 
 You can run the tests with:
+
 ```
 $ pytest tests
 ```
 
+Or use `tox` to run the complete suite against the full set of build targets, or pytest to run specific 
+tests against a specific version of Python.
+
 ## Meta
 
-**Meheret Tesfaye** – [@meherett](https://github.com/meherett) – meherett@zoho.com
+Meheret Tesfaye – [@meherett](https://github.com/meherett) – meherett@zoho.com
 
 Distributed under the MIT license. See ``LICENSE`` for more information.
 
