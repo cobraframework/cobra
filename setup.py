@@ -9,9 +9,8 @@ with open("requirements.txt", "r") as _requirements:
 setup(
     name="py-cobra",
     version='0.1.0',
-    description='Cobra Framework is a world class development environment, testing framework and '
-                'asset pipeline for blockchains using the Ethereum Virtual Machine (EVM)'
-                'https://cobraframework.github.io',
+    description='A fast, flexible and simple development environment framework for Ethereum smart contract, '
+                'testing and deployment on Ethereum virtual machine(EVM). https://cobraframework.github.io',
     long_description=long_description,
     long_description_content_type="text/markdown",
     license='MIT',
