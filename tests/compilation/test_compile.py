@@ -1,6 +1,6 @@
 from cobra.project.sources.compiler import to_compile
 from cobra.utils import json_loader
-
+from cobra import getcwd
 
 convertlib_bin = "60d061002f600b82828239805160001a6073146000811461001f57610021565bfe5" \
                  "b5030600052607381538281f3007300000000000000000000000000000000000000" \
@@ -53,7 +53,7 @@ def test_to_compile():
     metacoin_path = "tests/sources/MetaCoin.sol"
 
     # Import remappings of MetaCoin
-    metacoin_import_remappings = ['=/home/meheret/PycharmProjects/Cobra/tests/sources/']
+    metacoin_import_remappings = ['=%s/tests/sources/' % str(getcwd())]
 
     # Compiling ConvertLib
     convertlib_compiled = to_compile(
