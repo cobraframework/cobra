@@ -1,7 +1,7 @@
 from cobra.project.sources.compiler import to_compile
 from cobra.utils import json_loader
 from cobra import getcwd
-from glob import glob
+
 
 convertlib_bin = "60d061002f600b82828239805160001a6073146000811461001f57610021565bfe5" \
                  "b5030600052607381538281f3007300000000000000000000000000000000000000" \
@@ -9,8 +9,8 @@ convertlib_bin = "60d061002f600b82828239805160001a6073146000811461001f5761002156
                  "00000000000000000000000000000900463ffffffff16806396e4ee3d14605b575b" \
                  "600080fd5b608160048036038101908080359060200190929190803590602001909" \
                  "291905050506097565b6040518082815260200191505060405180910390f35b6000" \
-                 "8183029050929150505600a165627a7a72305820ed6b1a354a80f6abd7a8fec8f89" \
-                 "85957ce16123dfbd5aa58be7478935fc8626e0029"
+                 "8183029050929150505600a165627a7a72305820bbf904ea53e3816a53efdd48f35" \
+                 "2df85b448673d31af1644f0f1a3e53484e3110029"
 
 metacoin_bin = "608060405234801561001057600080fd5b506127106000803273fffffffffffffffff" \
                "fffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16" \
@@ -43,19 +43,17 @@ metacoin_bin = "608060405234801561001057600080fd5b506127106000803273ffffffffffff
                "f55a4df523b3ef846040518082815260200191505060405180910390a3600190505b9" \
                "2915050565b60008060008373ffffffffffffffffffffffffffffffffffffffff1673" \
                "ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002" \
-               "05490509190505600a165627a7a72305820105c65272f03410067b9eeaa3d7df1125f" \
-               "72a733c6940ec0656a949968ea81630029"
+               "05490509190505600a165627a7a723058208ee0565669561af45512ac158673f60735" \
+               "5bd7be6fe7a3e6fd7adf945104b7600029"
 
 
 # Testing to_compile function
 def test_to_compile():
     # Source MetaCoin and ConvertLib
-    convertlib_path = "tests/sources/ConvertLib.sol"
-    metacoin_path = "tests/sources/MetaCoin.sol"
+    convertlib_path = '%s/tests/sources/ConvertLib.sol' % str(getcwd())
+    metacoin_path = '%s/tests/sources/MetaCoin.sol' % str(getcwd())
 
     # Import remappings of MetaCoin
-    print(str(getcwd()))
-    print(glob(str(getcwd()) + '/tests/sources/*.*'))
     metacoin_import_remappings = ['=%s/tests/sources/' % str(getcwd())]
 
     # Compiling ConvertLib
