@@ -7,6 +7,7 @@ install:
   - sudo apt-get update
   - sudo apt-get install -y python$TRAVIS_PYTHON_VERSION-dev npm solc
   - npm -g install ganache-cli
+  - python -m solc.install v0.4.24
   - pip install -r requirements.txt
   - pip install tox-travis coveralls
 matrix:
