@@ -1,10 +1,9 @@
 <img src="../master/cobra.png?raw=true" width="225">
 
+[![Build Status](https://travis-ci.com/meherett/cobra.svg?token=zWs2UgQUy4zmDh4gtGYH&branch=master)](https://travis-ci.com/meherett/cobra)
 ![GitHub License](https://img.shields.io/github/license/cobraframework/pytest-cobra.svg)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/Django.svg)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/py-cobra.svg)
 ![PyPI Version](https://img.shields.io/pypi/v/pytest-cobra.svg)
-![Github Date](https://img.shields.io/github/release-date/cobraframework/pytest-cobra.svg?color=black)
-![PyPI Wheel](https://img.shields.io/pypi/wheel/pytest-cobra.svg)
 [![Donate with Ethereum](https://en.cryptobadges.io/badge/micro/0xD32AAEDF28A848e21040B6F643861A9077F83106)](https://en.cryptobadges.io/donate/0xD32AAEDF28A848e21040B6F643861A9077F83106)
 
 ---
@@ -14,7 +13,7 @@ deployment on Ethereum virtual machine(EVM).
 
 With cobra you can get built-in smart contract compilation, linking, deployment, binary management, 
 automated contract testing with Unittest and PyTest frameworks, scriptable deployment & migrations framework 
-and network management for deploying to many public & private networks like INFURA or ganache-cli
+and network management for deploying to many public & private networks like INFURA or ganache-cli.
 
 ## Dependency
 
@@ -60,23 +59,31 @@ From there, you can run `cobra compile`, `cobra deploy/migrate` and `cobra test 
 to compile your contracts, deploy those contracts to the network, and run their associated unit tests.
 
 <details>
-<summary>cobra.yaml</summary>
+advanced <summary>cobra.yaml</summary>
 
 ```yaml
 compile:
-  solidity_path: "./contracts"
+  solidity_path: "./contracts" # global solidity path location
   artifact_path: "./build/contracts"
   contracts: [
-      contract: {
-          solidity: "Contract.sol",
-      }
-    ]
+    contract: {
+        solidity: "Contract.sol",
+#        solidity_path: "./contracts/libs", # detail solidity path location
+#        import_remappings: [
+#          "=/home/meheret/PycharmProjects/metacoin-example/contracts/"
+#        ],
+#        allow_paths: [
+#          "/home/meheret/PycharmProjects/metacoin-example/contracts/"
+#        ]
+    }
+  ]
 
 deploy:
   artifact_path: "./build/contracts/"
   contracts: [
     contract: {
-        artifact: "Contract.json"
+        artifact: "Contract.json",
+    #        links: ["Contract.json"]
     }
   ]
 
@@ -85,26 +92,30 @@ test:
   test_paths: ["./tests"]
   contracts: [
     contract: {
-        artifact: "Contract.json"
+        artifact: "Contract.json",
+#        links: ["Contract.json"]
     }
   ]
 
 network:
   development: {
-#      url: "https://ropsten.infura.io/...",
-      host: "localhost",
-      port: 8545,
-#      hdwallet: {
-#          mnemonic: "meheret tesfaye batu bayu",
-#          password: "meherett",
-#          private: "5f8935bb3b61b312ba1114cbf6f1ea30102383f2b043a1b213aa482132d25049",
-#          gas: 3000000
-#      },
-      protocol: "HTTP",
-      account: {
-        address: "0x6a373a75c388ac2d160f1d2b6d9ada34f29831cd",
-        gas: 3000000
-      }
+    url: "https://ropsten.infura.io/...",
+    host: "localhost",
+    port: 8545,
+#    hdwallet: {
+#        mnemonic: "meheret tesfaye batu bayou",
+#        seed: "meheret tesfaye batu bayou",
+#        password: "meherett",
+#        private: "5f8935bb3b61b312ba1114cbf6f1ea30102383f2b043a1b213aa482132d25049",
+#        gas: 3000000,
+#        gas_price: 1000000
+#    },
+    protocol: "HTTP", # HTTP, HTTPS, WS(WebSocket) and ICP
+    account: {
+      address: "0x6a373a75c388ac2d160f1d2b6d9ada34f29831cd",
+      gas: 3000000,
+#      gas_price: 1000000
+    }
   }
 ```
 </details>
