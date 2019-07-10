@@ -13,5 +13,6 @@ pysha3==1.0.2
 pytest==3.10.1
 pytest-cobra==1.0.1
 PyYAML==3.13
+pytest-cov==2.7.1
 requests==2.21.0
 web3==4.8.2
