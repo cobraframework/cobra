@@ -5,9 +5,9 @@ from cobra.test import Test
 class Greeter(Test):
 
     def test_greeter(self):
-        # Get Greeter Contract Factory
+        # Getting contract factory by name(Greeter)
         greeter = self.cobra.contract('Greeter')
-        # Deploying Greeter
+        # Getting contract instance of Greeter
         greeter = greeter.deploy()
 
         self.assertEqual(greeter.greet(), "Hello", "Oops! Not Equal.")
@@ -15,9 +15,9 @@ class Greeter(Test):
 
 # # using PYTEST
 # def test_greeter(cobra):
-#     # Get Greeter Contract Factory
+#     # Getting contract factory by name(Greeter)
 #     greeter = cobra.contract('Greeter')
-#     # Deploying Greeter
+#     # Getting contract instance of Greeter
 #     greeter = greeter.deploy()
 #
 #     assert greeter.greet() == "Hello" "Oops! Not Equal."
