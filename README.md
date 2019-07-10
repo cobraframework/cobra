@@ -57,24 +57,25 @@ $ cobra --help
 
 From there, you can run `cobra compile`, `cobra deploy/migrate` and `cobra test --unittest/--pytest` 
 to compile your contracts, deploy those contracts to the network, and run their associated unit tests.
-
+ 
+ 
 <details>
-advanced <summary>cobra.yaml</summary>
+<summary>advanced cobra.yaml</summary>
 
 ```yaml
 compile:
-  solidity_path: "./contracts" # global solidity path location
+  solidity_path: "./contracts" # global
   artifact_path: "./build/contracts"
   contracts: [
     contract: {
         solidity: "Contract.sol",
-#        solidity_path: "./contracts/libs", # detail solidity path location
-#        import_remappings: [
-#          "=/home/meheret/PycharmProjects/metacoin-example/contracts/"
-#        ],
-#        allow_paths: [
-#          "/home/meheret/PycharmProjects/metacoin-example/contracts/"
-#        ]
+        solidity_path: "./contracts/libs", # detail
+        import_remappings: [
+          "=/path/folder/contracts/"
+       ],
+        allow_paths: [
+          "/path/folder/contracts/"
+        ]
     }
   ]
 
@@ -83,7 +84,7 @@ deploy:
   contracts: [
     contract: {
         artifact: "Contract.json",
-    #        links: ["Contract.json"]
+        links: ["Contract.json"]
     }
   ]
 
@@ -93,7 +94,7 @@ test:
   contracts: [
     contract: {
         artifact: "Contract.json",
-#        links: ["Contract.json"]
+        links: ["Contract.json"]
     }
   ]
 
@@ -102,19 +103,19 @@ network:
     url: "https://ropsten.infura.io/...",
     host: "localhost",
     port: 8545,
-#    hdwallet: {
-#        mnemonic: "meheret tesfaye batu bayou",
-#        seed: "meheret tesfaye batu bayou",
-#        password: "meherett",
-#        private: "5f8935bb3b61b312ba1114cbf6f1ea30102383f2b043a1b213aa482132d25049",
-#        gas: 3000000,
-#        gas_price: 1000000
-#    },
+    hdwallet: {
+        mnemonic: "meheret tesfaye batu bayou",
+        seed: "meheret tesfaye batu bayou",
+        password: "meherett",
+        private: "5f8935bb3b61b312ba1114cbf6f1ea30102383f2b043a1b213aa482132d25049",
+        gas: 3000000,
+        gas_price: 1000000
+    },
     protocol: "HTTP", # HTTP, HTTPS, WS(WebSocket) and ICP
     account: {
       address: "0x6a373a75c388ac2d160f1d2b6d9ada34f29831cd",
       gas: 3000000,
-#      gas_price: 1000000
+      gas_price: 1000000
     }
   }
 ```

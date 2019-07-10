@@ -11,6 +11,7 @@ py-solc==3.2.0
 pycryptodome==3.7.3
 pysha3==1.0.2
 pytest==3.10.1
+pytest-console-scripts==0.1.9
 pytest-cobra==1.0.1
 PyYAML==3.13
 pytest-cov==2.7.1
