@@ -128,4 +128,4 @@ def main(argv=None):
             cobra_args.more:
         _pytest(True)
 
-    parser.exit()
+    # parser.exit()
