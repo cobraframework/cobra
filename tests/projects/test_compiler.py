@@ -1,6 +1,16 @@
-from cobra.project.sources.compiler import to_compile
+#!/usr/bin/python3
+
 from cobra.utils import json_loader
 from cobra import getcwd
+
+import os
+from pathlib import Path
+import pytest
+import sys
+
+from cobra.utils import Style, Fore
+from cobra.cli.__main__ import main as cli_main
+from cobra.project.sources.compiler import to_compile
 
 
 convertlib_bin = "60d061002f600b82828239805160001a6073146000811461001f57610021565bfe5" \
@@ -11,6 +21,25 @@ convertlib_bin = "60d061002f600b82828239805160001a6073146000811461001f5761002156
                  "291905050506097565b6040518082815260200191505060405180910390f35b6000" \
                  "8183029050929150505600a165627a7a72305820bbf904ea53e3816a53efdd48f35" \
                  "2df85b448673d31af1644f0f1a3e53484e3110029"
+
+
+def compile_success_output():
+    return Style.DIM + Fore.GREEN + "[SUCCESS]" + Style.RESET_ALL + ' ' + \
+           Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
+           "ConvertLib.sol done in ./contracts/ConvertLib.json" + "\n" + \
+           Style.DIM + Fore.GREEN + "[SUCCESS]" + Style.RESET_ALL + ' ' + \
+           Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
+           "MetaCoin.sol done in ./contracts/MetaCoin.json" + "\n"
+
+
+def compile_warning_output():
+    return Style.DIM + Fore.YELLOW + "[WARNING]" + Style.RESET_ALL + ' ' + \
+           Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
+           "ConvertLib.sol already compiled in ./contracts/ConvertLib.json\n" + \
+           Style.DIM + Fore.YELLOW + "[WARNING]" + Style.RESET_ALL + ' ' + \
+           Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
+           "MetaCoin.sol already compiled in ./contracts/MetaCoin.json" + "\n"
+
 
 metacoin_bin = "608060405234801561001057600080fd5b506127106000803273fffffffffffffffff" \
                "fffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16" \
@@ -48,13 +77,9 @@ metacoin_bin = "608060405234801561001057600080fd5b506127106000803273ffffffffffff
 
 
 # Testing to_compile function
-def test_to_compile():
-    # Source MetaCoin and ConvertLib
+def test_convertlib_bin():
+    # Source ConvertLib
     convertlib_path = '%s/tests/sources/ConvertLib.sol' % str(getcwd())
-    metacoin_path = '%s/tests/sources/MetaCoin.sol' % str(getcwd())
-
-    # Import remappings of MetaCoin
-    metacoin_import_remappings = ['=%s/tests/sources/' % str(getcwd())]
 
     # Compiling ConvertLib
     convertlib_compiled = to_compile(
@@ -62,13 +87,48 @@ def test_to_compile():
         allow_paths=None,
         import_remappings=None
     )
-    # Compiling MetaCoin
-    metacoin_compiled = to_compile(
-        file_path_sol=metacoin_path,
-        allow_paths=None,
-        import_remappings=metacoin_import_remappings
-    )
 
     assert str(convertlib_bin) == json_loader(convertlib_compiled)['bin']
 
-    # assert str(metacoin_bin) == json_loader(metacoin_compiled)['bin']
+
+@pytest.fixture(scope="module")
+def project_path():
+    original_path = os.getcwd()
+    os.chdir(original_path+"/tests")
+    yield Path(original_path+"/tests")
+    os.chdir(original_path)
+
+
+@pytest.fixture(scope="function")
+def cli_tester():
+    cli_tester = CliTester()
+    yield cli_tester
+    cli_tester.close()
+
+
+class CliTester:
+
+    def __init__(self):
+        self.argv = sys.argv.copy()
+
+    def __call__(self, argv, *args, **kwargs):
+        sys.argv = ['cobra']+argv.split(' ')
+        self.args = args
+        self.kwargs = kwargs
+        cli_main()
+
+    def close(self):
+        sys.argv = self.argv
+
+
+def test_cli_compile(cli_tester, project_path, capsys):
+    cli_tester('compile')
+    output, error = capsys.readouterr()
+    assert output == compile_success_output()
+    cli_tester.close()
+    cli_tester('compile --more')
+    output, error = capsys.readouterr()
+    assert output == compile_warning_output()
+    cli_tester.close()
+    os.remove('contracts/ConvertLib.json')
+    os.remove('contracts/MetaCoin.json')
