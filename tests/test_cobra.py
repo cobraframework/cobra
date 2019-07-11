@@ -28,6 +28,16 @@ def compile_warning_output():
            "MetaCoin.sol already compiled in ./contracts/MetaCoin.json" + "\n"
 
 
+def deploy_success_output(contract_name: str):
+    return Style.DIM + Fore.GREEN + "[SUCCESS]" + Style.RESET_ALL + " " + \
+           Fore.WHITE + "Deploy" + ': ' + Style.RESET_ALL + "%s done!" % contract_name
+
+
+def deploy_warning_output(contract_name: str):
+    return Style.DIM + Fore.YELLOW + "[WARNING]" + Style.RESET_ALL + " " + \
+           Fore.WHITE + "Deploy" + ': ' + Style.RESET_ALL + "Already deployed.%s" % contract_name
+
+
 @pytest.fixture(scope="module")
 def project_path():
     original_path = os.getcwd()
@@ -67,10 +77,31 @@ def test_cli_compile(cli_tester, project_path, capsys):
     output, error = capsys.readouterr()
     assert output == compile_warning_output()
     cli_tester.close()
+
+
+def test_cli_deploy(cli_tester, project_path, capsys):
+    cli_tester('deploy')
+    output, error = capsys.readouterr()
+    assert str(output).split('\n')[1] == deploy_success_output('ConvertLib')
+    assert str(output).split('\n')[5] == deploy_success_output('MetaCoin')
+    cli_tester.close()
+    cli_tester('deploy --more')
+    output, error = capsys.readouterr()
+    assert str(output).split('\n')[0] == deploy_warning_output('ConvertLib')
+    assert str(output).split('\n')[1] == deploy_warning_output('MetaCoin')
+    cli_tester.close()
+
+
+def test_cli_unittest(cli_tester, project_path, capsys):
+    output, error = capsys.readouterr()
+    cli_tester('test')
+    cli_tester.close()
     os.remove('contracts/ConvertLib.json')
     os.remove('contracts/MetaCoin.json')
 
-
-# def test_cli_deploy(cli_tester, project_path):
-#     cli_tester('deploy')
+# def test_cli_pytest(cli_tester, project_path, capsys):
+#     output, error = capsys.readouterr()
+#     cli_tester('test --pytest')
 #     cli_tester.close()
+#     os.remove('contracts/ConvertLib.json')
+#     os.remove('contracts/MetaCoin.json')
