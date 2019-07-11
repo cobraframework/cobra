@@ -71,4 +71,4 @@ def test_to_compile():
 
     assert str(convertlib_bin) == json_loader(convertlib_compiled)['bin']
 
-    assert str(metacoin_bin) == json_loader(metacoin_compiled)['bin']
+    # assert str(metacoin_bin) == json_loader(metacoin_compiled)['bin']

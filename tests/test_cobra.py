@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import pytest
 import sys
+import time
 
 from cobra.utils import Style, Fore
 from cobra.cli.__main__ import main as cli_main
@@ -60,18 +61,14 @@ class CliTester:
 def test_cli_compile(cli_tester, project_path, capsys):
     cli_tester('compile')
     output, error = capsys.readouterr()
-    if output != compile_success_output():
-        assert output == compile_warning_output()
-    else:
-        assert output == compile_warning_output()
+    assert output == compile_success_output()
     cli_tester.close()
     cli_tester('compile --more')
     output, error = capsys.readouterr()
-    if output != compile_success_output():
-        assert output == compile_warning_output()
-    else:
-        assert output == compile_warning_output()
+    assert output == compile_warning_output()
     cli_tester.close()
+    os.remove('contracts/ConvertLib.json')
+    os.remove('contracts/MetaCoin.json')
 
 
 # def test_cli_deploy(cli_tester, project_path):
