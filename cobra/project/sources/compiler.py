@@ -1,6 +1,7 @@
 from cobra.project.sources import *
 from cobra.utils import file_reader, strip
 from cobra.utils.console_log import console_log
+import os
 
 
 def bytecode_link_to_md5(bytecode, contract_interface):
@@ -59,12 +60,32 @@ def to_compile(file_path_sol, allow_paths=None, import_remappings=None, more=Fal
         allow_paths = str(os.getcwd())
 
     if import_remappings is None:
-        import_remappings = []
+        __import_remappings__ = []
+    else:
+        __import_remappings__ = []
+        for import_remapping in import_remappings:
+            if isinstance(import_remapping, str):
+                split_equal = import_remapping.split('=')
+                if len(split_equal) == 2:
+                    name = split_equal[0]
+                    path = split_equal[1]
+                    if path == './' or path.startswith('./'):
+                        split_path = path.split('.')
+                        full_path = str(os.getcwd()) + str(split_path[1])
+                        if path.endswith('/'):
+                            full_import_remapping = name + '=' + full_path
+                        else:
+                            full_import_remapping = name + '=' + full_path + '/'
+                        __import_remappings__.append(full_import_remapping)
+                    elif path == '.':
+                        full_path = str(os.getcwd())
+                        full_import_remapping = name + '=' + full_path + '/'
+                        __import_remappings__.append(full_import_remapping)
 
     solidity_contract = file_reader(file_path_sol)
     try:
         _import_remappings = ["-"]
-        _import_remappings.extend(import_remappings)
+        _import_remappings.extend(__import_remappings__)
         compiled_sol = compile_source(solidity_contract,
                                       allow_paths=allow_paths,
                                       import_remappings=_import_remappings)
