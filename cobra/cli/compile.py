@@ -30,16 +30,8 @@ def _compile(more=False):
                 console_log("%s done in %s" %
                             (solidity_name, artifact_path_json), "success", "Compile")
             else:
-                allow_paths = str()
-                for allow_path in configuration_yaml['allow_paths']:
-                    if str(allow_path) == "":
-                        allow_paths = allow_path
-                    else:
-                        allow_paths = allow_paths + "," + str(allow_path)
-
                 cobra_compiled = to_compile(file_path_sol,
-                                            allow_paths, import_remappings, more)
-
+                                            configuration_yaml['allow_paths'], import_remappings, more)
                 if not isdir(configuration_yaml['artifact_path']):
                     makedirs(configuration_yaml['artifact_path'])
                 solidity_name = str(configuration_yaml['solidity'])
