@@ -5,11 +5,11 @@ compile:
       contract: {
           solidity: "ConvertLib.sol",
       },
-#      contract: {
-#          solidity: "MetaCoin.sol",
-#          import_remappings: [ "=./sources" ],
-#          allow_paths: ".,./sources,/test"
-#      }
+      contract: {
+          solidity: "MetaCoin.sol",
+          import_remappings: [ "=./sources" ],
+          allow_paths: ".,./sources,/test"
+      }
     ]
 
 deploy:

@@ -12,19 +12,19 @@ from cobra.cli.__main__ import main as cli_main
 def compile_success_output():
     return Style.DIM + Fore.GREEN + "[SUCCESS]" + Style.RESET_ALL + ' ' + \
            Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
-           "ConvertLib.sol done in ./contracts/ConvertLib.json" + "\n" # + \
-           # Style.DIM + Fore.GREEN + "[SUCCESS]" + Style.RESET_ALL + ' ' + \
-           # Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
-           # "MetaCoin.sol done in ./contracts/MetaCoin.json" + "\n"
+           "ConvertLib.sol done in ./contracts/ConvertLib.json" + "\n" + \
+           Style.DIM + Fore.GREEN + "[SUCCESS]" + Style.RESET_ALL + ' ' + \
+           Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
+           "MetaCoin.sol done in ./contracts/MetaCoin.json" + "\n"
 
 
 def compile_warning_output():
     return Style.DIM + Fore.YELLOW + "[WARNING]" + Style.RESET_ALL + ' ' + \
            Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
-           "ConvertLib.sol already compiled in ./contracts/ConvertLib.json\n" # + \
-           # Style.DIM + Fore.YELLOW + "[WARNING]" + Style.RESET_ALL + ' ' + \
-           # Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
-           # "MetaCoin.sol already compiled in ./contracts/MetaCoin.json" + "\n"
+           "ConvertLib.sol already compiled in ./contracts/ConvertLib.json\n" + \
+           Style.DIM + Fore.YELLOW + "[WARNING]" + Style.RESET_ALL + ' ' + \
+           Fore.WHITE + "Compile" + ': ' + Style.RESET_ALL + \
+           "MetaCoin.sol already compiled in ./contracts/MetaCoin.json" + "\n"
 
 
 @pytest.fixture(scope="module")
@@ -58,6 +58,13 @@ class CliTester:
 
 
 def test_cli_compile(cli_tester, project_path, capsys):
+    cli_tester('compile')
+    output, error = capsys.readouterr()
+    if output != compile_success_output():
+        assert output == compile_warning_output()
+    else:
+        assert output == compile_warning_output()
+    cli_tester.close()
     cli_tester('compile --more')
     output, error = capsys.readouterr()
     if output != compile_success_output():

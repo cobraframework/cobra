@@ -958,6 +958,17 @@
   "name": "SourceUnit",
   "src": "0:183:0"
  },
- "networks": {},
- "updatedAt": "2019-07-11 15:25:47.479691"
+ "networks": {
+  "48366359144294238466181035781710": {
+   "links": {},
+   "contractAddress": "0xbef4B44788B619e33dE4cD1cc38df608B04977a5",
+   "transactionHash": "0xa8cf6ff634f0bdb506cf14403f484a579bdebe4e44471601861f04fbcbd1ba50"
+  },
+  "46454397036987935228652157275979": {
+   "links": {},
+   "contractAddress": "0x11da2f1D29B352a6c9282B05Fc6e1D7e4B543074",
+   "transactionHash": "0x82290f33a57312a250167ccc1ccccdad70d1b531ff3b5a915d8eea9866481a30"
+  }
+ },
+ "updatedAt": "2019-07-11 16:06:59.585361"
 }
