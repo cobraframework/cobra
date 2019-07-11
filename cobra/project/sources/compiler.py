@@ -81,6 +81,12 @@ def to_compile(file_path_sol, allow_paths=None, import_remappings=None, more=Fal
                         full_path = str(os.getcwd())
                         full_import_remapping = name + '=' + full_path + '/'
                         __import_remappings__.append(full_import_remapping)
+                    else:
+                        __import_remappings__.append(import_remapping)
+                else:
+                    __import_remappings__.append(import_remapping)
+            else:
+                __import_remappings__.append(import_remapping)
 
     solidity_contract = file_reader(file_path_sol)
     try:
