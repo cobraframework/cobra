@@ -57,7 +57,7 @@ def is_compiled(file_path, contract_interface):
 
 def to_compile(file_path_sol, allow_paths=None, import_remappings=None, more=False):
     if allow_paths is None:
-        allow_paths = str()
+        __allow_paths__ = str()
     else:
         __allow_paths__ = []
         for allow_path in allow_paths:
@@ -108,7 +108,7 @@ def to_compile(file_path_sol, allow_paths=None, import_remappings=None, more=Fal
         _import_remappings = ["-"]
         _import_remappings.extend(__import_remappings__)
         compiled_sol = compile_source(solidity_contract,
-                                      allow_paths=allow_paths,
+                                      allow_paths=__allow_paths__,
                                       import_remappings=_import_remappings)
     except solc.exceptions.SolcError as solcError:
         if more:
