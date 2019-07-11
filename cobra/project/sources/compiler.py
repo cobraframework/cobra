@@ -59,20 +59,30 @@ def to_compile(file_path_sol, allow_paths=None, import_remappings=None, more=Fal
     if allow_paths is None:
         __allow_paths__ = str()
     else:
-        __allow_paths__ = []
-        for allow_path in allow_paths:
-            if isinstance(allow_path, str):
-                if allow_path == './' or allow_path.startswith('./'):
-                    split_path = allow_path.split('.')
-                    full_allow_path = str(os.getcwd()) + str(split_path[1])
-                    __allow_paths__.append(full_allow_path)
-                elif allow_path == '.':
-                    full_allow_path = str(os.getcwd())
-                    __allow_paths__.append(full_allow_path)
+        if isinstance(allow_paths, list):
+            __allow_paths__ = str()
+            for allow_path in allow_paths:
+                print(allow_path)
+                if isinstance(allow_path, str):
+                    if allow_path == './' or allow_path.startswith('./'):
+                        split_path = allow_path.split('.')
+                        full_allow_path = str(os.getcwd()) + str(split_path[1])
+                        if not __allow_paths__:
+                            __allow_paths__ = full_allow_path
+                        else:
+                            __allow_paths__ = __allow_paths__ + ',' + full_allow_path
+                    elif allow_path == '.':
+                        full_allow_path = str(os.getcwd())
+                        if not __allow_paths__:
+                            __allow_paths__ = full_allow_path
+                        else:
+                            __allow_paths__ = __allow_paths__ + ',' + full_allow_path
+                    else:
+                        continue
                 else:
-                    __allow_paths__.append(allow_path)
-            else:
-                __allow_paths__.append(allow_path)
+                    continue
+        else:
+            print('hi')
 
     if import_remappings is None:
         __import_remappings__ = []
