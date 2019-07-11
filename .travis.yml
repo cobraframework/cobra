@@ -16,6 +16,7 @@ matrix:
   - name: '3.7'
     python: 3.7
 script:
+  - python -m solc.install v0.4.25
   - ganache-cli -p 8545 > /dev/null &
   - sleep 5
   - tox
