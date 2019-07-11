@@ -59,10 +59,9 @@ def to_compile(file_path_sol, allow_paths=None, import_remappings=None, more=Fal
     if allow_paths is None:
         __allow_paths__ = str()
     else:
+        __allow_paths__ = str()
         if isinstance(allow_paths, list):
-            __allow_paths__ = str()
             for allow_path in allow_paths:
-                print(allow_path)
                 if isinstance(allow_path, str):
                     if allow_path == './' or allow_path.startswith('./'):
                         split_path = allow_path.split('.')
@@ -78,40 +77,76 @@ def to_compile(file_path_sol, allow_paths=None, import_remappings=None, more=Fal
                         else:
                             __allow_paths__ = __allow_paths__ + ',' + full_allow_path
                     else:
-                        continue
+                        if not __allow_paths__:
+                            __allow_paths__ = allow_path
+                        else:
+                            __allow_paths__ = __allow_paths__ + ',' + allow_path
                 else:
-                    continue
-        else:
-            print('hi')
+                    if not __allow_paths__:
+                        __allow_paths__ = allow_path
+                    else:
+                        __allow_paths__ = __allow_paths__ + ',' + allow_path
+        elif isinstance(allow_paths, str):
+            allow_paths = allow_paths.split(',')
+            if isinstance(allow_paths, list):
+                for allow_path in allow_paths:
+                    if isinstance(allow_path, str):
+                        if allow_path == './' or allow_path.startswith('./'):
+                            split_path = allow_path.split('.')
+                            full_allow_path = str(os.getcwd()) + str(split_path[1])
+                            if not __allow_paths__:
+                                __allow_paths__ = full_allow_path
+                            else:
+                                __allow_paths__ = __allow_paths__ + ',' + full_allow_path
+                        elif allow_path == '.':
+                            full_allow_path = str(os.getcwd())
+                            if not __allow_paths__:
+                                __allow_paths__ = full_allow_path
+                            else:
+                                __allow_paths__ = __allow_paths__ + ',' + full_allow_path
+                        else:
+                            if not __allow_paths__:
+                                __allow_paths__ = allow_path
+                            else:
+                                __allow_paths__ = __allow_paths__ + ',' + allow_path
+                    else:
+                        if not __allow_paths__:
+                            __allow_paths__ = allow_path
+                        else:
+                            __allow_paths__ = __allow_paths__ + ',' + allow_path
 
     if import_remappings is None:
         __import_remappings__ = []
     else:
         __import_remappings__ = []
-        for import_remapping in import_remappings:
-            if isinstance(import_remapping, str):
-                split_equal = import_remapping.split('=')
-                if len(split_equal) == 2:
-                    name = split_equal[0]
-                    path = split_equal[1]
-                    if path == './' or path.startswith('./'):
-                        split_path = path.split('.')
-                        full_path = str(os.getcwd()) + str(split_path[1])
-                        if path.endswith('/'):
-                            full_import_remapping = name + '=' + full_path
-                        else:
+        if isinstance(import_remappings, list):
+            for import_remapping in import_remappings:
+                if isinstance(import_remapping, str):
+                    split_equal = import_remapping.split('=')
+                    if len(split_equal) == 2:
+                        name = split_equal[0]
+                        path = split_equal[1]
+                        if path == './' or path.startswith('./'):
+                            split_path = path.split('.')
+                            full_path = str(os.getcwd()) + str(split_path[1])
+                            if path.endswith('/'):
+                                full_import_remapping = name + '=' + full_path
+                            else:
+                                full_import_remapping = name + '=' + full_path + '/'
+                            __import_remappings__.append(full_import_remapping)
+                        elif path == '.':
+                            full_path = str(os.getcwd())
                             full_import_remapping = name + '=' + full_path + '/'
-                        __import_remappings__.append(full_import_remapping)
-                    elif path == '.':
-                        full_path = str(os.getcwd())
-                        full_import_remapping = name + '=' + full_path + '/'
-                        __import_remappings__.append(full_import_remapping)
+                            __import_remappings__.append(full_import_remapping)
+                        else:
+                            __import_remappings__.append(import_remapping)
                     else:
                         __import_remappings__.append(import_remapping)
                 else:
                     __import_remappings__.append(import_remapping)
-            else:
-                __import_remappings__.append(import_remapping)
+        else:
+            console_log("import_remapping only uses list.", "error", "InstanceError")
+            sys.exit()
 
     solidity_contract = file_reader(file_path_sol)
     try:
