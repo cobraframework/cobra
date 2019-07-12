@@ -107,7 +107,8 @@ class Deployment(Provider):
                             try:
                                 if deployed["contractAddress"] and deployed["transactionHash"]:
                                     deployed_web3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
-                                    if deployed['contractAddress'] == deployed_web3['contractAddress']:
+                                    if deployed_web3 and \
+                                            deployed['contractAddress'] == deployed_web3['contractAddress']:
                                         link_name = link[:-5]
                                         contract_name_and_address.setdefault(link_name, deployed['contractAddress'])
                                     else:
