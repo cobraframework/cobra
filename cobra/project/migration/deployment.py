@@ -1,4 +1,5 @@
 from cobra.project.migration import *
+import web3
 
 
 class Deployment(Provider):
@@ -9,6 +10,50 @@ class Deployment(Provider):
         self.web3 = self.get_web3()
         self.account = self.get_account()
         self.hdwallet = self.get_hdwallet()
+
+    def get_transact(self, artifact):
+        try:
+            networks = artifact["networks"]
+            if networks:
+                for __network in networks.keys():
+                    deployed = networks.get(__network)
+                    if "contractAddress" in deployed and "transactionHash" in deployed:
+                        if deployed["contractAddress"] == "Unknown" and deployed["transactionHash"]:
+                            get_transaction_receipt = self.web3.eth\
+                                .getTransactionReceipt(deployed["transactionHash"])
+                            if get_transaction_receipt:
+                                deployed["contractAddress"] = get_transaction_receipt["contractAddress"]
+                            else:
+                                console_log(title="Unknown", space=True, _type="error",
+                                            text="%s, still on mining!" %
+                                                 str(self.web3.toHex(deployed["transactionHash"])))
+                                sys.exit()
+                        else:
+                            continue
+                    else:
+                        continue
+            return
+        except requests.exceptions.ConnectionError:
+            console_log(
+                "'%s' failed!" % (self.get_url_host_port()),
+                "error", "HTTPConnectionPool")
+            sys.exit()
+        except websockets.exceptions.InvalidMessage:
+            console_log(
+                "'%s' failed!" % (self.get_url_host_port()),
+                "error", "WebSocketsConnectionPool")
+            sys.exit()
+        except FileNotFoundError:
+            console_log(
+                "'%s' failed!" % (self.get_url_host_port()),
+                "error", "ICPConnectionPool")
+            sys.exit()
+        except ValueError as value_error:
+            console_log(str(value_error), "error", "ValueError")
+            sys.exit()
+        except KeyError as key_error:
+            console_log(str(key_error), "error", "KeyError")
+            sys.exit()
 
     def is_deployed(self, artifact):
         try:
@@ -229,29 +274,53 @@ class Deployment(Provider):
                         "'%s' failed!" % (self.get_url_host_port()),
                         "error", "ICPConnectionPool")
                     sys.exit()
+                try:
+                    transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=5)
+                    address = transaction_receipt['contractAddress']
+                    deployed = {
+                        "links": dict(),
+                        "contractAddress": address,
+                        "transactionHash": self.web3.toHex(tx_hash)
+                    }
+                    link = deployed.get("links")
+                    for index, get_link in enumerate(list(get_link_address.keys())):
+                        link.setdefault(list(get_link_address)[index], get_link_address.get(get_link))
+                    artifact['networks'].setdefault(generate_numbers(), deployed)
+                    artifact['updatedAt'] = str(datetime.now())
 
-                transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
-                address = transaction_receipt['contractAddress']
-                deployed = {
-                    "links": {},
-                    "contractAddress": address,
-                    "transactionHash": self.web3.toHex(tx_hash)
-                }
-                link = deployed.get("links")
-                for index, get_link in enumerate(list(get_link_address.keys())):
-                    link.setdefault(list(get_link_address)[index], get_link_address.get(get_link))
-                artifact['networks'].setdefault(generate_numbers(), deployed)
-                artifact['updatedAt'] = str(datetime.now())
+                    console_log(title="Deploy",
+                                text="%s done!" % contract_name, _type="success")
+                    console_log(title="TransactionHash", space=True,
+                                text=str(self.web3.toHex(tx_hash)), _type="success")
+                    console_log(title="Address", space=True,
+                                text=str(address), _type="success")
 
-                console_log(title="Deploy",
-                            text="%s done!" % contract_name, _type="success")
-                console_log(title="TransactionHash", space=True,
-                            text=str(self.web3.toHex(tx_hash)), _type="success")
-                console_log(title="Address", space=True,
-                            text=str(address), _type="success")
+                    artifact = self.web3.toText(dumps(artifact, indent=1).encode())
+                    return artifact
+                except web3.utils.threads.Timeout as timeout:
+                    address = "Unknown"
+                    deployed = {
+                        "links": dict(),
+                        "contractAddress": address,
+                        "transactionHash": self.web3.toHex(tx_hash)
+                    }
+                    link = deployed.get("links")
+                    for index, get_link in enumerate(list(get_link_address.keys())):
+                        link.setdefault(list(get_link_address)[index], get_link_address.get(get_link))
+                    artifact['networks'].setdefault(generate_numbers(), deployed)
+                    artifact['updatedAt'] = str(datetime.now())
 
-                artifact = self.web3.toText(dumps(artifact, indent=1).encode())
-                return artifact
+                    console_log(title="Deploy",
+                                text="%s not done!" % contract_name, _type="warning")
+                    console_log(title="TransactionHash", space=True,
+                                text=str(self.web3.toHex(tx_hash)), _type="warning")
+                    console_log(title="Address", space=True,
+                                text=str(address), _type="warning")
+                    console_log(title="Timeout", _type="error",
+                                text="%s" % str(timeout))
+
+                    artifact = self.web3.toText(dumps(artifact, indent=1).encode())
+                    return artifact
             except KeyError:
                 return None
         else:
@@ -295,25 +364,48 @@ class Deployment(Provider):
                     "error", "ICPConnectionPool")
                 sys.exit()
 
-            transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=120)
-            address = transaction_receipt['contractAddress']
-            deployed = {
-                "links": dict(),
-                "contractAddress": address,
-                "transactionHash": self.web3.toHex(tx_hash)
-            }
-            artifact['networks'].setdefault(generate_numbers(), deployed)
-            artifact['updatedAt'] = str(datetime.now())
+            try:
+                transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=5)
+                address = transaction_receipt['contractAddress']
+                deployed = {
+                    "links": dict(),
+                    "contractAddress": address,
+                    "transactionHash": self.web3.toHex(tx_hash)
+                }
+                artifact['networks'].setdefault(generate_numbers(), deployed)
+                artifact['updatedAt'] = str(datetime.now())
 
-            console_log(title="Deploy",
-                        text="%s done!" % contract_name, _type="success")
-            console_log(title="TransactionHash", space=True,
-                        text=str(self.web3.toHex(tx_hash)), _type="success")
-            console_log(title="Address", space=True,
-                        text=str(address), _type="success")
+                console_log(title="Deploy",
+                            text="%s done!" % contract_name, _type="success")
+                console_log(title="TransactionHash", space=True,
+                            text=str(self.web3.toHex(tx_hash)), _type="success")
+                console_log(title="Address", space=True,
+                            text=str(address), _type="success")
 
-            artifact = self.web3.toText(dumps(artifact, indent=1).encode())
-            return artifact
+                artifact = self.web3.toText(dumps(artifact, indent=1).encode())
+                return artifact
+            except web3.utils.threads.Timeout as timeout:
+                address = "Unknown"
+                deployed = {
+                    "links": dict(),
+                    "contractAddress": address,
+                    "transactionHash": self.web3.toHex(tx_hash)
+                }
+                artifact['networks'].setdefault(generate_numbers(), deployed)
+                artifact['updatedAt'] = str(datetime.now())
+
+                console_log(title="Deploy",
+                            text="%s not done!" % contract_name, _type="warning")
+                console_log(title="TransactionHash", space=True,
+                            text=str(self.web3.toHex(tx_hash)), _type="warning")
+                console_log(title="Address", space=True,
+                            text=str(address), _type="warning")
+                console_log(title="Timeout", _type="error",
+                            text="%s, %s still on mining!" % (str(timeout),
+                                                              str(self.web3.toHex(tx_hash))))
+
+                artifact = self.web3.toText(dumps(artifact, indent=1).encode())
+                return artifact
         else:
             console_log(title="Deploy", text="Already deployed.%s" %
                                              contract_name, _type="warning")
