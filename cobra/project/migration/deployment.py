@@ -26,17 +26,13 @@ class Deployment(Provider):
                                     deployed["contractAddress"] = get_transaction_receipt["contractAddress"]
                                 else:
                                     continue
-                                    # console_log(title="Unknown", space=True, _type="error",
-                                    #             text="%s, still on mining!" %
-                                    #                  str(self.web3.toHex(deployed["transactionHash"])))
-                                    # sys.exit()
                             except ValueError:
                                 continue
                         else:
                             continue
                     else:
                         continue
-            return
+            return artifact
         except requests.exceptions.ConnectionError:
             console_log(
                 "'%s' failed!" % (self.get_url_host_port()),
@@ -259,12 +255,12 @@ class Deployment(Provider):
         artifact_not_loads = file_reader(file_path)
 
         try:
-            artifact = loads(artifact_not_loads)
+            _artifact = loads(artifact_not_loads)
         except json.decoder.JSONDecodeError as jsonDecodeError:
             console_log("%s" % jsonDecodeError, "error", "JSONDecodeError")
             return
 
-        self.get_transact(artifact)
+        artifact = self.get_transact(_artifact)
         if not self.is_deployed(artifact):
             console_log("Deploying " + contract_name + "...")
             abi = artifact['abi']
@@ -353,12 +349,12 @@ class Deployment(Provider):
         contract_name = str(contract[:-5])
         artifact_not_loads = file_reader(file_path)
         try:
-            artifact = loads(artifact_not_loads)
+            _artifact = loads(artifact_not_loads)
         except json.decoder.JSONDecodeError as jsonDecodeError:
             console_log(jsonDecodeError, "error", "JSONDecodeError")
             sys.exit()
 
-        self.get_transact(artifact)
+        artifact = self.get_transact(_artifact)
         if not self.is_deployed(artifact):
             console_log("Deploying " + contract_name + "...")
             abi = artifact['abi']
