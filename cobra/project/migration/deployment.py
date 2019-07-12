@@ -98,17 +98,24 @@ class Deployment(Provider):
                 artifact = loads(artifact_not_loads)
                 if 'networks' in artifact:
                     networks = artifact['networks']
+                    if not networks:
+                        link_name = link[:-5]
+                        contract_name_and_unknown_address.setdefault(link_name, "Unknown")
+                        continue
                     for __network in networks.keys():
                         deployed = networks.get(__network)
                         if "contractAddress" in deployed and "transactionHash" in deployed:
                             try:
                                 if deployed["contractAddress"] and deployed["transactionHash"]:
                                     deployed_web3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
-                                    if deployed_web3 and \
-                                            deployed['contractAddress'] == deployed_web3['contractAddress']:
-                                        link_name = link[:-5]
-                                        contract_name_and_address.setdefault(link_name, deployed['contractAddress'])
-                                    else:
+                                    if deployed_web3 is not None:  # TypeError
+                                        if deployed['contractAddress'] == deployed_web3['contractAddress']:
+                                            link_name = link[:-5]
+                                            contract_name_and_address.setdefault(link_name, deployed['contractAddress'])
+                                        else:
+                                            link_name = link[:-5]
+                                            contract_name_and_unknown_address.setdefault(link_name, "Unknown")
+                                    elif deployed['contractAddress'] == "Unknown":
                                         link_name = link[:-5]
                                         contract_name_and_unknown_address.setdefault(link_name, "Unknown")
                             except ValueError:
@@ -291,7 +298,7 @@ class Deployment(Provider):
                         "error", "ICPConnectionPool")
                     sys.exit()
                 try:
-                    transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=5)
+                    transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=360)
                     address = transaction_receipt['contractAddress']
                     deployed = {
                         "links": dict(),
@@ -333,7 +340,8 @@ class Deployment(Provider):
                     console_log(title="Address", space=True,
                                 text=str(address), _type="warning")
                     console_log(title="Timeout", _type="error",
-                                text="%s" % str(timeout))
+                                text="%s, %s still on mining!" % (str(timeout),
+                                                                  str(self.web3.toHex(tx_hash))))
 
                     artifact = self.web3.toText(dumps(artifact, indent=1).encode())
                     return artifact
@@ -384,7 +392,7 @@ class Deployment(Provider):
                 sys.exit()
 
             try:
-                transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=5)
+                transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=360)
                 address = transaction_receipt['contractAddress']
                 deployed = {
                     "links": dict(),

@@ -9,8 +9,7 @@ yields (filename, file-like object) pairs
 
 def _init(url=None):
     if url is None:
-        url = "https://raw.githubusercontent.com/meherett/cobra/master/cobra/cli/template/Greeter.zip" \
-              "?token=AHMADHM2IUC54G5M2MWESCK5E6KJE"
+        url = "https://raw.githubusercontent.com/meherett/cobra/master/cobra/cli/template/Greeter.zip?token=AHMADHM2IUC54G5M2MWESCK5E6KJE"
     try:
         response = requests.get(url)
         with zipfile.ZipFile(io.BytesIO(response.content)) as _zips:

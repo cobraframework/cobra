@@ -39,7 +39,20 @@ test:
 
 network:
   development: {
-      host: "localhost",
-      port: 8545,
-      protocol: "HTTP"
+      url: "https://ropsten.infura.io/v3/d73e9ccb3eb941378fe396c9e4205b28",
+#      host: "localhost",
+#      port: 8545,
+      protocol: "HTTPS",
+      hdwallet: {
+        mnemonic: "meheret tesfaye batu bayou",
+        password: "meherett",
+#        private: "efff98eea9f7ebd362e7b5d25b9083f4c086a3eaa55dd8ce341a096d9c80cd41",
+        gas: 3000000,
+#        gas_price: 1000000
+      },
+#      account: {
+#        address: "0x7E2491BF7F9b58F04706f6F67Da8F66BB8d784dB",
+#        gas: 3000000,
+#        gas_price: 1000000
+#      }
   }

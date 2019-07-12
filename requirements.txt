@@ -1,7 +1,7 @@
 colorama==0.4.1
 websockets==6.0
 cryptography==2.5
-cobra-hdwallet==0.2.0
+cobra-hdwallet==0.3.1
 eth-abi==1.2.2
 eth-keyfile==0.5.1
 eth-tester==0.1.0b33

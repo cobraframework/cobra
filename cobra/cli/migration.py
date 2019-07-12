@@ -15,7 +15,7 @@ def _migrate(more=False):
         for configuration_yaml in configurations_yaml:
             if configuration_yaml['links'] is None:
                 artifact_path_json = join(configuration_yaml['artifact_path'], configuration_yaml['artifact'])
-                artifact_json, is_deployed = deployment.deploy_with_out_link(
+                artifact_json = deployment.deploy_with_out_link(
                     configuration_yaml['artifact_path'],
                     configuration_yaml['artifact'], more=more)
                 if artifact_json:

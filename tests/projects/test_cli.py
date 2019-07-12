@@ -74,3 +74,14 @@ def test_pytest(script_runner):
     assert _pytest_more.success
     # assert _pytest_more.stdout == console("[ERROR]", "FileNotFoundError",
     #                                       "No such file or directory './cobra.yaml'\n")
+
+
+# def test_cli_init(cli_tester, project_path, capsys):
+#     original_path = os.getcwd()
+#     os.mkdir('init_contract')
+#     os.chdir(original_path+'/init_contract')
+#     cli_tester('init')
+#     output, error = capsys.readouterr()
+#     assert output == str()
+#     cli_tester.close()
+#     os.chdir(original_path)
