@@ -91,31 +91,39 @@ class Deployment(Provider):
             return False
 
     def get_links_address(self, dir_path, links):
-        contract_name_and_address = {}
+        contract_name_and_address = dict()
+        contract_name_and_unknown_address = dict()
         for link in links:
             link_file_path = join(dir_path, link)
             artifact_not_loads = file_reader(link_file_path)
             try:
                 artifact = loads(artifact_not_loads)
-                try:
+                if 'networks' in artifact:
                     networks = artifact['networks']
                     for __network in networks.keys():
                         deployed = networks.get(__network)
-                        try:
-                            deployed_web3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
-                            if deployed['contractAddress'] == deployed_web3['contractAddress']:
+                        if "contractAddress" in deployed and "transactionHash" in deployed:
+                            if deployed["contractAddress"] == "Unknown":
                                 link_name = link[:-5]
-                                contract_name_and_address.setdefault(link_name, deployed['contractAddress'])
-                            else:
-                                continue
-                        except TypeError:
+                                contract_name_and_unknown_address.setdefault(link_name, deployed['contractAddress'])
+                            elif deployed["contractAddress"] != "Unknown" and deployed["transactionHash"]:
+                                deployed_web3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
+                                if deployed['contractAddress'] == deployed_web3['contractAddress']:
+                                    link_name = link[:-5]
+                                    contract_name_and_address.setdefault(link_name, deployed['contractAddress'])
+                                else:
+                                    continue
+                        else:
                             continue
-                except KeyError:
-                    return
+                else:
+                    console_log("networks in %s" % str(link), "error", "NotFound")
             except json.decoder.JSONDecodeError as jsonDecodeError:
                 console_log(str(jsonDecodeError), "error", "JSONDecodeError")
-                return
-        return contract_name_and_address
+                sys.exit()
+            except ValueError as value_error:
+                console_log(str(value_error), "error", "ValueError")
+                sys.exit()
+        return contract_name_and_address, contract_name_and_unknown_address
 
     def deploy_contract(self, contract):
         try:
