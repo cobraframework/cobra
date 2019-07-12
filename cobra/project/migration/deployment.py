@@ -19,15 +19,19 @@ class Deployment(Provider):
                     deployed = networks.get(__network)
                     if "contractAddress" in deployed and "transactionHash" in deployed:
                         if deployed["contractAddress"] == "Unknown" and deployed["transactionHash"]:
-                            get_transaction_receipt = self.web3.eth\
-                                .getTransactionReceipt(deployed["transactionHash"])
-                            if get_transaction_receipt:
-                                deployed["contractAddress"] = get_transaction_receipt["contractAddress"]
-                            else:
-                                console_log(title="Unknown", space=True, _type="error",
-                                            text="%s, still on mining!" %
-                                                 str(self.web3.toHex(deployed["transactionHash"])))
-                                sys.exit()
+                            try:
+                                get_transaction_receipt = self.web3.eth\
+                                    .getTransactionReceipt(deployed["transactionHash"])
+                                if get_transaction_receipt:
+                                    deployed["contractAddress"] = get_transaction_receipt["contractAddress"]
+                                else:
+                                    continue
+                                    # console_log(title="Unknown", space=True, _type="error",
+                                    #             text="%s, still on mining!" %
+                                    #                  str(self.web3.toHex(deployed["transactionHash"])))
+                                    # sys.exit()
+                            except ValueError:
+                                continue
                         else:
                             continue
                     else:
@@ -47,9 +51,6 @@ class Deployment(Provider):
             console_log(
                 "'%s' failed!" % (self.get_url_host_port()),
                 "error", "ICPConnectionPool")
-            sys.exit()
-        except ValueError as value_error:
-            console_log(str(value_error), "error", "ValueError")
             sys.exit()
         except KeyError as key_error:
             console_log(str(key_error), "error", "KeyError")
@@ -103,25 +104,23 @@ class Deployment(Provider):
                     for __network in networks.keys():
                         deployed = networks.get(__network)
                         if "contractAddress" in deployed and "transactionHash" in deployed:
-                            if deployed["contractAddress"] == "Unknown":
-                                link_name = link[:-5]
-                                contract_name_and_unknown_address.setdefault(link_name, deployed['contractAddress'])
-                            elif deployed["contractAddress"] != "Unknown" and deployed["transactionHash"]:
-                                deployed_web3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
-                                if deployed['contractAddress'] == deployed_web3['contractAddress']:
-                                    link_name = link[:-5]
-                                    contract_name_and_address.setdefault(link_name, deployed['contractAddress'])
-                                else:
-                                    continue
+                            try:
+                                if deployed["contractAddress"] and deployed["transactionHash"]:
+                                    deployed_web3 = self.web3.eth.getTransactionReceipt(deployed['transactionHash'])
+                                    if deployed['contractAddress'] == deployed_web3['contractAddress']:
+                                        link_name = link[:-5]
+                                        contract_name_and_address.setdefault(link_name, deployed['contractAddress'])
+                                    else:
+                                        link_name = link[:-5]
+                                        contract_name_and_unknown_address.setdefault(link_name, "Unknown")
+                            except ValueError:
+                                continue
                         else:
                             continue
                 else:
                     console_log("networks in %s" % str(link), "error", "NotFound")
             except json.decoder.JSONDecodeError as jsonDecodeError:
                 console_log(str(jsonDecodeError), "error", "JSONDecodeError")
-                sys.exit()
-            except ValueError as value_error:
-                console_log(str(value_error), "error", "ValueError")
                 sys.exit()
         return contract_name_and_address, contract_name_and_unknown_address
 
@@ -243,6 +242,15 @@ class Deployment(Provider):
                             "error")
             sys.exit()
 
+    @staticmethod
+    def check_unknown_addresses(link_unknown_address):
+        if isinstance(link_unknown_address, dict) and link_unknown_address:
+            for contract_name in link_unknown_address.keys():
+                console_log(title="Unknown", _type="error",
+                            text="%s link address!" % str(contract_name))
+            sys.exit()
+        return
+
     def deploy_with_link(self, dir_path, contract, links, more=False):
 
         contract_name = str(contract[:-5])
@@ -255,11 +263,13 @@ class Deployment(Provider):
             console_log("%s" % jsonDecodeError, "error", "JSONDecodeError")
             return
 
+        self.get_transact(artifact)
         if not self.is_deployed(artifact):
             console_log("Deploying " + contract_name + "...")
             abi = artifact['abi']
             unlinked_bytecode = artifact['bin']
-            get_link_address = self.get_links_address(dir_path, links)
+            get_link_address, get_link_unknown_address = self.get_links_address(dir_path, links)
+            self.check_unknown_addresses(get_link_unknown_address)
             linked_bytecode = link_code(unlinked_bytecode, get_link_address)
             try:
                 contract = self.web3.eth.contract(abi=abi, bytecode=linked_bytecode)
@@ -347,6 +357,7 @@ class Deployment(Provider):
             console_log(jsonDecodeError, "error", "JSONDecodeError")
             sys.exit()
 
+        self.get_transact(artifact)
         if not self.is_deployed(artifact):
             console_log("Deploying " + contract_name + "...")
             abi = artifact['abi']
