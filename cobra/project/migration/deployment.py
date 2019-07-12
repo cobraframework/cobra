@@ -24,6 +24,7 @@ class Deployment(Provider):
                                     .getTransactionReceipt(deployed["transactionHash"])
                                 if get_transaction_receipt:
                                     deployed["contractAddress"] = get_transaction_receipt["contractAddress"]
+                                    artifact['updatedAt'] = str(datetime.now())
                                 else:
                                     continue
                             except ValueError:
@@ -337,11 +338,13 @@ class Deployment(Provider):
                     artifact = self.web3.toText(dumps(artifact, indent=1).encode())
                     return artifact
             except KeyError:
-                return None
+                artifact = self.web3.toText(dumps(artifact, indent=1).encode())
+                return artifact
         else:
             console_log(title="Deploy", text="Already deployed.%s" %
                                              contract_name, _type="warning")
-            return None
+            artifact = self.web3.toText(dumps(artifact, indent=1).encode())
+            return artifact
 
     def deploy_with_out_link(self, dir_path, contract, more=False):
 
@@ -425,4 +428,5 @@ class Deployment(Provider):
         else:
             console_log(title="Deploy", text="Already deployed.%s" %
                                              contract_name, _type="warning")
-            return None
+            artifact = self.web3.toText(dumps(artifact, indent=1).encode())
+            return artifact
