@@ -1,10 +1,10 @@
 <img src="../master/cobra.png?raw=true" width="225">
 
 [![Build Status](https://travis-ci.com/meherett/cobra.svg?token=zWs2UgQUy4zmDh4gtGYH&branch=master)](https://travis-ci.com/meherett/cobra)
-![GitHub License](https://img.shields.io/github/license/cobraframework/pytest-cobra.svg)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/py-cobra.svg)
-![PyPI Version](https://img.shields.io/pypi/v/pytest-cobra.svg)
-[![Donate with Ethereum](https://en.cryptobadges.io/badge/micro/0xD32AAEDF28A848e21040B6F643861A9077F83106)](https://en.cryptobadges.io/donate/0xD32AAEDF28A848e21040B6F643861A9077F83106)
+![PyPI License](https://img.shields.io/pypi/l/py-cobra.svg?color=black)
+![PyPI Version](https://img.shields.io/pypi/v/py-cobra.svg)
+[![Coverage Status](https://coveralls.io/repos/github/cobraframework/py-cobra/badge.svg?branch=master)](https://coveralls.io/github/cobraframework/py-cobra?branch=master)
 
 ---
 
@@ -13,7 +13,8 @@ deployment on Ethereum virtual machine(EVM).
 
 With cobra you can get built-in smart contract compilation, linking, deployment, binary management, 
 automated contract testing with Unittest and PyTest frameworks, scriptable deployment & migrations framework 
-and network management for deploying to many public & private networks like INFURA or ganache-cli.
+and network management for deploying to many public & private networks like [INFURA](https://infura.io) or 
+[Ganache CLI](https://github.com/trufflesuite/ganache-cli).
 
 ## Dependency
 
@@ -104,8 +105,8 @@ network:
     host: "localhost",
     port: 8545,
     hdwallet: {
-        mnemonic: "meheret tesfaye batu bayou",
-        seed: "meheret tesfaye batu bayou",
+        mnemonic: "decide adjust legend nation type same task aim rigid lucky guilt close", # or
+        seed: "decide adjust legend nation type same task aim rigid lucky guilt close",
         password: "meherett",
         private: "5f8935bb3b61b312ba1114cbf6f1ea30102383f2b043a1b213aa482132d25049",
         gas: 3000000,

@@ -12,5 +12,6 @@ __pycache__/
 Cobra/
 .idea/
 .tox/
+.eggs/
 htmlcov/
 /.coverage
