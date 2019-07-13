@@ -298,7 +298,7 @@ class Deployment(Provider):
                         "error", "ICPConnectionPool")
                     sys.exit()
                 try:
-                    transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=360)
+                    transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=720)
                     address = transaction_receipt['contractAddress']
                     deployed = {
                         "links": dict(),
@@ -392,7 +392,7 @@ class Deployment(Provider):
                 sys.exit()
 
             try:
-                transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=360)
+                transaction_receipt = self.web3.eth.waitForTransactionReceipt(tx_hash, timeout=720)
                 address = transaction_receipt['contractAddress']
                 deployed = {
                     "links": dict(),
