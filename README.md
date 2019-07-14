@@ -1,10 +1,10 @@
 <img src="https://raw.githubusercontent.com/cobraframework/cobra/master/cobra.png" width="225">
 
-[![Build Status](https://travis-ci.com/meherett/cobra.svg?token=zWs2UgQUy4zmDh4gtGYH&branch=master)](https://travis-ci.com/meherett/cobra)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/py-cobra.svg)
-![PyPI License](https://img.shields.io/pypi/l/py-cobra.svg?color=black)
-![PyPI Version](https://img.shields.io/pypi/v/py-cobra.svg?color=blue)
-[![Coverage Status](https://coveralls.io/repos/github/cobraframework/py-cobra/badge.svg?branch=master)](https://coveralls.io/github/cobraframework/py-cobra?branch=master)
+[![Build Status](https://travis-ci.com/cobraframework/cobra.svg?branch=master)](https://travis-ci.com/cobraframework/cobra)
+![PyPI Python Version](https://img.shields.io/pypi/pyversions/eth-cobra.svg)
+![PyPI License](https://img.shields.io/pypi/l/eth-cobra.svg?color=black)
+![PyPI Version](https://img.shields.io/pypi/v/eth-cobra.svg)
+[![Coverage Status](https://coveralls.io/repos/github/cobraframework/cobra/badge.svg?branch=master)](https://coveralls.io/github/cobraframework/cobra?branch=master)
 
 ---
 
