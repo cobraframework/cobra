@@ -19,11 +19,9 @@ def main(argv=None):
         usage=usage,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent('''\
-                    --------------------
-                    !!!PLEASE HELP ME!!!
-                    --------------------
-        Donate with Bitcoin: 3JiPsp6bT6PkXF3f9yZsL5hrdQwtVuXXAk
-        Donate with Ethereum: 0xA963a015d355F08d82cDDD815FFe758f0092fE57
+                !!!PLEASE HELP US!!!
+        Bitcoin: 1BZv4gKoX9UAyfxX6WEBRxnqnd4oTqncYo
+        Ethereum: 0xA963a015d355F08d82cDDD815FFe758f0092fE57
         '''),
         description=description)
 

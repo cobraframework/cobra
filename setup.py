@@ -7,7 +7,7 @@ with open("requirements.txt", "r") as _requirements:
     requirements = list(map(str.strip, _requirements.read().split("\n")))[:-1]
 
 setup(
-    name="py-cobra",
+    name="eth-cobra",
     version='0.1.0',
     description='A fast, flexible and simple development environment framework for Ethereum smart contract, '
                 'testing and deployment on Ethereum virtual machine(EVM). https://cobraframework.github.io',

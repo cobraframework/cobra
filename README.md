@@ -1,9 +1,9 @@
-<img src="../master/cobra.png?raw=true" width="225">
+<img src="https://raw.githubusercontent.com/cobraframework/cobra/master/cobra.png" width="225">
 
 [![Build Status](https://travis-ci.com/meherett/cobra.svg?token=zWs2UgQUy4zmDh4gtGYH&branch=master)](https://travis-ci.com/meherett/cobra)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/py-cobra.svg)
 ![PyPI License](https://img.shields.io/pypi/l/py-cobra.svg?color=black)
-![PyPI Version](https://img.shields.io/pypi/v/py-cobra.svg)
+![PyPI Version](https://img.shields.io/pypi/v/py-cobra.svg?color=blue)
 [![Coverage Status](https://coveralls.io/repos/github/cobraframework/py-cobra/badge.svg?branch=master)](https://coveralls.io/github/cobraframework/py-cobra?branch=master)
 
 ---
@@ -31,7 +31,7 @@ with other versions.
 ## Installation
 PIP to install cobra globally. For Linux sudo may be required.
 ```
-$ pip install py-cobra
+$ pip install eth-cobra
 ```
 
 ## Development
