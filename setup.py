@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as _requirements:
 
 setup(
     name="eth-cobra",
-    version='0.1.0',
+    version='0.1.1',
     description='A fast, flexible and simple development environment framework for Ethereum smart contract, '
                 'testing and deployment on Ethereum virtual machine(EVM). https://cobraframework.github.io',
     long_description=long_description,
