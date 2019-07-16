@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/cobraframework/cobra.svg?branch=master)](https://travis-ci.com/cobraframework/cobra)
 ![PyPI Python Version](https://img.shields.io/pypi/pyversions/eth-cobra.svg)
 ![PyPI License](https://img.shields.io/pypi/l/eth-cobra.svg?color=black)
-![PyPI Version](https://img.shields.io/pypi/v/eth-cobra.svg)
+![PyPI Version](https://img.shields.io/pypi/v/eth-cobra.svg?color=blue)
 [![Coverage Status](https://coveralls.io/repos/github/cobraframework/cobra/badge.svg?branch=master)](https://coveralls.io/github/cobraframework/cobra?branch=master)
 
 ---
@@ -31,13 +31,13 @@ with other versions.
 ## Installation
 PIP to install cobra globally. For Linux sudo may be required.
 ```
-$ pip install eth-cobra
+pip install eth-cobra
 ```
 
 ## Development
 We welcome pull requests. To get started, just fork this repo, clone it locally, and run:
 ```
-$ pip install -e . -r requirements.txt
+pip install -e . -r requirements.txt
 ```
 
 ## Quick Usage
@@ -47,13 +47,13 @@ Initialize project structure
 A default set of contract and tests, run the following command: 
 
 ```
-$ cobra init
+cobra init
 ```
 
 Get help:
 
 ```
-$ cobra --help
+cobra --help
 ```
 
 From there, you can run `cobra compile`, `cobra deploy/migrate` and `cobra test --unittest/--pytest` 
@@ -128,7 +128,7 @@ Tests are still under development.
 You can run the tests with:
 
 ```
-$ pytest tests
+pytest tests
 ```
 
 Or use `tox` to run the complete suite against the full set of build targets, or pytest to run specific 
