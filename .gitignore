@@ -1,7 +1,7 @@
 # Setuptools stuff
 build/
 dist/
-py_cobra.egg-info/
+eth_cobra.egg-info/
 
 # Python stuff
 __pycache__/
