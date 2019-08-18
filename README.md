@@ -31,13 +31,13 @@ with other versions.
 ## Installation
 PIP to install cobra globally. For Linux sudo may be required.
 ```
-pip install eth-cobra
+$ pip install eth-cobra
 ```
 
 ## Development
 We welcome pull requests. To get started, just fork this repo, clone it locally, and run:
 ```
-pip install -e . -r requirements.txt
+$ pip install -e . -r requirements.txt
 ```
 
 ## Quick Usage
@@ -47,13 +47,13 @@ Initialize project structure
 A default set of contract and tests, run the following command: 
 
 ```
-cobra init
+$ cobra init
 ```
 
 Get help:
 
 ```
-cobra --help
+$ cobra --help
 ```
 
 From there, you can run `cobra compile`, `cobra deploy/migrate` and `cobra test --unittest/--pytest` 
@@ -102,8 +102,8 @@ test:
 network:
   development: {
     url: "https://ropsten.infura.io/...",
-    host: "localhost",
-    port: 8545,
+#    host: "localhost",
+#    port: 8545,
     hdwallet: {
         mnemonic: "decide adjust legend nation type same task aim rigid lucky guilt close", # or
         seed: "decide adjust legend nation type same task aim rigid lucky guilt close",
@@ -112,12 +112,12 @@ network:
         gas: 3000000,
         gas_price: 1000000
     },
-    protocol: "HTTP", # HTTP, HTTPS, WS(WebSocket) and ICP
-    account: {
-      address: "0x6a373a75c388ac2d160f1d2b6d9ada34f29831cd",
-      gas: 3000000,
-      gas_price: 1000000
-    }
+    protocol: "HTTPS", # HTTP, HTTPS, WS(WebSocket) and ICP
+#    account: {
+#      address: "0x6a373a75c388ac2d160f1d2b6d9ada34f29831cd",
+#      gas: 3000000,
+#      gas_price: 1000000
+#    }
   }
 ```
 </details>
@@ -128,11 +128,14 @@ Tests are still under development.
 You can run the tests with:
 
 ```
-pytest tests
+$ pytest tests
 ```
 
 Or use `tox` to run the complete suite against the full set of build targets, or pytest to run specific 
 tests against a specific version of Python.
+
+## Contributing
+Feel free to open an issue if you find a problem, or a pull request if you've solved an issue.
 
 ## Meta
 
