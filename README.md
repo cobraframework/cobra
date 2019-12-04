@@ -37,7 +37,7 @@ $ pip install eth-cobra
 ## Development
 We welcome pull requests. To get started, just fork this repo, clone it locally, and run:
 ```
-$ pip install -e . -r requirements.txt
+$ pip install -e pytest-cobra==1.0.4
 ```
 
 ## Quick Usage
